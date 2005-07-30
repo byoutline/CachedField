@@ -104,6 +104,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         CachedEndpointWithArg field = new CachedEndpointWithArgImpl(
                 MockFactory.getSameSessionIdProvider(),
                 { key -> throw ex } as ProviderWithArg<String, Integer>,
+                MockFactory.getStubCallEndListener(),
                 MoreExecutors.newDirectExecutorService(),
                 DefaultExecutors.createDefaultStateListenerExecutor())
         field.addEndpointListener(stateList)
@@ -144,6 +145,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         CachedEndpointWithArg field = new CachedEndpointWithArgImpl(
                 sessionProvider,
                 MockFactory.getStringIntGetter(argToValueMap),
+                MockFactory.getStubCallEndListener(),
                 MoreExecutors.newDirectExecutorService(),
                 DefaultExecutors.createDefaultStateListenerExecutor()
         )

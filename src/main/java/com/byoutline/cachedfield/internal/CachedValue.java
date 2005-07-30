@@ -92,6 +92,16 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
         informStateListeners(getStateAndValueWithoutSessionCheck());
     }
 
+    private void informStateListener(final StateAndValue<VALUE_TYPE, ARG_TYPE> newState,
+                                     final EndpointStateListener<VALUE_TYPE, ARG_TYPE> listener) {
+        stateListenerExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                listener.endpointStateChanged(newState);
+            }
+        });
+    }
+
     private void informStateListeners(final StateAndValue<VALUE_TYPE, ARG_TYPE> newState) {
         stateListenerExecutor.execute(new Runnable() {
             @Override
@@ -120,7 +130,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
         checkListenerNonNull(listener);
         fieldStateListeners.add(listener);
         if(informStateListenerOnAdd) {
-            informStateListeners(getStateAndValue());
+            informStateListener(getStateAndValue(), listener);
         }
     }
 

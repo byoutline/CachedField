@@ -1,9 +1,11 @@
 package com.byoutline.cachedfield
 
 import com.byoutline.cachedfield.cachedendpoint.CachedEndpointWithArgImpl
+import com.byoutline.cachedfield.cachedendpoint.StateAndValue
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.byoutline.cachedfield.internal.StubErrorListener
 import com.byoutline.cachedfield.internal.StubFieldStateListener
+import com.byoutline.cachedfield.internal.cachedendpoint.CallEndListener
 import com.google.common.util.concurrent.MoreExecutors
 
 import javax.inject.Provider
@@ -114,10 +116,15 @@ static CachedField getLoadedCachedField(String value, FieldStateListener fieldSt
     return field
 }
 
+static CallEndListener<String, Integer> getStubCallEndListener() {
+    {StateAndValue<String, Integer> callResult -> } as CallEndListener<String, Integer>
+}
+
 static CachedEndpointWithArgImpl<String, Integer> getCachedEndpoint(Map<Integer, String> argToValueMap) {
     return new CachedEndpointWithArgImpl(
             getSameSessionIdProvider(),
             getStringIntGetter(argToValueMap),
+            getStubCallEndListener(),
             DefaultExecutors.createDefaultValueGetterExecutor(),
             DefaultExecutors.createDefaultStateListenerExecutor()
     )
@@ -127,6 +134,7 @@ static CachedEndpointWithArgImpl<String, Integer> getCachedEndpointBlockingValue
     return new CachedEndpointWithArgImpl(
             getSameSessionIdProvider(),
             getStringIntGetter(argToValueMap),
+            getStubCallEndListener(),
             MoreExecutors.newDirectExecutorService(),
             DefaultExecutors.createDefaultStateListenerExecutor()
     )
@@ -135,6 +143,7 @@ static CachedEndpointWithArgImpl<String, Integer> getCachedEndpointBlocking(Map<
     return new CachedEndpointWithArgImpl(
             getSameSessionIdProvider(),
             getStringIntGetter(argToValueMap),
+            getStubCallEndListener(),
             MoreExecutors.newDirectExecutorService(),
             { it.run() } as Executor
     )

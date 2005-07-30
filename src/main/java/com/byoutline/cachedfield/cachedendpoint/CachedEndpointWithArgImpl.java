@@ -2,9 +2,9 @@ package com.byoutline.cachedfield.cachedendpoint;
 
 import com.byoutline.cachedfield.ProviderWithArg;
 import com.byoutline.cachedfield.internal.CachedValue;
-import com.byoutline.cachedfield.internal.StubErrorListenerWithArg;
 import com.byoutline.cachedfield.internal.ValueLoader;
-import com.byoutline.cachedfield.internal.cachedendpoint.StubSuccessListenerWithArg;
+import com.byoutline.cachedfield.internal.cachedendpoint.CallEndListener;
+import com.byoutline.cachedfield.internal.cachedendpoint.CallEndWrapperWithArg;
 
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
@@ -32,14 +32,16 @@ public class CachedEndpointWithArgImpl<RETURN_TYPE, ARG_TYPE>
      */
     public CachedEndpointWithArgImpl(@Nonnull Provider<String> sessionProvider,
                                      @Nonnull ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter,
+                                     @Nonnull CallEndListener<RETURN_TYPE, ARG_TYPE> callEndListener,
                                      @Nonnull ExecutorService valueGetterExecutor,
                                      @Nonnull Executor stateListenerExecutor) {
         boolean informStateListenerOnAdd = true;
         this.value = new CachedValue<RETURN_TYPE, ARG_TYPE>(
                 sessionProvider, stateListenerExecutor, informStateListenerOnAdd);
+        CallEndWrapperWithArg<RETURN_TYPE, ARG_TYPE> resultListener = new CallEndWrapperWithArg<RETURN_TYPE, ARG_TYPE>(callEndListener);
         this.valueLoader = new ValueLoader<RETURN_TYPE, ARG_TYPE>(valueGetter,
-                new StubSuccessListenerWithArg<RETURN_TYPE, ARG_TYPE>(),
-                new StubErrorListenerWithArg<ARG_TYPE>(),
+                resultListener,
+                resultListener,
                 value, valueGetterExecutor, false);
     }
 
