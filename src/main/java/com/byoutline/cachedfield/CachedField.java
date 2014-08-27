@@ -5,7 +5,7 @@ package com.byoutline.cachedfield;
  * (because it is downloaded from remote source, or needs heavy calculations), 
  * so it is wrapped for caching.
  *
- * @author Sebastian Kacprzak <nait at naitbit.com>
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public interface CachedField<T> {
 
