@@ -11,7 +11,7 @@ public interface CachedField<T> {
     FieldState getState();
 
     /**
-     * Posts value on Bus when it is ready.
+     * Informs {@link SuccessListener} when value is ready.
      */
     void postValue();
 
