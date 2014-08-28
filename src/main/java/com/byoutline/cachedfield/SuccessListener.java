@@ -1,11 +1,11 @@
 package com.byoutline.cachedfield;
 
 /**
- * Information about if field is ready to use.
+ * Will be called when value is loaded.
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public enum FieldState {
+public interface SuccessListener<T> {
 
-    NOT_LOADED, CURRENTLY_LOADING, LOADED
+    void valueLoaded(T value);
 }
