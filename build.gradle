@@ -25,6 +25,8 @@ dependencies {
     testRuntime "org.objenesis:objenesis:1.2"    // allows mocking of classes without default constructor (together with CGLIB)
 }
 
+apply from: 'maven-push.gradle'
+
 //configurations.all {
 //    resolutionStrategy.cacheDynamicVersionsFor 100, 'minutes'
 //    resolutionStrategy.cacheChangingModulesFor 100, 'minutes'
