@@ -8,7 +8,7 @@ import javax.inject.Provider;
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class CachedFieldImpl<T> implements CachedField {
+public class CachedFieldImpl<T> implements CachedField<T> {
 
     private final Provider<T> valueGetter;
     private final SuccessListener<T> successListener;
