@@ -6,7 +6,7 @@ Wrapper for expensive resources.
 If you use ```Otto``` bus take a look at [OttoCachedField](https://github.com/byoutline/OttoCachedField)
 
 #### Interface description ####
-Each [Cached field](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/CachedField.java) have (at the moment) only 3 methods as their interface:
+Each [Cached field](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/CachedField.java) have (at the moment) only 3 methods as its interface:
 ```java
 void postValue();
 ```
