@@ -45,7 +45,7 @@ class CachedFieldSpec extends spock.lang.Specification {
         given:
         CachedField field = MockFactory.getDelayedCachedField(value, 20, stubSuccessListener)
         field.postValue()
-        waitUntilFieldLoads(field)
+        MockFactory.waitUntilFieldLoads(field)
         
         when:
         boolean tookToLong = false
@@ -61,7 +61,7 @@ class CachedFieldSpec extends spock.lang.Specification {
         }
     }
     
-    def "should inform listener when loaded"() {
+    def "should inform success listener when loaded"() {
         given:
         boolean valuePosted = false
         def successList = {valuePosted = true} as SuccessListener<String>
@@ -69,7 +69,7 @@ class CachedFieldSpec extends spock.lang.Specification {
         
         when:
         field.postValue()
-        waitUntilFieldLoads(field)
+        MockFactory.waitUntilFieldLoads(field)
         
         then:
         assert valuePosted
@@ -78,7 +78,6 @@ class CachedFieldSpec extends spock.lang.Specification {
     def "should null out value when drop is called"() {
         given:
         CachedField field = MockFactory.getLoadedCachedField(value)
-        waitUntilFieldLoads(field)
         
         when:
         field.drop()
@@ -88,9 +87,67 @@ class CachedFieldSpec extends spock.lang.Specification {
         field.value.value == null
     }
     
-    def waitUntilFieldLoads(CachedField field) {
-        while(field.getState() != FieldState.LOADED) {
-            sleep 1
-        }
+    def "should inform field state listener about changes on postValue"() {
+        given:
+        def postedStates = []
+        def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
+        CachedField field = MockFactory.getDelayedCachedField(value, stateList)
+        
+        when:
+        field.postValue()
+        MockFactory.waitUntilFieldLoads(field)
+        
+        then:
+        postedStates == [FieldState.CURRENTLY_LOADING, FieldState.LOADED]
+    }
+    
+     def "should inform field state listener about changes on drop"() {
+        given:
+        def postedStates = []
+        def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
+        CachedField field = MockFactory.getLoadedCachedField(value, stateList)
+        postedStates.clear()
+        
+        when:
+        field.drop()
+        
+        then:
+        postedStates == [FieldState.NOT_LOADED]
+    }
+    
+    
+    def "should inform field state listener about changes on refresh"() {
+        given:
+        def postedStates = []
+        def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
+        CachedField field = MockFactory.getLoadedCachedField(value, stateList)
+        postedStates.clear()
+        
+        when:
+        field.refresh()
+        MockFactory.waitUntilFieldLoads(field)
+        
+        then:
+        postedStates == [FieldState.CURRENTLY_LOADING, FieldState.LOADED]
+    }
+    
+    def "should inform field state listener about changes on session expire"() {
+        given:
+        def postedStates = []
+        def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
+        def currentSession = "one"
+        def sessionProvider = { return currentSession } as Provider<String>
+        CachedField field = MockFactory.getLoadedCachedField(value, stateList, sessionProvider)
+        postedStates.clear()
+        
+        when:
+        // Asking for state will force CachedField to check its current state
+        // without us forcing it to change. This way only expired session can
+        // cause state change.
+        currentSession = "two"
+        field.getState()
+        
+        then:
+        postedStates == [FieldState.NOT_LOADED]
     }
 }

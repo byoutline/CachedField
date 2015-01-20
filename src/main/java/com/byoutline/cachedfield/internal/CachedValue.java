@@ -1,7 +1,9 @@
 package com.byoutline.cachedfield.internal;
 
+import com.byoutline.cachedfield.FieldStateListener;
 import com.byoutline.cachedfield.FieldState;
 import com.byoutline.eventcallback.internal.SessionChecker;
+import javax.annotation.Nonnull;
 import javax.inject.Provider;
 
 /**
@@ -15,27 +17,30 @@ public class CachedValue<T> {
     private FieldState fieldState = FieldState.NOT_LOADED;
     private T value;
     private String valueSession;
+    private final FieldStateListener fieldStateListener;
     public final Provider<String> sessionProvider;
 
-    public CachedValue(Provider<String> sessionProvider) {
+    public CachedValue(@Nonnull Provider<String> sessionProvider, 
+            @Nonnull FieldStateListener fieldStateListener) {
         this.sessionProvider = sessionProvider;
+        this.fieldStateListener = fieldStateListener;
     }
 
     private void checkSession() {
         SessionChecker checker = new SessionChecker(sessionProvider, valueSession);
         if (!checker.isSameSession()) {
-            fieldState = FieldState.NOT_LOADED;
+            setState(FieldState.NOT_LOADED);
             value = null;
         }
     }
 
     public synchronized void loadingStarted() {
-        fieldState = FieldState.CURRENTLY_LOADING;
+        setState(FieldState.CURRENTLY_LOADING);
         this.valueSession = sessionProvider.get();
     }
 
     public synchronized void setValue(T value) {
-        fieldState = FieldState.LOADED;
+        setState(FieldState.LOADED);
         this.value = value;
     }
 
@@ -48,12 +53,20 @@ public class CachedValue<T> {
     }
 
     public synchronized void drop() {
-        fieldState = FieldState.NOT_LOADED;
+        setState(FieldState.NOT_LOADED);
         this.value = null;
     }
 
     public synchronized StateAndValue<T> getStateAndValue() {
         checkSession();
         return new StateAndValue<T>(fieldState, value);
+    }
+    
+    private void setState(FieldState newState) {
+        if(newState == fieldState) {
+            return;
+        }
+        fieldState = newState;
+        fieldStateListener.fieldStateChanged(newState);
     }
 }
