@@ -38,12 +38,16 @@ public class CachedValue<T> {
     }
 
     public synchronized void valueLoadingFailed() {
-        fieldState = FieldState.NOT_LOADED;
-        this.value = null;
+        drop();
     }
 
     public synchronized T getValue() {
         return value;
+    }
+    
+    public synchronized void drop() {
+        fieldState = FieldState.NOT_LOADED;
+        this.value = null;
     }
 
     public synchronized StateAndValue<T> getStateAndValue() {

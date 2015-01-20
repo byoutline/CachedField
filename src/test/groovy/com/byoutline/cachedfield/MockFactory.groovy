@@ -26,6 +26,10 @@ static Provider<String> getDelayedStringGetter(String value, long sleepTime) {
     return { Thread.sleep(sleepTime); return value } as Provider<String>
 }
 
+static Provider<String> getStringGetter(String value) {
+    return { return value } as Provider<String>
+}
+
 static CachedField getDelayedCachedField(String value, SuccessListener<String> successListener) {
     return getDelayedCachedField(value, 5, successListener)
 }
@@ -39,5 +43,15 @@ static CachedField getDelayedCachedField(String value, long sleepTime,
     ResponseEvent<String> responseEvent = new ResponseEventImpl<String>()
     return new CachedFieldImpl(getSameSessionIdProvider(),
         getDelayedStringGetter(value, sleepTime), successListener, errorListener)
+}
+
+static CachedField getLoadedCachedField(String value) {
+    ResponseEvent<String> responseEvent = new ResponseEventImpl<String>()
+    SuccessListener<String> successListener = {} as SuccessListener<String>
+    CachedField field = new CachedFieldImpl(getSameSessionIdProvider(),
+        getStringGetter(value), successListener, new StubErrorListener())
+    field.postValue()
+    Thread.sleep(1)
+    return field
 }
 

@@ -75,6 +75,19 @@ class CachedFieldSpec extends spock.lang.Specification {
         assert valuePosted
     }
     
+    def "should null out value when drop is called"() {
+        given:
+        CachedField field = MockFactory.getLoadedCachedField(value)
+        waitUntilFieldLoads(field)
+        
+        when:
+        field.drop()
+        
+        then:
+        field.getState() == FieldState.NOT_LOADED
+        field.value.value == null
+    }
+    
     def waitUntilFieldLoads(CachedField field) {
         while(field.getState() != FieldState.LOADED) {
             sleep 1

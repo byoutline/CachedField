@@ -73,4 +73,9 @@ public class CachedFieldImpl<T> implements CachedField<T> {
         };
         fetchThread.start();
     }
+
+    @Override
+    public void drop() {
+        value.drop();
+    }
 }

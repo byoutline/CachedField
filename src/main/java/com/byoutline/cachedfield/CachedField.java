@@ -20,4 +20,9 @@ public interface CachedField<T> {
      * again).
      */
     void refresh();
+    
+    /**
+     * Forget cached value, so memory can be reclaimed.
+     */
+    void drop();
 }
