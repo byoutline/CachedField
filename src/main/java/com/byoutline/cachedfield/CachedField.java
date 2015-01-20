@@ -5,6 +5,7 @@ package com.byoutline.cachedfield;
  * source, or needs heavy calculations), so it is wrapped for caching.
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
+ * @param <T> Type of cached value.
  */
 public interface CachedField<T> {
 

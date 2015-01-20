@@ -5,8 +5,10 @@ import com.byoutline.eventcallback.internal.SessionChecker;
 import javax.inject.Provider;
 
 /**
+ * Thread safe value storage, that nulls out its content when session changes.
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
+ * @param <T> Type of stored value
  */
 public class CachedValue<T> {
 
@@ -44,7 +46,7 @@ public class CachedValue<T> {
     public synchronized T getValue() {
         return value;
     }
-    
+
     public synchronized void drop() {
         fieldState = FieldState.NOT_LOADED;
         this.value = null;
