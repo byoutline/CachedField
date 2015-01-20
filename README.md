@@ -6,7 +6,7 @@ Wrapper for expensive resources.
 If you use ```Otto``` bus take a look at [OttoCachedField](https://github.com/byoutline/OttoCachedField)
 
 #### Interface description ####
-Each [Cached field](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/CachedField.java) have (at the moment) only 3 methods as its interface:
+Each [Cached field](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/CachedField.java) have only 4 methods as its interface:
 ```java
 void postValue();
 ```
@@ -22,4 +22,7 @@ FieldState getState();
 ```
 that returns current state of the field (this is typically used to display some kind of progress indicator to user).
 
-Adding extra method ```void drop();``` is currently under consideration.
+```java
+void drop();
+```
+that orders cached value to be forgotten, so the memory can be reclaimed.
