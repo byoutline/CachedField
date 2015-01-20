@@ -26,3 +26,7 @@ that returns current state of the field (this is typically used to display some 
 void drop();
 ```
 that orders cached value to be forgotten, so the memory can be reclaimed.
+
+####Latest changes####
+* 1.3.1 Added ability to pass ```FieldStateListener``` to constructor that will be informed each time CachedField state changes. That can be useful for displaying busy indicator in graphical applications.
+* 1.3.0 Added method ```drop()``` that can be used to force clear a cached value. That can be used when fe: system runs low on memory.
