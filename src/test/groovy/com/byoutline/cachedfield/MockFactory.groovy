@@ -1,10 +1,11 @@
 package com.byoutline.cachedfield
 
-import javax.inject.Provider
 import com.byoutline.cachedfield.internal.StubErrorListener
 import com.byoutline.cachedfield.internal.StubFieldStateListener
 import com.byoutline.eventcallback.ResponseEvent
 import com.byoutline.eventcallback.ResponseEventImpl
+
+import javax.inject.Provider
 
 static Provider<String> getSameSessionIdProvider() {
     return { return "sessionId" } as Provider<String>
@@ -43,12 +44,12 @@ static CachedField getDelayedCachedField(String value, long sleepTime, SuccessLi
     return getDelayedCachedField(value, sleepTime, successListener, new StubErrorListener(), new StubFieldStateListener())
 }
 
-static CachedField getDelayedCachedField(String value, long sleepTime, 
-    SuccessListener<String> successListener, ErrorListener errorListener, 
-    FieldStateListener fieldStateListener) {
+static CachedField getDelayedCachedField(String value, long sleepTime,
+                                         SuccessListener<String> successListener, ErrorListener errorListener,
+                                         FieldStateListener fieldStateListener) {
     ResponseEvent<String> responseEvent = new ResponseEventImpl<String>()
     CachedField field = new CachedFieldImpl(getSameSessionIdProvider(),
-        getDelayedStringGetter(value, sleepTime), successListener, errorListener)
+            getDelayedStringGetter(value, sleepTime), successListener, errorListener)
     field.addStateListener(fieldStateListener)
     return field
 }
@@ -63,7 +64,7 @@ static CachedField getLoadedCachedField(String value, FieldStateListener fieldSt
 
 static CachedField getLoadedCachedField(String value, FieldStateListener fieldStateListener, Provider<String> sessionIdProvider) {
     CachedField field = new CachedFieldImpl(sessionIdProvider,
-        getStringGetter(value), getSuccessListener(), new StubErrorListener())
+            getStringGetter(value), getSuccessListener(), new StubErrorListener())
     field.postValue()
     waitUntilFieldLoads(field)
     field.addStateListener(fieldStateListener)
@@ -71,7 +72,7 @@ static CachedField getLoadedCachedField(String value, FieldStateListener fieldSt
 }
 
 static void waitUntilFieldLoads(CachedField field) {
-    while(field.getState() != FieldState.LOADED) {
+    while (field.getState() != FieldState.LOADED) {
         sleep 1
     }
 }

@@ -35,11 +35,11 @@ def getSnapshotRepositoryUrl() {
 }
 
 def getRepositoryUsername() {
-    return hasProperty('USERNAME') ? USERNAME : (hasProperty('NEXUS_USERNAME')?NEXUS_USERNAME:"")
+    return hasProperty('USERNAME') ? USERNAME : (hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : "")
 }
 
 def getRepositoryPassword() {
-    return hasProperty('PASSWORD') ? PASSWORD : (hasProperty('NEXUS_PASSWORD')?NEXUS_PASSWORD:"")
+    return hasProperty('PASSWORD') ? PASSWORD : (hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : "")
 }
 
 afterEvaluate { project ->
@@ -186,13 +186,13 @@ afterEvaluate { project ->
                 }
             }
         }
-    
-        task sourcesJar(type: Jar, dependsOn:classes) {
+
+        task sourcesJar(type: Jar, dependsOn: classes) {
             classifier = 'sources'
             from sourceSets.main.allSource
         }
 
-        task javadocJar(type: Jar, dependsOn:javadoc) {
+        task javadocJar(type: Jar, dependsOn: javadoc) {
             classifier = 'javadoc'
             from javadoc.destinationDir
         }

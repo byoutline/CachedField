@@ -1,18 +1,20 @@
 package com.byoutline.cachedfield.internal;
 
-import com.byoutline.cachedfield.FieldStateListener;
 import com.byoutline.cachedfield.FieldState;
+import com.byoutline.cachedfield.FieldStateListener;
 import com.byoutline.eventcallback.internal.SessionChecker;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
 
 /**
  * Thread safe value storage, that nulls out its content when session changes.
  *
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  * @param <T> Type of stored value
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public class CachedValue<T> {
 
