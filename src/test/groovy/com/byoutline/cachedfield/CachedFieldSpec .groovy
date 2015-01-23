@@ -1,16 +1,7 @@
 package com.byoutline.cachedfield
 
-import com.byoutline.cachedfield.CachedFieldImpl
-import com.byoutline.eventcallback.ResponseEvent
-import com.byoutline.eventcallback.ResponseEventImpl
-import com.byoutline.eventcallback.internal.actions.AtomicBooleanSetter
-import com.byoutline.eventcallback.internal.actions.CreateEvents
-import com.byoutline.eventcallback.internal.actions.ResultEvents
-import com.byoutline.eventcallback.internal.actions.ScheduledActions
 import javax.inject.Provider
-import com.google.gson.reflect.TypeToken
 import spock.lang.Shared
-import spock.lang.Unroll
 
 /**
  *
@@ -106,7 +97,6 @@ class CachedFieldSpec extends spock.lang.Specification {
         def postedStates = []
         def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
         CachedField field = MockFactory.getLoadedCachedField(value, stateList)
-        postedStates.clear()
         
         when:
         field.drop()
@@ -121,10 +111,10 @@ class CachedFieldSpec extends spock.lang.Specification {
         def postedStates = []
         def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
         CachedField field = MockFactory.getLoadedCachedField(value, stateList)
-        postedStates.clear()
         
         when:
         field.refresh()
+        sleep 1
         MockFactory.waitUntilFieldLoads(field)
         
         then:
@@ -138,7 +128,6 @@ class CachedFieldSpec extends spock.lang.Specification {
         def currentSession = "one"
         def sessionProvider = { return currentSession } as Provider<String>
         CachedField field = MockFactory.getLoadedCachedField(value, stateList, sessionProvider)
-        postedStates.clear()
         
         when:
         // Asking for state will force CachedField to check its current state

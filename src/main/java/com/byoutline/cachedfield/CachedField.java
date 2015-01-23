@@ -21,9 +21,28 @@ public interface CachedField<T> {
      * again).
      */
     void refresh();
-    
+
     /**
      * Forget cached value, so memory can be reclaimed.
      */
     void drop();
+
+    /**
+     * Register listener that will be informed each time {@link FieldState}
+     * changes.
+     *
+     * @param listener
+     * @throws IllegalArgumentException if listener is null
+     */
+    void addStateListener(FieldStateListener listener);
+
+    /**
+     * Remove field state listener
+     *
+     * @param listener
+     * @return true if listeners collection was modified by this operation,
+     * false otherwise
+     * @throws IllegalArgumentException if listener is null
+     */
+    boolean removeStateListener(FieldStateListener listener);
 }

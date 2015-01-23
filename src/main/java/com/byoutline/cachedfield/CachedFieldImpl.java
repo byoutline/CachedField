@@ -2,7 +2,6 @@ package com.byoutline.cachedfield;
 
 import com.byoutline.cachedfield.internal.StubErrorListener;
 import com.byoutline.cachedfield.internal.CachedValue;
-import com.byoutline.cachedfield.internal.StubFieldStateListener;
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
 
@@ -52,29 +51,7 @@ public class CachedFieldImpl<T> implements CachedField<T> {
             @Nonnull Provider<T> valueGetter,
             @Nonnull SuccessListener<T> successHandler,
             @Nonnull ErrorListener errorHandler) {
-        this(sessionProvider, valueGetter, successHandler,
-                errorHandler, new StubFieldStateListener());
-    }
-
-    /**
-     *
-     * @param sessionProvider Provider that returns String unique for current
-     * session. When session changes cached value will be dropped.
-     * @param valueGetter Provider that synchronously calculates/fetches value
-     * and returns it.
-     * @param successHandler Listener that will be informed when value is
-     * successfully calculated.
-     * @param errorHandler Listener that will be be informed when calculation
-     * of value fails.
-     * @param fieldStateListener Listener that will be informed when field 
-     * changes its state (fe: from NOT_LOADED to LOADING)
-     */
-    public CachedFieldImpl(@Nonnull Provider<String> sessionProvider,
-            @Nonnull Provider<T> valueGetter,
-            @Nonnull SuccessListener<T> successHandler,
-            @Nonnull ErrorListener errorHandler,
-            @Nonnull FieldStateListener fieldStateListener) {
-        this.value = new CachedValue<T>(sessionProvider, fieldStateListener);
+        this.value = new CachedValue<T>(sessionProvider);
         this.valueGetter = valueGetter;
         this.successListener = successHandler;
         this.errorListener = errorHandler;
@@ -130,5 +107,15 @@ public class CachedFieldImpl<T> implements CachedField<T> {
     @Override
     public void drop() {
         value.drop();
+    }
+
+    @Override
+    public void addStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
+        value.addStateListener(listener);
+    }
+
+    @Override
+    public boolean removeStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
+        return value.removeStateListener(listener);
     }
 }

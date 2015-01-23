@@ -1,13 +1,9 @@
 package com.byoutline.cachedfield
 
-import com.google.gson.reflect.TypeToken
 import javax.inject.Provider
-import retrofit.Callback
 import com.byoutline.cachedfield.internal.StubErrorListener
 import com.byoutline.cachedfield.internal.StubFieldStateListener
-import com.byoutline.eventcallback.IBus
 import com.byoutline.eventcallback.ResponseEvent
-import com.byoutline.eventcallback.ResponseEventImpl
 import com.byoutline.eventcallback.ResponseEventImpl
 
 static Provider<String> getSameSessionIdProvider() {
@@ -51,10 +47,12 @@ static CachedField getDelayedCachedField(String value, long sleepTime,
     SuccessListener<String> successListener, ErrorListener errorListener, 
     FieldStateListener fieldStateListener) {
     ResponseEvent<String> responseEvent = new ResponseEventImpl<String>()
-    return new CachedFieldImpl(getSameSessionIdProvider(),
-        getDelayedStringGetter(value, sleepTime), successListener, errorListener, 
-        fieldStateListener)
+    CachedField field = new CachedFieldImpl(getSameSessionIdProvider(),
+        getDelayedStringGetter(value, sleepTime), successListener, errorListener)
+    field.addStateListener(fieldStateListener)
+    return field
 }
+
 static CachedField getLoadedCachedField(String value) {
     return getLoadedCachedField(value, new StubFieldStateListener())
 }
@@ -64,11 +62,11 @@ static CachedField getLoadedCachedField(String value, FieldStateListener fieldSt
 }
 
 static CachedField getLoadedCachedField(String value, FieldStateListener fieldStateListener, Provider<String> sessionIdProvider) {
-    ResponseEvent<String> responseEvent = new ResponseEventImpl<String>()
     CachedField field = new CachedFieldImpl(sessionIdProvider,
-        getStringGetter(value), getSuccessListener(), new StubErrorListener(), fieldStateListener)
+        getStringGetter(value), getSuccessListener(), new StubErrorListener())
     field.postValue()
     waitUntilFieldLoads(field)
+    field.addStateListener(fieldStateListener)
     return field
 }
 
