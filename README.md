@@ -6,7 +6,7 @@ Wrapper for expensive resources.
 If you use ```Otto``` bus take a look at [OttoCachedField](https://github.com/byoutline/OttoCachedField)
 
 #### Interface description ####
-Each [Cached field](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/CachedField.java) have (at the moment) only 3 methods as its interface:
+Each [Cached field](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/CachedField.java) have only 4 methods as its interface:
 ```java
 void postValue();
 ```
@@ -22,4 +22,17 @@ FieldState getState();
 ```
 that returns current state of the field (this is typically used to display some kind of progress indicator to user).
 
-Adding extra method ```void drop();``` is currently under consideration.
+```java
+void drop();
+```
+that orders cached value to be forgotten, so the memory can be reclaimed.
+
+#### Including in projects ####
+Add as a dependency to your ```build.gradle```:
+```groovy
+compile 'com.byoutline.cachedfield:cachedfield:1.3.1'
+```
+
+#### Latest changes ####
+* 1.3.1 Added ability to pass ```FieldStateListener``` to constructor that will be informed each time CachedField state changes. That can be useful for displaying busy indicator in graphical applications.
+* 1.3.0 Added method ```drop()``` that can be used to force clear a cached value. That can be used when fe: system runs low on memory.
