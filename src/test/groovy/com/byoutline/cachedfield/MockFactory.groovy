@@ -28,8 +28,20 @@ static Provider<String> getStringGetter(String value) {
     return { return value } as Provider<String>
 }
 
+static ProviderWithArg<String, Integer> getStringIntGetter(Map<Integer, String> argToValueMap) {
+    return { key -> return argToValueMap.get(key) } as ProviderWithArg<String, Integer>
+}
+
 static SuccessListener<String> getSuccessListener() {
-    return {} as SuccessListener<String>
+    return { value -> return } as SuccessListener<String>
+}
+
+static SuccessListenerWithArg<String, Integer> getSuccessListenerWithArg() {
+    return { value, arg -> return } as SuccessListenerWithArg<String, Integer>
+}
+
+static ErrorListenerWithArg<Integer> getErrorListenerWithArg() {
+    return {} as ErrorListenerWithArg<Integer>
 }
 
 static CachedField getDelayedCachedField(String value, SuccessListener<String> successListener) {
@@ -71,8 +83,28 @@ static CachedField getLoadedCachedField(String value, FieldStateListener fieldSt
     return field
 }
 
+static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap) {
+    CachedFieldWithArg field = new CachedFieldWithArgImpl(getSameSessionIdProvider(),
+            getStringIntGetter(argToValueMap),
+            getSuccessListenerWithArg(),
+            getErrorListenerWithArg()
+    )
+    return field
+}
+
 static void waitUntilFieldLoads(CachedField field) {
     while (field.getState() != FieldState.LOADED) {
         sleep 1
     }
+}
+
+static void waitUntilFieldWithArgLoads(CachedFieldWithArg field) {
+    while (field.getState() != FieldState.LOADED) {
+        sleep 1
+    }
+}
+
+static void loadValue(CachedFieldWithArg<String, Integer> field, Integer arg) {
+    field.postValue(arg)
+    waitUntilFieldWithArgLoads(field)
 }
