@@ -76,7 +76,7 @@ class CachedFieldSpec extends spock.lang.Specification {
 
         then:
         field.getState() == FieldState.NOT_LOADED
-        field.value.value == null
+        field.delegate.value.value == null
     }
 
     def "should inform field state listener about changes on postValue"() {
