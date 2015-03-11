@@ -4,10 +4,10 @@ package com.byoutline.cachedfield;
  * Field of which getting value takes time (because it is downloaded from remote
  * source, or needs heavy calculations), so it is wrapped for caching.
  *
- * @param <T> Type of cached value.
+ * @param <RETURN_TYPE> Type of cached value.
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public interface CachedField<T> {
+public interface CachedField<RETURN_TYPE> {
 
     FieldState getState();
 

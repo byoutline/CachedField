@@ -10,15 +10,15 @@ import javax.inject.Provider;
  * Default implementation of {@link CachedField}. Loads value on separate thread
  * and informs listeners on success and error.
  *
- * @param <T> Type of value to be cached
+ * @param <RETURN_TYPE> Type of value to be cached
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class CachedFieldImpl<T> implements CachedField<T> {
+public class CachedFieldImpl<RETURN_TYPE> implements CachedField<RETURN_TYPE> {
 
-    private final Provider<T> valueGetter;
-    private final SuccessListener<T> successListener;
+    private final Provider<RETURN_TYPE> valueGetter;
+    private final SuccessListener<RETURN_TYPE> successListener;
     private final ErrorListener errorListener;
-    private final CachedValue<T> value;
+    private final CachedValue<RETURN_TYPE> value;
 
     /**
      * Constructor for situation that we are not interested in failures, only in
@@ -32,8 +32,8 @@ public class CachedFieldImpl<T> implements CachedField<T> {
      *                        successfully calculated.
      */
     public CachedFieldImpl(@Nonnull Provider<String> sessionProvider,
-                           @Nonnull Provider<T> valueGetter,
-                           @Nonnull SuccessListener<T> successListener) {
+                           @Nonnull Provider<RETURN_TYPE> valueGetter,
+                           @Nonnull SuccessListener<RETURN_TYPE> successListener) {
         this(sessionProvider, valueGetter, successListener, new StubErrorListener());
     }
 
@@ -48,10 +48,10 @@ public class CachedFieldImpl<T> implements CachedField<T> {
      *                        of value fails.
      */
     public CachedFieldImpl(@Nonnull Provider<String> sessionProvider,
-                           @Nonnull Provider<T> valueGetter,
-                           @Nonnull SuccessListener<T> successHandler,
+                           @Nonnull Provider<RETURN_TYPE> valueGetter,
+                           @Nonnull SuccessListener<RETURN_TYPE> successHandler,
                            @Nonnull ErrorListener errorHandler) {
-        this.value = new CachedValue<T>(sessionProvider);
+        this.value = new CachedValue<RETURN_TYPE>(sessionProvider);
         this.valueGetter = valueGetter;
         this.successListener = successHandler;
         this.errorListener = errorHandler;
@@ -92,7 +92,7 @@ public class CachedFieldImpl<T> implements CachedField<T> {
             public void run() {
                 try {
                     value.loadingStarted();
-                    T fetchedValue = valueGetter.get();
+                    RETURN_TYPE fetchedValue = valueGetter.get();
                     value.setValue(fetchedValue);
                     successListener.valueLoaded(fetchedValue);
                 } catch (Exception ex) {
