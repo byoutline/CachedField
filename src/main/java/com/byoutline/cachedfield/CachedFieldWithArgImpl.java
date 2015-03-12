@@ -20,6 +20,7 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
     private final SuccessListenerWithArg<RETURN_TYPE, ARG_TYPE> successListener;
     private final ErrorListenerWithArg<ARG_TYPE> errorListener;
     private final CachedValue<RETURN_TYPE, ARG_TYPE> value;
+    private Thread fetchThread;
 
     /**
      * @param sessionProvider Provider that returns String unique for current
@@ -79,13 +80,19 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
      * Loads value in separate thread.
      */
     private void loadValue(final ARG_TYPE arg) {
-        Thread fetchThread = new Thread() {
+        if(fetchThread != null && fetchThread.isAlive()) {
+            fetchThread.interrupt();
+        }
+        fetchThread = new Thread() {
 
             @Override
             public void run() {
                 try {
                     value.loadingStarted();
                     RETURN_TYPE fetchedValue = valueGetter.get(arg);
+                    if(isInterrupted()) {
+                        throw new InterruptedException("calculation interrupted by request with new argument");
+                    }
                     value.setValue(fetchedValue, arg);
                     successListener.valueLoaded(fetchedValue, arg);
                 } catch (Exception ex) {

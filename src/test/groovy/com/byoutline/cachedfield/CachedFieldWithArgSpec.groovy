@@ -68,7 +68,7 @@ class CachedFieldWithArgSpec extends spock.lang.Specification {
         state == FieldState.NOT_LOADED
     }
 
-    def "should post only last value if interrupted with new argument"() {
+    def "should inform success listener only about last value if interrupted with new argument"() {
         given:
         def results = []
         def successListener = { value, arg -> results.add(value) } as SuccessListenerWithArg<String, Integer>
@@ -78,5 +78,17 @@ class CachedFieldWithArgSpec extends spock.lang.Specification {
         MockFactory.loadValue(field, 2)
         then:
         results == ['b']
+    }
+
+    def "should inform error listener if interrupted with new argument"() {
+        given:
+        def resultArg = 'fail'
+        def errorListener = { ex, arg -> resultArg = arg } as ErrorListenerWithArg<Integer>
+        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, errorListener)
+        when:
+        field.postValue(1)
+        MockFactory.loadValue(field, 2)
+        then:
+        resultArg == 1
     }
 }

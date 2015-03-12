@@ -41,7 +41,7 @@ static SuccessListenerWithArg<String, Integer> getSuccessListenerWithArg() {
 }
 
 static ErrorListenerWithArg<Integer> getErrorListenerWithArg() {
-    return {} as ErrorListenerWithArg<Integer>
+    return { ex, arg -> return} as ErrorListenerWithArg<Integer>
 }
 
 static CachedField getDelayedCachedField(String value, SuccessListener<String> successListener) {
@@ -88,10 +88,18 @@ static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueM
 }
 
 static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap, SuccessListenerWithArg<String, Integer> successListener) {
+    return getCachedFieldWithArg(argToValueMap, successListener, getErrorListenerWithArg())
+}
+
+static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap, ErrorListenerWithArg<Integer> errorListenerWithArg) {
+    return getCachedFieldWithArg(argToValueMap, getSuccessListenerWithArg(), errorListenerWithArg)
+}
+
+static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap, SuccessListenerWithArg<String, Integer> successListener, ErrorListenerWithArg<Integer> errorListenerWithArg) {
     CachedFieldWithArg field = new CachedFieldWithArgImpl(getSameSessionIdProvider(),
             getStringIntGetter(argToValueMap),
             successListener,
-            getErrorListenerWithArg()
+            errorListenerWithArg
     )
     return field
 }
