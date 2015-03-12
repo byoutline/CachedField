@@ -25,7 +25,7 @@ class CachedFieldWithArgSpec extends spock.lang.Specification {
     }
 
     @Unroll
-    def "should post value: #val for argument: #arg"() {
+    def "should inform success listener about value: #val for argument: #arg"() {
         given:
         String result = 'fail'
         def successListener = { value, arg -> result = value } as SuccessListenerWithArg<String, Integer>
@@ -43,7 +43,7 @@ class CachedFieldWithArgSpec extends spock.lang.Specification {
 
 
     @Unroll
-    def "should post argument: #arg"() {
+    def "should inform success listener about argument: #arg"() {
         given:
         int result = -1
         def successListener = { value, arg -> result = arg } as SuccessListenerWithArg<String, Integer>
