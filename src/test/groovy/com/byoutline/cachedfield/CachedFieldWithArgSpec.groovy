@@ -8,13 +8,11 @@ import spock.lang.Shared
  */
 class CachedFieldWithArgSpec extends spock.lang.Specification {
     @Shared
-    String value = "value"
-    SuccessListener<String> stubSuccessListener = {} as SuccessListener<String>
+    Map<Integer, String> argToValueMap = [1: 'a', 2: 'b']
 
     def "should null out argument when drop is called"() {
         given:
-        SuccessListenerWithArg<String, Integer> tmp = MockFactory.getSuccessListenerWithArg()
-        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg([1: 'a'])
+        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap)
         MockFactory.loadValue(field, 1)
 
         when:
