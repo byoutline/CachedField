@@ -20,7 +20,7 @@ public final class VoidArgumentFactory {
     }
 
     public static <RETURN_TYPE> ProviderWithArg<RETURN_TYPE, Void> addVoidArg(
-            @Nonnull Provider<RETURN_TYPE> valueGetter) {
+            @Nonnull final Provider<RETURN_TYPE> valueGetter) {
         return new ProviderWithArg<RETURN_TYPE, Void>() {
 
             @Override
@@ -31,7 +31,7 @@ public final class VoidArgumentFactory {
     }
 
     public static <RETURN_TYPE> SuccessListenerWithArg<RETURN_TYPE, Void> addVoidArg(
-            @Nonnull SuccessListener<RETURN_TYPE> successHandler) {
+            @Nonnull final SuccessListener<RETURN_TYPE> successHandler) {
         return new SuccessListenerWithArg<RETURN_TYPE, Void>() {
 
             @Override
@@ -42,7 +42,7 @@ public final class VoidArgumentFactory {
     }
 
     public static <RETURN_TYPE> ErrorListenerWithArg<Void> addVoidArg(
-            @Nonnull ErrorListener errorHandler) {
+            @Nonnull final ErrorListener errorHandler) {
         return new ErrorListenerWithArg<Void>() {
 
             @Override

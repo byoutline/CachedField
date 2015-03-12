@@ -78,7 +78,7 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
     /**
      * Loads value in separate thread.
      */
-    private void loadValue(ARG_TYPE arg) {
+    private void loadValue(final ARG_TYPE arg) {
         Thread fetchThread = new Thread() {
 
             @Override
