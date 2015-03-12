@@ -7,18 +7,20 @@ import com.byoutline.cachedfield.FieldState;
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class StateAndValue<T> {
+public class StateAndValue<VALUE_TYPE, ARG_TYPE> {
 
     public final FieldState state;
-    public final T value;
+    public final VALUE_TYPE value;
+    public final ARG_TYPE arg;
 
-    public StateAndValue(FieldState state, T value) {
+    public StateAndValue(FieldState state, VALUE_TYPE value, ARG_TYPE arg) {
         this.state = state;
         this.value = value;
+        this.arg = arg;
     }
 
     @Override
     public String toString() {
-        return "StateAndValue{" + "state=" + state + ", value=" + value + '}';
+        return "StateAndValue{" + "state=" + state + ", value=" + value + ", arg=" + arg + '}';
     }
 }

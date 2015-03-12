@@ -5,22 +5,27 @@ package com.byoutline.cachedfield;
  * source, or needs heavy calculations), so it is wrapped for caching.
  *
  * @param <RETURN_TYPE> Type of cached value.
+ * @param <ARG_TYPE> Argument needed to calculate value.
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public interface CachedField<RETURN_TYPE> {
+public interface CachedFieldWithArg<RETURN_TYPE, ARG_TYPE> {
 
     FieldState getState();
 
     /**
      * Informs {@link SuccessListener} when value is ready.
+     *
+     * @param arg Argument needed to calculate value.
      */
-    void postValue();
+    void postValue(ARG_TYPE arg);
 
     /**
      * Force value to refresh(be fetched again from remote source or calculated
      * again).
+     *
+     * @param arg Argument needed to calculate value.
      */
-    void refresh();
+    void refresh(ARG_TYPE arg);
 
     /**
      * Forget cached value, so memory can be reclaimed.
