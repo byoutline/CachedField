@@ -13,13 +13,15 @@ import javax.inject.Provider;
 /**
  * Thread safe value storage, that nulls out its content when session changes.
  *
- * @param <T> Type of stored value
+ * @param <VALUE_TYPE> Type of stored value
+ * @param <ARG_TYPE> Type of argument needed to calculate value
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class CachedValue<T> {
+public class CachedValue<VALUE_TYPE, ARG_TYPE> {
 
     private FieldState fieldState = FieldState.NOT_LOADED;
-    private T value;
+    private VALUE_TYPE value;
+    private ARG_TYPE arg;
     private String valueSession;
     private final List<FieldStateListener> fieldStateListeners = new ArrayList<FieldStateListener>(2);
     public final Provider<String> sessionProvider;
@@ -31,8 +33,7 @@ public class CachedValue<T> {
     private void checkSession() {
         SessionChecker checker = new SessionChecker(sessionProvider, valueSession);
         if (!checker.isSameSession()) {
-            setState(FieldState.NOT_LOADED);
-            value = null;
+            drop();
         }
     }
 
@@ -41,27 +42,25 @@ public class CachedValue<T> {
         this.valueSession = sessionProvider.get();
     }
 
-    public synchronized void setValue(T value) {
+    public synchronized void setValue(VALUE_TYPE value, ARG_TYPE arg) {
         setState(FieldState.LOADED);
         this.value = value;
+        this.arg = arg;
     }
 
     public synchronized void valueLoadingFailed() {
         drop();
     }
-
-    public synchronized T getValue() {
-        return value;
-    }
-
+    
     public synchronized void drop() {
         setState(FieldState.NOT_LOADED);
-        this.value = null;
+        value = null;
+        arg = null;
     }
 
-    public synchronized StateAndValue<T> getStateAndValue() {
+    public synchronized StateAndValue<VALUE_TYPE, ARG_TYPE> getStateAndValue() {
         checkSession();
-        return new StateAndValue<T>(fieldState, value);
+        return new StateAndValue<VALUE_TYPE, ARG_TYPE>(fieldState, value, arg);
     }
 
     private void setState(FieldState newState) {
@@ -103,5 +102,9 @@ public class CachedValue<T> {
         if (listener == null) {
             throw new IllegalArgumentException("Listener cannot be null");
         }
+    }
+
+    public ARG_TYPE getArg() {
+        return arg;
     }
 }

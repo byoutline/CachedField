@@ -12,5 +12,4 @@ public class StubFieldStateListener implements FieldStateListener {
     public void fieldStateChanged(FieldState newState) {
         // Ignore.
     }
-
 }
