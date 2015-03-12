@@ -1,6 +1,7 @@
 package com.byoutline.cachedfield
 
 import spock.lang.Shared
+import spock.lang.Unroll
 
 /**
  *
@@ -21,5 +22,22 @@ class CachedFieldWithArgSpec extends spock.lang.Specification {
         then:
         field.getState() == FieldState.NOT_LOADED
         field.value.arg == null
+    }
+
+    @Unroll
+    def "should post value: #val for argument: #arg"() {
+        given:
+        String result = 'fail'
+        def successListener = { value, arg -> result = value } as SuccessListenerWithArg<String, Integer>
+        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, successListener)
+        when:
+        MockFactory.loadValue(field, arg)
+        then:
+        result == val
+        where:
+        arg | val
+        0   | null
+        1   | 'a'
+        2   | 'b'
     }
 }

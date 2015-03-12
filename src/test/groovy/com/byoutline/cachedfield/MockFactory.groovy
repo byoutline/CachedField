@@ -84,9 +84,13 @@ static CachedField getLoadedCachedField(String value, FieldStateListener fieldSt
 }
 
 static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap) {
+    return getCachedFieldWithArg(argToValueMap, getSuccessListenerWithArg())
+}
+
+static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap, SuccessListenerWithArg<String, Integer> successListener) {
     CachedFieldWithArg field = new CachedFieldWithArgImpl(getSameSessionIdProvider(),
             getStringIntGetter(argToValueMap),
-            getSuccessListenerWithArg(),
+            successListener,
             getErrorListenerWithArg()
     )
     return field
