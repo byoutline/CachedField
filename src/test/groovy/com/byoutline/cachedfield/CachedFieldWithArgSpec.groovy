@@ -40,4 +40,19 @@ class CachedFieldWithArgSpec extends spock.lang.Specification {
         1   | 'a'
         2   | 'b'
     }
+
+
+    @Unroll
+    def "should post argument: #arg"() {
+        given:
+        int result = -1
+        def successListener = { value, arg -> result = arg } as SuccessListenerWithArg<String, Integer>
+        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, successListener)
+        when:
+        MockFactory.loadValue(field, arg)
+        then:
+        result == arg
+        where:
+        arg << [0, 1, 2, 3, 12512]
+    }
 }
