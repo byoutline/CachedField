@@ -9,3 +9,7 @@ notifications:
 
 env:
   - JAVA6_HOME=/usr/lib/jvm/java-6-openjdk-amd64
+  - TERM=dumb
+
+after_success:
+  - ./gradlew jacocoTestReport coveralls
