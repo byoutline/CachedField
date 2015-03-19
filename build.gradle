@@ -20,7 +20,7 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'javax.inject:javax.inject:1'
-    compile 'com.byoutline.eventcallback:eventcallback:1.2.1'
+    compile 'com.byoutline.eventcallback:eventcallback:1.2.3'
 
     // For spock testing:
     testCompile 'org.codehaus.groovy:groovy-all:2.4.1'
