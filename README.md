@@ -1,7 +1,9 @@
 CachedField
 ===========
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.byoutline.cachedfield/cachedfield/badge.svg?style=flat)](http://mvnrepository.com/artifact/com.byoutline.cachedfield/cachedfield)
-[![Build Status](https://travis-ci.org/byoutline/CachedField.svg?branch=master)](https://travis-ci.org/byoutline/CachedField)
+[![Coverage Status](https://coveralls.io/repos/byoutline/CachedField/badge.svg?branch=master)](https://coveralls.io/r/byoutline/CachedField?branch=master)
+ master:  [![Build Status](https://travis-ci.org/byoutline/CachedField.svg?branch=master)](https://travis-ci.org/byoutline/CachedField)
+ develop: [![Build Status](https://travis-ci.org/byoutline/CachedField.svg?branch=develop)](https://travis-ci.org/byoutline/CachedField)
 
 Wrapper for expensive resources.
 
