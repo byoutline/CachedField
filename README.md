@@ -19,7 +19,7 @@ which posts current value when it's ready - most often that happens immediately 
 ```java
 void refresh();
 ```
-that forces recalucaltion of the value (and then posts event),
+that forces recalculation of the value (and then posts event),
 
 ```java
 FieldState getState();
@@ -48,10 +48,11 @@ If you ask ```CachedFieldWithArg``` for value with new argument before last call
 #### Including in projects ####
 Add as a dependency to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.cachedfield:cachedfield:1.3.2'
+compile 'com.byoutline.cachedfield:cachedfield:1.3.3'
 ```
 
 #### Latest changes ####
+* 1.3.3 Java 1.6 compatibility
 * 1.3.2 
   * Added ```CachedFieldWithArg``` that allows to pass argument to value Provider. 
   * Changed ```FieldStateListener``` api from requiring it in constructor to more traditional add/remove listener.
