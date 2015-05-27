@@ -4,11 +4,10 @@ import com.byoutline.cachedfield.FieldState;
 import com.byoutline.cachedfield.FieldStateListener;
 import com.byoutline.eventcallback.internal.SessionChecker;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Thread safe value storage, that nulls out its content when session changes.
@@ -43,9 +42,9 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     }
 
     public synchronized void setValue(VALUE_TYPE value, ARG_TYPE arg) {
-        setState(FieldState.LOADED);
         this.value = value;
         this.arg = arg;
+        setState(FieldState.LOADED);
     }
 
     public synchronized void valueLoadingFailed() {
@@ -53,9 +52,9 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     }
     
     public synchronized void drop() {
-        setState(FieldState.NOT_LOADED);
         value = null;
         arg = null;
+        setState(FieldState.NOT_LOADED);
     }
 
     public synchronized StateAndValue<VALUE_TYPE, ARG_TYPE> getStateAndValue() {
