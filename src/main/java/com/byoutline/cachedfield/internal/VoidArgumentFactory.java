@@ -1,16 +1,12 @@
 package com.byoutline.cachedfield.internal;
 
-import com.byoutline.cachedfield.ErrorListener;
-import com.byoutline.cachedfield.ErrorListenerWithArg;
-import com.byoutline.cachedfield.ProviderWithArg;
-import com.byoutline.cachedfield.SuccessListener;
-import com.byoutline.cachedfield.SuccessListenerWithArg;
+import com.byoutline.cachedfield.*;
 
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
 
 /**
- * Utility that converts clesses without args to classes with Void arg.
+ * Utility that converts classes without args to classes with Void arg.
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
