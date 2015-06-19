@@ -67,7 +67,13 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
             return;
         }
         fieldState = newState;
-        for (FieldStateListener fieldStateListener : fieldStateListeners) {
+        informStateListeners(newState);
+    }
+
+    private void informStateListeners(FieldState newState) {
+        // Iterate over copy of listeners to guard against listeners modification.
+        List<FieldStateListener> stateListeners = new ArrayList<FieldStateListener>(fieldStateListeners);
+        for (FieldStateListener fieldStateListener : stateListeners) {
             fieldStateListener.fieldStateChanged(newState);
         }
     }
