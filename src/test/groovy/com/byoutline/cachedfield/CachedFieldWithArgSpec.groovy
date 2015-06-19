@@ -59,7 +59,7 @@ class CachedFieldWithArgSpec extends spock.lang.Specification {
     def "should remove state listener"() {
         given:
         FieldState state = FieldState.NOT_LOADED
-        def stateListener = { newSTate -> result = newState } as FieldStateListener
+        def stateListener = { newState -> result = newState } as FieldStateListener
         CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap)
         when:
         field.removeStateListener(stateListener)
