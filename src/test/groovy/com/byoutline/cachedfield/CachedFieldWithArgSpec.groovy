@@ -73,7 +73,13 @@ class CachedFieldWithArgSpec extends spock.lang.Specification {
         given:
         def results = []
         def successListener = { value, arg -> results.add(value) } as SuccessListenerWithArg<String, Integer>
-        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, successListener)
+
+        CachedFieldWithArg field = new CachedFieldWithArgImpl(
+                MockFactory.getSameSessionIdProvider(),
+                MockFactory.getDelayedStringIntGetter(argToValueMap, 1),
+                successListener,
+                MockFactory.getErrorListenerWithArg()
+        )
         when:
         field.postValue(1)
         MockFactory.loadValue(field, 2)
