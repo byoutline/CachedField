@@ -1,7 +1,9 @@
 package com.byoutline.cachedfield
 
+import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
 
+import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.FutureTask
 
@@ -17,7 +19,7 @@ class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
         given:
         boolean called = false
         ExecutorService executor = [
-            submit: {called = true; return new FutureTask((Runnable) it, null);}
+                submit: { called = true; return new FutureTask((Runnable) it, null); }
         ] as ExecutorService
         CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, executor)
 
@@ -25,6 +27,27 @@ class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
         field.postValue(1)
 
         then:
-        called == true
+        called
+    }
+
+    def "should use passed executor for state listener"() {
+        given:
+        boolean called = false
+        Executor stateListenersExecutor = { called = true } as Executor
+        ExecutorService loadExecutorService = MoreExecutors.newDirectExecutorService()
+        CachedFieldWithArg field = new CachedFieldWithArgImpl(
+                MockFactory.getSameSessionIdProvider(),
+                MockFactory.getStringIntGetter(argToValueMap),
+                MockFactory.getSuccessListenerWithArg(),
+                MockFactory.getErrorListenerWithArg(),
+                loadExecutorService,
+                stateListenersExecutor
+        )
+
+        when:
+        field.postValue(1)
+
+        then:
+        called
     }
 }

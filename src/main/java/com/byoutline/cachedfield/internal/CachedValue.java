@@ -5,9 +5,11 @@ import com.byoutline.cachedfield.FieldStateListener;
 import com.byoutline.eventcallback.internal.SessionChecker;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * Thread safe value storage, that nulls out its content when session changes.
@@ -24,9 +26,12 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     private String valueSession;
     private final List<FieldStateListener> fieldStateListeners = new ArrayList<FieldStateListener>(2);
     private final Provider<String> sessionProvider;
+    private final Executor stateListenerExecutor;
 
-    public CachedValue(@Nonnull Provider<String> sessionProvider) {
+    public CachedValue(@Nonnull Provider<String> sessionProvider,
+                       @Nullable Executor stateListenerExecutor) {
         this.sessionProvider = sessionProvider;
+        this.stateListenerExecutor = stateListenerExecutor;
     }
 
     private void checkSession() {
@@ -71,6 +76,23 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     }
 
     private void informStateListeners(FieldState newState) {
+        if (stateListenerExecutor == null) {
+            informStateListenersSync(newState);
+        } else {
+            informStateListenersAsync(newState);
+        }
+    }
+
+    private void informStateListenersAsync(final FieldState newState) {
+        stateListenerExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                informStateListenersSync(newState);
+            }
+        });
+    }
+
+    private void informStateListenersSync(FieldState newState) {
         // Iterate over copy of listeners to guard against listeners modification.
         List<FieldStateListener> stateListeners = new ArrayList<FieldStateListener>(fieldStateListeners);
         for (FieldStateListener fieldStateListener : stateListeners) {

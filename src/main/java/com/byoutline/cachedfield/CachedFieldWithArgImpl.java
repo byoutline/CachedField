@@ -5,7 +5,9 @@ import com.byoutline.cachedfield.internal.LoadThread;
 import com.byoutline.cachedfield.internal.StateAndValue;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Provider;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -42,27 +44,28 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
                                   @Nonnull ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter,
                                   @Nonnull SuccessListenerWithArg<RETURN_TYPE, ARG_TYPE> successHandler,
                                   @Nonnull ErrorListenerWithArg<ARG_TYPE> errorHandler) {
-        this(sessionProvider, valueGetter, successHandler, errorHandler, Executors.newCachedThreadPool());
+        this(sessionProvider, valueGetter, successHandler, errorHandler, Executors.newCachedThreadPool(), null);
     }
 
     /**
-     * @param sessionProvider     Provider that returns String unique for current
-     *                            session. When session changes cached value will be dropped.
-     * @param valueGetter         Provider that synchronously calculates/fetches value
-     *                            and returns it.
-     * @param successHandler      Listener that will be informed when value is
-     *                            successfully calculated.
-     * @param errorHandler        Listener that will be be informed when calculation of
-     *                            value fails.
-     * @param valueGetterExecutor ExecutorService that will be used to call valueGetter and call
-     *                            listeners.
+     * @param sessionProvider       Provider that returns String unique for current
+     *                              session. When session changes cached value will be dropped.
+     * @param valueGetter           Provider that synchronously calculates/fetches value
+     *                              and returns it.
+     * @param successHandler        Listener that will be informed when value is
+     *                              successfully calculated.
+     * @param errorHandler          Listener that will be be informed when calculation of
+     *                              value fails.
+     * @param valueGetterExecutor   ExecutorService that will be used to call valueGetter and call
+     * @param stateListenerExecutor
      */
     public CachedFieldWithArgImpl(@Nonnull Provider<String> sessionProvider,
                                   @Nonnull ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter,
                                   @Nonnull SuccessListenerWithArg<RETURN_TYPE, ARG_TYPE> successHandler,
                                   @Nonnull ErrorListenerWithArg<ARG_TYPE> errorHandler,
-                                  @Nonnull ExecutorService valueGetterExecutor) {
-        this.value = new CachedValue<RETURN_TYPE, ARG_TYPE>(sessionProvider);
+                                  @Nonnull ExecutorService valueGetterExecutor,
+                                  @Nullable Executor stateListenerExecutor) {
+        this.value = new CachedValue<RETURN_TYPE, ARG_TYPE>(sessionProvider, stateListenerExecutor);
         this.valueGetter = valueGetter;
         this.successListener = successHandler;
         this.errorListener = errorHandler;

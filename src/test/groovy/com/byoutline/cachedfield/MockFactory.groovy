@@ -118,7 +118,8 @@ static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueM
             getStringIntGetter(argToValueMap),
             successListener,
             errorListenerWithArg,
-            valueProviderExecutor
+            valueProviderExecutor,
+            null
     )
     return field
 }
