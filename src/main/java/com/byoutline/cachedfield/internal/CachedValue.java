@@ -13,7 +13,7 @@ import java.util.List;
  * Thread safe value storage, that nulls out its content when session changes.
  *
  * @param <VALUE_TYPE> Type of stored value
- * @param <ARG_TYPE> Type of argument needed to calculate value
+ * @param <ARG_TYPE>   Type of argument needed to calculate value
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public class CachedValue<VALUE_TYPE, ARG_TYPE> {
@@ -50,7 +50,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     public synchronized void valueLoadingFailed() {
         drop();
     }
-    
+
     public synchronized void drop() {
         value = null;
         arg = null;
