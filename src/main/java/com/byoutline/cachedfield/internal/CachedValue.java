@@ -23,7 +23,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     private ARG_TYPE arg;
     private String valueSession;
     private final List<FieldStateListener> fieldStateListeners = new ArrayList<FieldStateListener>(2);
-    public final Provider<String> sessionProvider;
+    private final Provider<String> sessionProvider;
 
     public CachedValue(@Nonnull Provider<String> sessionProvider) {
         this.sessionProvider = sessionProvider;
