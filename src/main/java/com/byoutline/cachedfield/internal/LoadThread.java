@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Thread that loads {@link #valueGetter} into {@value} and informs listener.
+ * Thread that loads {@link #valueGetter} into {@link #valueGetter} and informs listener.
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
