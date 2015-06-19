@@ -46,7 +46,7 @@ static SuccessListenerWithArg<String, Integer> getSuccessListenerWithArg() {
 }
 
 static ErrorListenerWithArg<Integer> getErrorListenerWithArg() {
-    return { ex, arg -> return} as ErrorListenerWithArg<Integer>
+    return { ex, arg -> return } as ErrorListenerWithArg<Integer>
 }
 
 static CachedField getDelayedCachedField(String value, SuccessListener<String> successListener) {
@@ -130,8 +130,11 @@ static void waitUntilFieldLoads(CachedField field) {
 }
 
 static void waitUntilFieldWithArgLoads(CachedFieldWithArg field) {
-    while (field.getState() != FieldState.LOADED) {
+    def sleepCount = 0
+    def maxSleepCount = 5000
+    while (field.getState() != FieldState.LOADED && sleepCount < maxSleepCount) {
         sleep 1
+        sleepCount++
     }
 }
 
