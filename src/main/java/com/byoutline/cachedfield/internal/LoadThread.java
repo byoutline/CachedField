@@ -34,7 +34,6 @@ public class LoadThread<RETURN_TYPE, ARG_TYPE> extends Thread {
     @Override
     public void run() {
         try {
-            System.out.println("run: " + arg);
             value.loadingStarted();
             RETURN_TYPE fetchedValue = valueGetter.get(arg);
             if (isInterrupted()) {
