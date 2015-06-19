@@ -6,6 +6,7 @@ import com.byoutline.eventcallback.ResponseEvent
 import com.byoutline.eventcallback.ResponseEventImpl
 
 import javax.inject.Provider
+import java.util.concurrent.ExecutorService
 
 static Provider<String> getSameSessionIdProvider() {
     return { return "sessionId" } as Provider<String>
@@ -26,6 +27,10 @@ static Provider<String> getDelayedStringGetter(String value, long sleepTime) {
 
 static Provider<String> getStringGetter(String value) {
     return { return value } as Provider<String>
+}
+
+static ProviderWithArg<String, Integer> getDelayedStringIntGetter(Map<Integer, String> argToValueMap, long sleepTime) {
+    return { key -> Thread.sleep(sleepTime); return argToValueMap.get(key) } as ProviderWithArg<String, Integer>
 }
 
 static ProviderWithArg<String, Integer> getStringIntGetter(Map<Integer, String> argToValueMap) {
@@ -87,6 +92,10 @@ static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueM
     return getCachedFieldWithArg(argToValueMap, getSuccessListenerWithArg())
 }
 
+static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap, ExecutorService valueProviderExecutor) {
+    return getCachedFieldWithArg(argToValueMap, getSuccessListenerWithArg(), getErrorListenerWithArg(), valueProviderExecutor)
+}
+
 static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap, SuccessListenerWithArg<String, Integer> successListener) {
     return getCachedFieldWithArg(argToValueMap, successListener, getErrorListenerWithArg())
 }
@@ -100,6 +109,16 @@ static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueM
             getStringIntGetter(argToValueMap),
             successListener,
             errorListenerWithArg
+    )
+    return field
+}
+
+static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap, SuccessListenerWithArg<String, Integer> successListener, ErrorListenerWithArg<Integer> errorListenerWithArg, ExecutorService valueProviderExecutor) {
+    CachedFieldWithArg field = new CachedFieldWithArgImpl(getSameSessionIdProvider(),
+            getStringIntGetter(argToValueMap),
+            successListener,
+            errorListenerWithArg,
+            valueProviderExecutor
     )
     return field
 }
