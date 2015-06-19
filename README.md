@@ -48,10 +48,11 @@ If you ask ```CachedFieldWithArg``` for value with new argument before last call
 #### Including in projects ####
 Add as a dependency to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.cachedfield:cachedfield:1.3.3'
+compile 'com.byoutline.cachedfield:cachedfield:1.3.4'
 ```
 
 #### Latest changes ####
+* 1.3.4 Build script refactor. Should not change public API.
 * 1.3.3 Java 1.6 compatibility
 * 1.3.2 
   * Added ```CachedFieldWithArg``` that allows to pass argument to value Provider. 

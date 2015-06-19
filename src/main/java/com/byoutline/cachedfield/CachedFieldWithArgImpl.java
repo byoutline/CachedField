@@ -93,11 +93,11 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
                     if(isInterrupted()) {
                         throw new InterruptedException("calculation interrupted by request with new argument");
                     }
-                    value.setValue(fetchedValue, arg);
                     successListener.valueLoaded(fetchedValue, arg);
+                    value.setValue(fetchedValue, arg);
                 } catch (Exception ex) {
-                    value.valueLoadingFailed();
                     errorListener.valueLoadingFailed(ex, arg);
+                    value.valueLoadingFailed();
                 }
             }
         };
