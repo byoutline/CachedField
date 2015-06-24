@@ -141,7 +141,7 @@ static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueM
             successListener,
             errorListenerWithArg,
             valueProviderExecutor,
-            null
+            CachedFieldWithArgImpl.createDefaultStateListenerExecutor()
     )
     return field
 }

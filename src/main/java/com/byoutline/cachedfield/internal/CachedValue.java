@@ -5,7 +5,6 @@ import com.byoutline.cachedfield.FieldStateListener;
 import com.byoutline.eventcallback.internal.SessionChecker;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     private final Executor stateListenerExecutor;
 
     public CachedValue(@Nonnull Provider<String> sessionProvider,
-                       @Nullable Executor stateListenerExecutor) {
+                       @Nonnull Executor stateListenerExecutor) {
         this.sessionProvider = sessionProvider;
         this.stateListenerExecutor = stateListenerExecutor;
     }
@@ -75,15 +74,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
         informStateListeners(newState);
     }
 
-    private void informStateListeners(FieldState newState) {
-        if (stateListenerExecutor == null) {
-            informStateListenersSync(newState);
-        } else {
-            informStateListenersAsync(newState);
-        }
-    }
-
-    private void informStateListenersAsync(final FieldState newState) {
+    private void informStateListeners(final FieldState newState) {
         stateListenerExecutor.execute(new Runnable() {
             @Override
             public void run() {

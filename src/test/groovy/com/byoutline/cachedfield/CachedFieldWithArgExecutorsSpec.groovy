@@ -33,7 +33,7 @@ class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
     def "should use passed executor for state listener"() {
         given:
         boolean called = false
-        Executor stateListenersExecutor = { called = true } as Executor
+        Executor stateListenersExecutor = { called = true; it.run() } as Executor
         ExecutorService loadExecutorService = MoreExecutors.newDirectExecutorService()
         CachedFieldWithArg field = new CachedFieldWithArgImpl(
                 MockFactory.getSameSessionIdProvider(),
@@ -69,12 +69,15 @@ class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
                 MockFactory.getSuccessListenerWithArg(),
                 MockFactory.getErrorListenerWithArg(),
                 MockFactory.getAsyncFirstTaskSyncOtherExecutorService(),
-                null
+                CachedFieldWithArgImpl.createDefaultStateListenerExecutor()
         )
 
         when:
+        // Execute long running task asynchronously to be interrupted.
         field.postValue(10000)
-        field.postValue(0)
+        // Give some (minimal) time to propagate Thread.interrupt, since we
+        // are running this post synchronously.
+        field.postValue(1)
 
         then:
         valueLoadingInterrupted

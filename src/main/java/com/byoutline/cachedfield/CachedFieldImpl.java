@@ -4,11 +4,9 @@ import com.byoutline.cachedfield.internal.StubErrorListener;
 import com.byoutline.cachedfield.internal.VoidArgumentFactory;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Default implementation of {@link CachedField}. Loads value on separate thread
@@ -52,7 +50,9 @@ public class CachedFieldImpl<RETURN_TYPE> implements CachedField<RETURN_TYPE> {
             @Nonnull Provider<RETURN_TYPE> valueGetter,
             @Nonnull SuccessListener<RETURN_TYPE> successHandler,
             @Nonnull ErrorListener errorHandler) {
-        this(sessionProvider, valueGetter, successHandler, errorHandler, Executors.newCachedThreadPool(), null);
+        this(sessionProvider, valueGetter, successHandler, errorHandler,
+                CachedFieldWithArgImpl.createDefaultValueGetterExecutor(),
+                CachedFieldWithArgImpl.createDefaultStateListenerExecutor());
     }
 
     public CachedFieldImpl(@Nonnull Provider<String> sessionProvider,
@@ -60,7 +60,7 @@ public class CachedFieldImpl<RETURN_TYPE> implements CachedField<RETURN_TYPE> {
                            @Nonnull SuccessListener<RETURN_TYPE> successHandler,
                            @Nonnull ErrorListener errorHandler,
                            @Nonnull ExecutorService valueGetterExecutor,
-                           @Nullable Executor stateListenerExecutor) {
+                           @Nonnull Executor stateListenerExecutor) {
         ProviderWithArg<RETURN_TYPE, Void> valueGetterWithArg = VoidArgumentFactory.addVoidArg(valueGetter);
         SuccessListenerWithArg<RETURN_TYPE, Void> success = VoidArgumentFactory.addVoidArg(successHandler);
         ErrorListenerWithArg<Void> error = VoidArgumentFactory.addVoidArg(errorHandler);

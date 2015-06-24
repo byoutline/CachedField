@@ -5,7 +5,6 @@ import com.byoutline.cachedfield.internal.LoadThread;
 import com.byoutline.cachedfield.internal.StateAndValue;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -44,7 +43,7 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
                                   @Nonnull ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter,
                                   @Nonnull SuccessListenerWithArg<RETURN_TYPE, ARG_TYPE> successHandler,
                                   @Nonnull ErrorListenerWithArg<ARG_TYPE> errorHandler) {
-        this(sessionProvider, valueGetter, successHandler, errorHandler, Executors.newCachedThreadPool(), null);
+        this(sessionProvider, valueGetter, successHandler, errorHandler, createDefaultValueGetterExecutor(), createDefaultStateListenerExecutor());
     }
 
     /**
@@ -64,7 +63,7 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
                                   @Nonnull SuccessListenerWithArg<RETURN_TYPE, ARG_TYPE> successHandler,
                                   @Nonnull ErrorListenerWithArg<ARG_TYPE> errorHandler,
                                   @Nonnull ExecutorService valueGetterExecutor,
-                                  @Nullable Executor stateListenerExecutor) {
+                                  @Nonnull Executor stateListenerExecutor) {
         this.value = new CachedValue<RETURN_TYPE, ARG_TYPE>(sessionProvider, stateListenerExecutor);
         this.valueGetter = valueGetter;
         this.successListener = successHandler;
@@ -142,5 +141,19 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
     @Override
     public boolean removeStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
         return value.removeStateListener(listener);
+    }
+
+    static Executor createDefaultStateListenerExecutor() {
+        // Execute on same thread.
+        return new Executor() {
+            @Override
+            public void execute(Runnable command) {
+                command.run();
+            }
+        };
+    }
+
+    static ExecutorService createDefaultValueGetterExecutor() {
+        return Executors.newCachedThreadPool();
     }
 }

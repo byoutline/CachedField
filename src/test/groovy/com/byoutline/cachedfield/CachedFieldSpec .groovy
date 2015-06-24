@@ -154,7 +154,7 @@ class CachedFieldSpec extends spock.lang.Specification {
                 MockFactory.getSuccessListener(),
                 errorList,
                 MoreExecutors.newDirectExecutorService(),
-                null
+                CachedFieldWithArgImpl.createDefaultStateListenerExecutor()
         )
 
         when:
