@@ -59,8 +59,9 @@ class CachedFieldWithArgSpec extends spock.lang.Specification {
     def "should remove state listener"() {
         given:
         FieldState state = FieldState.NOT_LOADED
-        def stateListener = { newSTate -> result = newState } as FieldStateListener
+        def stateListener = { newState -> state = newState } as FieldStateListener
         CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap)
+        field.addStateListener(stateListener)
         when:
         field.removeStateListener(stateListener)
         MockFactory.loadValue(field, 1)
@@ -72,7 +73,13 @@ class CachedFieldWithArgSpec extends spock.lang.Specification {
         given:
         def results = []
         def successListener = { value, arg -> results.add(value) } as SuccessListenerWithArg<String, Integer>
-        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, successListener)
+
+        CachedFieldWithArg field = new CachedFieldWithArgImpl(
+                MockFactory.getSameSessionIdProvider(),
+                MockFactory.getDelayedStringIntGetter(argToValueMap, 1),
+                successListener,
+                MockFactory.getErrorListenerWithArg()
+        )
         when:
         field.postValue(1)
         MockFactory.loadValue(field, 2)
@@ -92,3 +99,4 @@ class CachedFieldWithArgSpec extends spock.lang.Specification {
         resultArg == 1
     }
 }
+

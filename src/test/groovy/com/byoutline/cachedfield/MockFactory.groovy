@@ -2,10 +2,10 @@ package com.byoutline.cachedfield
 
 import com.byoutline.cachedfield.internal.StubErrorListener
 import com.byoutline.cachedfield.internal.StubFieldStateListener
-import com.byoutline.eventcallback.ResponseEvent
-import com.byoutline.eventcallback.ResponseEventImpl
 
 import javax.inject.Provider
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.FutureTask
 
 static Provider<String> getSameSessionIdProvider() {
     return { return "sessionId" } as Provider<String>
@@ -28,6 +28,10 @@ static Provider<String> getStringGetter(String value) {
     return { return value } as Provider<String>
 }
 
+static ProviderWithArg<String, Integer> getDelayedStringIntGetter(Map<Integer, String> argToValueMap, long sleepTime) {
+    return { key -> Thread.sleep(sleepTime); return argToValueMap.get(key) } as ProviderWithArg<String, Integer>
+}
+
 static ProviderWithArg<String, Integer> getStringIntGetter(Map<Integer, String> argToValueMap) {
     return { key -> return argToValueMap.get(key) } as ProviderWithArg<String, Integer>
 }
@@ -41,7 +45,31 @@ static SuccessListenerWithArg<String, Integer> getSuccessListenerWithArg() {
 }
 
 static ErrorListenerWithArg<Integer> getErrorListenerWithArg() {
-    return { ex, arg -> return} as ErrorListenerWithArg<Integer>
+    return { ex, arg -> return } as ErrorListenerWithArg<Integer>
+}
+
+static ExecutorService getAsyncFirstTaskSyncOtherExecutorService() {
+    boolean executeAsync = true
+    return [
+            submit: {
+                if (executeAsync) {
+                    ((Thread) it).start()
+                    executeAsync = false
+                } else {
+                    it.run()
+                }
+                return new FutureTask((Runnable) it, null)
+            }
+    ] as ExecutorService
+}
+
+static CachedField<String> getCachedField(String value, ErrorListener errorHandler) {
+    return new CachedFieldImpl<String>(
+            getSameSessionIdProvider(),
+            getStringGetter(value),
+            getSuccessListener(),
+            errorHandler
+    )
 }
 
 static CachedField getDelayedCachedField(String value, SuccessListener<String> successListener) {
@@ -59,7 +87,6 @@ static CachedField getDelayedCachedField(String value, long sleepTime, SuccessLi
 static CachedField getDelayedCachedField(String value, long sleepTime,
                                          SuccessListener<String> successListener, ErrorListener errorListener,
                                          FieldStateListener fieldStateListener) {
-    ResponseEvent<String> responseEvent = new ResponseEventImpl<String>()
     CachedField field = new CachedFieldImpl(getSameSessionIdProvider(),
             getDelayedStringGetter(value, sleepTime), successListener, errorListener)
     field.addStateListener(fieldStateListener)
@@ -87,6 +114,10 @@ static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueM
     return getCachedFieldWithArg(argToValueMap, getSuccessListenerWithArg())
 }
 
+static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap, ExecutorService valueProviderExecutor) {
+    return getCachedFieldWithArg(argToValueMap, getSuccessListenerWithArg(), getErrorListenerWithArg(), valueProviderExecutor)
+}
+
 static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap, SuccessListenerWithArg<String, Integer> successListener) {
     return getCachedFieldWithArg(argToValueMap, successListener, getErrorListenerWithArg())
 }
@@ -104,15 +135,36 @@ static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueM
     return field
 }
 
+static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap, SuccessListenerWithArg<String, Integer> successListener, ErrorListenerWithArg<Integer> errorListenerWithArg, ExecutorService valueProviderExecutor) {
+    CachedFieldWithArg field = new CachedFieldWithArgImpl(getSameSessionIdProvider(),
+            getStringIntGetter(argToValueMap),
+            successListener,
+            errorListenerWithArg,
+            valueProviderExecutor,
+            CachedFieldWithArgImpl.createDefaultStateListenerExecutor()
+    )
+    return field
+}
+
 static void waitUntilFieldLoads(CachedField field) {
-    while (field.getState() != FieldState.LOADED) {
+    waitUntilFieldReachesState(field, FieldState.LOADED)
+}
+
+static void waitUntilFieldReachesState(CachedField field, FieldState state) {
+    def sleepCount = 0
+    def maxSleepCount = 5000
+    while (field.getState() != state && sleepCount < maxSleepCount) {
         sleep 1
+        sleepCount++
     }
 }
 
 static void waitUntilFieldWithArgLoads(CachedFieldWithArg field) {
-    while (field.getState() != FieldState.LOADED) {
+    def sleepCount = 0
+    def maxSleepCount = 5000
+    while (field.getState() != FieldState.LOADED && sleepCount < maxSleepCount) {
         sleep 1
+        sleepCount++
     }
 }
 

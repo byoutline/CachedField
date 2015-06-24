@@ -1,5 +1,6 @@
 package com.byoutline.cachedfield
 
+import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
 
 import javax.inject.Provider
@@ -139,5 +140,62 @@ class CachedFieldSpec extends spock.lang.Specification {
 
         then:
         postedStates == [FieldState.NOT_LOADED]
+    }
+
+    def "should inform error listener if value getter throws exception"() {
+        given:
+        def ex = new RuntimeException()
+        Exception resultEx = null;
+        def valueProv = { throw ex } as Provider<String>
+        def errorList = { resultEx = it } as ErrorListener<String>
+        CachedField field = new CachedFieldImpl(
+                MockFactory.getSameSessionIdProvider(),
+                valueProv,
+                MockFactory.getSuccessListener(),
+                errorList,
+                MoreExecutors.newDirectExecutorService(),
+                CachedFieldWithArgImpl.createDefaultStateListenerExecutor()
+        )
+
+        when:
+        field.postValue()
+
+        then:
+        resultEx == ex
+    }
+
+    def "should allow self removing state listeners"() {
+        given:
+        Exception exception = null
+        def errorListener = { ex, arg -> exception = ex } as ErrorListener
+        CachedField field = MockFactory.getCachedField(value, errorListener)
+        def stateListeners = [new SelfRemovingFieldStateListener(field),
+                              new SelfRemovingFieldStateListener(field),
+                              new SelfRemovingFieldStateListener(field)]
+        stateListeners.each { field.addStateListener(it) }
+        when:
+        field.postValue()
+        MockFactory.waitUntilFieldLoads(field)
+        then:
+        exception == null
+        stateListeners.findAll { it.called }.size() == 3
+    }
+
+    def "should call success once if asked about value during load"() {
+        given:
+        int callCount = 0
+        def successListener = {callCount++} as SuccessListener<String>
+        CachedField field = new CachedFieldImpl(
+                MockFactory.getSameSessionIdProvider(),
+                MockFactory.getDelayedStringGetter(value, 2),
+                successListener
+        )
+        when:
+        field.postValue()
+        MockFactory.waitUntilFieldReachesState(field, FieldState.CURRENTLY_LOADING)
+        field.postValue()
+        MockFactory.waitUntilFieldLoads(field)
+        then:
+        callCount == 1
     }
 }
