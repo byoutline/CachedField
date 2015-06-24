@@ -43,7 +43,7 @@ changes(like starting to load value). This can be usefull for displaying busy in
 #### Parametric fields ####
 
 In case your value depends on some argument  (for example API GET call that requires item ID) you can use 
-[Cached fieldWithArg](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/CachedFieldWithArg.java) . 
+[CachedFieldWithArg](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/CachedFieldWithArg.java). 
 It supports same methods but requires you to pass argument to ```post``` and ```refresh``` calls. 
 Only one value will be cached at the time, so changing argument will force a refresh. 
 
@@ -57,11 +57,11 @@ and its return value(if any) will be discarded and
 
 #### Controlling execution threads ####
  By default loading of value is executed asynchronously on background thread, and listeners are called
-without thread switching. This means that by default you can safely invoke CachedField methods on UI
-thread without blocking it(with possible exception of your state lister blocking it during drop() call).
+without thread switching. This means that by default you can safely invoke ```CachedField``` methods on UI
+thread without blocking it(with possible exception of your state lister blocking it during ```drop``` call).
 
 If you prefer to have more control over Threads on which value loading (or calling state listeners) is executed
-CachedFieldImpl accepts ExecutorService and Executor as arguments in constructor.
+```CachedFieldImpl``` accepts ```ExecutorService``` and ```Executor``` as arguments in constructor.
 
 
 #### Including in projects ####
@@ -71,7 +71,7 @@ compile 'com.byoutline.cachedfield:cachedfield:1.4.0'
 ```
 
 #### Latest changes ####
-* 1.4.0 Added support for providing custom ExecutorService/Executor for value loading and state listener calls 
+* 1.4.0 Added support for providing custom ```ExecutorService```/```Executor``` for value loading and state listener calls 
 * 1.3.4 Build script refactor. Should not change public API.
 * 1.3.3 Java 1.6 compatibility
 * 1.3.2 
