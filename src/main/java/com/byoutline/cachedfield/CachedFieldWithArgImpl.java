@@ -111,11 +111,11 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
      */
     private void loadValue(final ARG_TYPE arg) {
         if (fetchFuture != null) {
-            // Cancel thread if it was not yet starter or interrupt it.
-            fetchFuture.cancel(true);
+            // Cancel thread if it was not yet starter.
+            fetchFuture.cancel(false);
             // If thread was cancelled before it was started inform error listeners.
-            if (fetchThread != null && fetchThread.getState() == Thread.State.NEW) {
-                fetchThread.postCancellation();
+            if (fetchThread != null) {
+                fetchThread.interruptAndInformListenersIfNeeded();
             }
         }
         // We use thread instead of pure runnable so we can interrupt loading.
