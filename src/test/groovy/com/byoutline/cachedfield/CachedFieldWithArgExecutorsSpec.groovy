@@ -50,4 +50,35 @@ class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
         then:
         called
     }
+
+    def "should interrupt valueGetter thread"() {
+        given:
+        boolean valueLoadingInterrupted = false
+        def valueGetter = { key ->
+            try {
+                Thread.sleep((long) key)
+            } catch (InterruptedException ex) {
+                valueLoadingInterrupted = true
+            }
+            return key
+        } as ProviderWithArg<String, Integer>
+
+        CachedFieldWithArg field = new CachedFieldWithArgImpl(
+                MockFactory.getSameSessionIdProvider(),
+                valueGetter,
+                MockFactory.getSuccessListenerWithArg(),
+                MockFactory.getErrorListenerWithArg(),
+                MockFactory.getAsyncFirstTaskSyncOtherExecutorService(),
+                null
+        )
+
+        when:
+        field.postValue(10000)
+        field.postValue(0)
+
+        then:
+        valueLoadingInterrupted
+        field.getState() == FieldState.LOADED
+//        thrown(InterruptedException)
+    }
 }

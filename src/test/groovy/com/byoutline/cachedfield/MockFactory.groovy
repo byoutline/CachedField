@@ -7,6 +7,7 @@ import com.byoutline.eventcallback.ResponseEventImpl
 
 import javax.inject.Provider
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.FutureTask
 
 static Provider<String> getSameSessionIdProvider() {
     return { return "sessionId" } as Provider<String>
@@ -47,6 +48,21 @@ static SuccessListenerWithArg<String, Integer> getSuccessListenerWithArg() {
 
 static ErrorListenerWithArg<Integer> getErrorListenerWithArg() {
     return { ex, arg -> return } as ErrorListenerWithArg<Integer>
+}
+
+static ExecutorService getAsyncFirstTaskSyncOtherExecutorService() {
+    boolean executeAsync = true
+    return [
+            submit: {
+                if(executeAsync) {
+                    ((Thread) it).start()
+                    executeAsync = false
+                } else {
+                    it.run()
+                }
+                return new FutureTask((Runnable) it, null)
+            }
+    ] as ExecutorService
 }
 
 static CachedField getDelayedCachedField(String value, SuccessListener<String> successListener) {
