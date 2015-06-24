@@ -2,8 +2,6 @@ package com.byoutline.cachedfield
 
 import com.byoutline.cachedfield.internal.StubErrorListener
 import com.byoutline.cachedfield.internal.StubFieldStateListener
-import com.byoutline.eventcallback.ResponseEvent
-import com.byoutline.eventcallback.ResponseEventImpl
 
 import javax.inject.Provider
 import java.util.concurrent.ExecutorService
@@ -80,7 +78,6 @@ static CachedField getDelayedCachedField(String value, long sleepTime, SuccessLi
 static CachedField getDelayedCachedField(String value, long sleepTime,
                                          SuccessListener<String> successListener, ErrorListener errorListener,
                                          FieldStateListener fieldStateListener) {
-    ResponseEvent<String> responseEvent = new ResponseEventImpl<String>()
     CachedField field = new CachedFieldImpl(getSameSessionIdProvider(),
             getDelayedStringGetter(value, sleepTime), successListener, errorListener)
     field.addStateListener(fieldStateListener)
