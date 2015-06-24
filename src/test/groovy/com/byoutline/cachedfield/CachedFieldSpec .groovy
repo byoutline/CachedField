@@ -119,7 +119,7 @@ class CachedFieldSpec extends spock.lang.Specification {
         MockFactory.waitUntilFieldLoads(field)
 
         then:
-        postedStates == [FieldState.NOT_LOADED, FieldState.CURRENTLY_LOADING, FieldState.LOADED]
+        postedStates == [FieldState.CURRENTLY_LOADING, FieldState.LOADED]
     }
 
     def "should inform field state listener about changes on session expire"() {
