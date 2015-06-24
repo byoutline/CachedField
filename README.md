@@ -45,13 +45,23 @@ If you ask ```CachedFieldWithArg``` for value with new argument before last call
 [SuccessListenerWithArg](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/SuccessListenerWithArg.java) will be informed only about values with current argument. Previous call will be assumed obsolete, and its return value(if any) will be discarded and [ErrorListenerWithArg](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/ErrorListenerWithArg.java) (if any) will be called instead.
 
 
+#### Controlling execution threads ####
+ By default loading of value is executed asynchronously on background thread, and listeners are called
+without thread switching. This means that by default you can safely invoke CachedField methods on UI
+thread without blocking it(with possible exception of your state lister blocking it during drop() call).
+
+If you prefer to have more control over Threads on which value loading (or calling state listeners) is executed
+CachedFieldImpl accepts ExecutorService and Executor as arguments in constructor.
+
+
 #### Including in projects ####
 Add as a dependency to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.cachedfield:cachedfield:1.3.4'
+compile 'com.byoutline.cachedfield:cachedfield:1.4.0'
 ```
 
 #### Latest changes ####
+* 1.4.0 Added support for providing custom ExecutorService/Executor for value loading and state listener calls 
 * 1.3.4 Build script refactor. Should not change public API.
 * 1.3.3 Java 1.6 compatibility
 * 1.3.2 
