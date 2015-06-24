@@ -4,10 +4,10 @@ package com.byoutline.cachedfield
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 class SelfRemovingFieldStateListener implements FieldStateListener {
-    final CachedFieldWithArg field
+    final CachedField field
     boolean called = false
 
-    SelfRemovingFieldStateListener(CachedFieldWithArg field) {
+    SelfRemovingFieldStateListener(CachedField field) {
         this.field = field
     }
 

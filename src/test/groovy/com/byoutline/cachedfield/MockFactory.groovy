@@ -52,7 +52,7 @@ static ExecutorService getAsyncFirstTaskSyncOtherExecutorService() {
     boolean executeAsync = true
     return [
             submit: {
-                if(executeAsync) {
+                if (executeAsync) {
                     ((Thread) it).start()
                     executeAsync = false
                 } else {
@@ -61,6 +61,15 @@ static ExecutorService getAsyncFirstTaskSyncOtherExecutorService() {
                 return new FutureTask((Runnable) it, null)
             }
     ] as ExecutorService
+}
+
+static CachedField<String> getCachedField(String value, ErrorListener errorHandler) {
+    return new CachedFieldImpl<String>(
+            getSameSessionIdProvider(),
+            getStringGetter(value),
+            getSuccessListener(),
+            errorHandler
+    )
 }
 
 static CachedField getDelayedCachedField(String value, SuccessListener<String> successListener) {
@@ -138,8 +147,11 @@ static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueM
 }
 
 static void waitUntilFieldLoads(CachedField field) {
-    while (field.getState() != FieldState.LOADED) {
+    def sleepCount = 0
+    def maxSleepCount = 5000
+    while (field.getState() != FieldState.LOADED && sleepCount < maxSleepCount) {
         sleep 1
+        sleepCount++
     }
 }
 

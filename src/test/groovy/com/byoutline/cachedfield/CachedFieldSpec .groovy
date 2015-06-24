@@ -163,4 +163,21 @@ class CachedFieldSpec extends spock.lang.Specification {
         then:
         resultEx == ex
     }
+
+    def "should allow self removing state listeners"() {
+        given:
+        Exception exception = null
+        def errorListener = { ex, arg -> exception = ex } as ErrorListener
+        CachedField field = MockFactory.getCachedField(value, errorListener)
+        def stateListeners = [new SelfRemovingFieldStateListener(field),
+                              new SelfRemovingFieldStateListener(field),
+                              new SelfRemovingFieldStateListener(field)]
+        stateListeners.each { field.addStateListener(it) }
+        when:
+        field.postValue()
+        MockFactory.waitUntilFieldLoads(field)
+        then:
+        exception == null
+        stateListeners.findAll { it.called }.size() == 3
+    }
 }
