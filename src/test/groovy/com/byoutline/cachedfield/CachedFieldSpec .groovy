@@ -1,5 +1,6 @@
 package com.byoutline.cachedfield
 
+import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
 
 import javax.inject.Provider
@@ -139,5 +140,27 @@ class CachedFieldSpec extends spock.lang.Specification {
 
         then:
         postedStates == [FieldState.NOT_LOADED]
+    }
+
+    def "should inform error listener if value getter throws exception"() {
+        given:
+        def ex = new RuntimeException()
+        Exception resultEx = null;
+        def valueProv = { throw ex } as Provider<String>
+        def errorList = { resultEx = it } as ErrorListener<String>
+        CachedField field = new CachedFieldImpl(
+                MockFactory.getSameSessionIdProvider(),
+                valueProv,
+                MockFactory.getSuccessListener(),
+                errorList,
+                MoreExecutors.newDirectExecutorService(),
+                null
+        )
+
+        when:
+        field.postValue()
+
+        then:
+        resultEx == ex
     }
 }
