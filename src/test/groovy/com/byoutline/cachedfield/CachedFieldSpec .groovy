@@ -180,4 +180,22 @@ class CachedFieldSpec extends spock.lang.Specification {
         exception == null
         stateListeners.findAll { it.called }.size() == 3
     }
+
+    def "should call success once if asked about value during load"() {
+        given:
+        int callCount = 0
+        def successListener = {callCount++} as SuccessListener<String>
+        CachedField field = new CachedFieldImpl(
+                MockFactory.getSameSessionIdProvider(),
+                MockFactory.getDelayedStringGetter(value, 2),
+                successListener
+        )
+        when:
+        field.postValue()
+        MockFactory.waitUntilFieldReachesState(field, FieldState.CURRENTLY_LOADING)
+        field.postValue()
+        MockFactory.waitUntilFieldLoads(field)
+        then:
+        callCount == 1
+    }
 }

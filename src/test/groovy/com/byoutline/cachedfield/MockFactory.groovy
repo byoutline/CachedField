@@ -147,9 +147,13 @@ static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueM
 }
 
 static void waitUntilFieldLoads(CachedField field) {
+    waitUntilFieldReachesState(field, FieldState.LOADED)
+}
+
+static void waitUntilFieldReachesState(CachedField field, FieldState state) {
     def sleepCount = 0
     def maxSleepCount = 5000
-    while (field.getState() != FieldState.LOADED && sleepCount < maxSleepCount) {
+    while (field.getState() != state && sleepCount < maxSleepCount) {
         sleep 1
         sleepCount++
     }
