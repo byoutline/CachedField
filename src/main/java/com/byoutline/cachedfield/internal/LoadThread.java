@@ -46,8 +46,15 @@ public class LoadThread<RETURN_TYPE, ARG_TYPE> extends Thread {
         try {
             value.loadingStarted();
             RETURN_TYPE fetchedValue = valueGetter.get(arg);
+            // We want to successfully inform either success or error listener.
+            // If success listener crashes we try to inform error listener.
+            // If error listener crashes, then there is nothing left to inform.
             if (resultPosted.compareAndSet(false, true)) {
-                successListener.valueLoaded(fetchedValue, arg);
+                try {
+                    successListener.valueLoaded(fetchedValue, arg);
+                } catch (Exception ex) {
+                    forcePostError(ex);
+                }
                 value.setValue(fetchedValue, arg);
             }
         } catch (Exception ex) {
@@ -62,8 +69,12 @@ public class LoadThread<RETURN_TYPE, ARG_TYPE> extends Thread {
 
     private void postError(Exception ex) {
         if (resultPosted.compareAndSet(false, true)) {
-            errorListener.valueLoadingFailed(ex, arg);
-            value.valueLoadingFailed();
+            forcePostError(ex);
         }
+    }
+
+    private void forcePostError(Exception ex) {
+        errorListener.valueLoadingFailed(ex, arg);
+        value.valueLoadingFailed();
     }
 }

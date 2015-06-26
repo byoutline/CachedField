@@ -144,10 +144,10 @@ class CachedFieldSpec extends spock.lang.Specification {
 
     def "should inform error listener if value getter throws exception"() {
         given:
-        def ex = new RuntimeException()
+        def exceptionThrown = new RuntimeException()
         Exception resultEx = null;
-        def valueProv = { throw ex } as Provider<String>
-        def errorList = { resultEx = it } as ErrorListener<String>
+        def valueProv = { throw exceptionThrown } as Provider<String>
+        def errorList = { resultEx = it } as ErrorListener
         CachedField field = new CachedFieldImpl(
                 MockFactory.getSameSessionIdProvider(),
                 valueProv,
@@ -161,13 +161,35 @@ class CachedFieldSpec extends spock.lang.Specification {
         field.postValue()
 
         then:
-        resultEx == ex
+        resultEx == exceptionThrown
+    }
+
+
+    def "should inform error listener if success listener throws exception"() {
+        given:
+        Exception exceptionThrown = new RuntimeException()
+        Exception resultEx = null
+        def successListener = {throw exceptionThrown} as SuccessListener<String>
+        def errorListener = { resultEx = it } as ErrorListener
+        CachedField field = new CachedFieldImpl(
+                MockFactory.getSameSessionIdProvider(),
+                MockFactory.getDelayedStringGetter(value, 2),
+                successListener,
+                errorListener,
+                MoreExecutors.newDirectExecutorService(),
+                CachedFieldWithArgImpl.createDefaultStateListenerExecutor()
+        )
+        when:
+        field.postValue()
+
+        then:
+        resultEx == exceptionThrown
     }
 
     def "should allow self removing state listeners"() {
         given:
-        Exception exception = null
-        def errorListener = { ex, arg -> exception = ex } as ErrorListener
+        Exception resultEx = null
+        def errorListener = { resultEx = it } as ErrorListener
         CachedField field = MockFactory.getCachedField(value, errorListener)
         def stateListeners = [new SelfRemovingFieldStateListener(field),
                               new SelfRemovingFieldStateListener(field),
@@ -177,7 +199,7 @@ class CachedFieldSpec extends spock.lang.Specification {
         field.postValue()
         MockFactory.waitUntilFieldLoads(field)
         then:
-        exception == null
+        resultEx == null
         stateListeners.findAll { it.called }.size() == 3
     }
 
