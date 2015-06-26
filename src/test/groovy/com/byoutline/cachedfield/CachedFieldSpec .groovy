@@ -210,7 +210,7 @@ class CachedFieldSpec extends spock.lang.Specification {
         def successListener = {callCount++} as SuccessListener<String>
         CachedField field = new CachedFieldImpl(
                 MockFactory.getSameSessionIdProvider(),
-                MockFactory.getDelayedStringGetter(value, 2),
+                MockFactory.getDelayedStringGetter(value),
                 successListener
         )
         when:
