@@ -1,5 +1,6 @@
 package com.byoutline.cachedfield
 
+import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
 
@@ -69,7 +70,7 @@ class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
                 MockFactory.getSuccessListenerWithArg(),
                 MockFactory.getErrorListenerWithArg(),
                 MockFactory.getAsyncFirstTaskSyncOtherExecutorService(),
-                CachedFieldWithArgImpl.createDefaultStateListenerExecutor()
+                DefaultExecutors.createDefaultStateListenerExecutor()
         )
 
         when:

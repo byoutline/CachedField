@@ -1,5 +1,6 @@
 package com.byoutline.cachedfield
 
+import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.byoutline.cachedfield.internal.StubErrorListener
 import com.byoutline.cachedfield.internal.StubFieldStateListener
 
@@ -141,7 +142,7 @@ static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueM
             successListener,
             errorListenerWithArg,
             valueProviderExecutor,
-            CachedFieldWithArgImpl.createDefaultStateListenerExecutor()
+            DefaultExecutors.createDefaultStateListenerExecutor()
     )
     return field
 }
