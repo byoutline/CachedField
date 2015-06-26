@@ -1,8 +1,8 @@
 package com.byoutline.cachedfield.internal;
 
 import com.byoutline.cachedfield.*;
-import com.byoutline.cachedfield.dbcache.DbSaver;
 import com.byoutline.cachedfield.dbcache.DbSaverWithArg;
+import com.byoutline.cachedfield.dbcache.DbWriter;
 
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
@@ -51,12 +51,12 @@ public final class VoidArgumentFactory {
     }
 
     public static <RETURN_TYPE> DbSaverWithArg<RETURN_TYPE, Void> addVoidArg(
-            @Nonnull final DbSaver<RETURN_TYPE> dbSaver) {
+            @Nonnull final DbWriter<RETURN_TYPE> dbWriter) {
         return new DbSaverWithArg<RETURN_TYPE, Void>() {
 
             @Override
             public void saveToDb(RETURN_TYPE value, Void arg) {
-                dbSaver.saveToDb(value);
+                dbWriter.saveToDb(value);
             }
         };
     }

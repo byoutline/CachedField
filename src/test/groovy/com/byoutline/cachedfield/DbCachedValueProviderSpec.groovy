@@ -1,7 +1,7 @@
 package com.byoutline.cachedfield
 
 import com.byoutline.cachedfield.dbcache.DbCachedValueProvider
-import com.byoutline.cachedfield.dbcache.DbSaver
+import com.byoutline.cachedfield.dbcache.DbWriter
 import com.byoutline.cachedfield.dbcache.FetchType
 import spock.lang.Shared
 
@@ -21,7 +21,7 @@ class DbCachedValueProviderSpec extends spock.lang.Specification {
         given:
         String result = null
         def apiProvider = MockFactory.getStringGetter(value)
-        def dbSaver = { result = it } as DbSaver<String>
+        def dbSaver = { result = it } as DbWriter<String>
         def dbProvider = MockFactory.getStringGetter(differentValue)
         def provider = new DbCachedValueProvider(apiProvider, dbSaver, dbProvider)
 
@@ -35,7 +35,7 @@ class DbCachedValueProviderSpec extends spock.lang.Specification {
     def "should return value from db even if api return something different"() {
         given:
         def apiProvider = MockFactory.getStringGetter(value)
-        def dbSaver = {} as DbSaver<String>
+        def dbSaver = {} as DbWriter<String>
         def dbProvider = MockFactory.getStringGetter(differentValue)
         def provider = new DbCachedValueProvider(apiProvider, dbSaver, dbProvider)
 
@@ -51,7 +51,7 @@ class DbCachedValueProviderSpec extends spock.lang.Specification {
         boolean apiProvCalled = false
         boolean dbSaverCalled = false
         def apiProvider = { apiProvCalled = true; return value } as Provider<String>
-        def dbSaver = { dbSaverCalled = true } as DbSaver<String>
+        def dbSaver = { dbSaverCalled = true } as DbWriter<String>
         def dbProvider = MockFactory.getStringGetter(differentValue)
         def provider = new DbCachedValueProvider(apiProvider, dbSaver, dbProvider)
 
@@ -66,7 +66,7 @@ class DbCachedValueProviderSpec extends spock.lang.Specification {
     def "should pass runtime exception"() {
         given:
         def apiProvider = MockFactory.getStringGetter(value)
-        def dbSaver = { throw new RuntimeException() } as DbSaver<String>
+        def dbSaver = { throw new RuntimeException() } as DbWriter<String>
         def dbProvider = MockFactory.getStringGetter(differentValue)
         def provider = new DbCachedValueProvider(apiProvider, dbSaver, dbProvider)
 

@@ -17,14 +17,14 @@ public class DbCachedValueProvider<RETURN_TYPE> implements ProviderWithArg<RETUR
 
     private final DbCachedValueProviderWithArg<RETURN_TYPE, Void> delegate;
 
-    public DbCachedValueProvider(Provider<RETURN_TYPE> apiValueProvider,
-                                 DbSaver<RETURN_TYPE> dbSaver,
-                                 Provider<RETURN_TYPE> dbValueProvider) {
-        ProviderWithArg<RETURN_TYPE, Void> apiValueProviderWithArg = VoidArgumentFactory.addVoidArg(apiValueProvider);
-        DbSaverWithArg<RETURN_TYPE, Void> dbSaverWithArg = VoidArgumentFactory.addVoidArg(dbSaver);
-        ProviderWithArg<RETURN_TYPE, Void> dbValueProviderWithArg = VoidArgumentFactory.addVoidArg(dbValueProvider);
-        delegate = new DbCachedValueProviderWithArg<RETURN_TYPE, Void>(apiValueProviderWithArg,
-                dbSaverWithArg, dbValueProviderWithArg);
+    public DbCachedValueProvider(Provider<RETURN_TYPE> apiFetcher,
+                                 DbWriter<RETURN_TYPE> dbWriter,
+                                 Provider<RETURN_TYPE> dbReader) {
+        ProviderWithArg<RETURN_TYPE, Void> apiFetcherWithArg = VoidArgumentFactory.addVoidArg(apiFetcher);
+        DbSaverWithArg<RETURN_TYPE, Void> dbWriterWithArg = VoidArgumentFactory.addVoidArg(dbWriter);
+        ProviderWithArg<RETURN_TYPE, Void> dbReaderWithArg = VoidArgumentFactory.addVoidArg(dbReader);
+        delegate = new DbCachedValueProviderWithArg<RETURN_TYPE, Void>(apiFetcherWithArg,
+                dbWriterWithArg, dbReaderWithArg);
     }
 
     @Override
