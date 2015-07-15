@@ -76,4 +76,18 @@ class DbCachedValueProviderSpec extends spock.lang.Specification {
         then:
         thrown RuntimeException
     }
+
+    def "should allow different type for db and api"() {
+        given:
+        def apiProvider = MockFactory.getStringGetter(value)
+        def dbSaver = {} as DbWriter<String>
+        Provider<Integer> dbProvider = { return 1 } as Provider<Integer>
+        def provider = new DbCachedValueProvider(apiProvider, dbSaver, dbProvider)
+
+        when:
+        def result = provider.get(FetchType.API)
+
+        then:
+        result == 1
+    }
 }

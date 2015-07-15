@@ -11,24 +11,26 @@ import javax.inject.Provider;
  * <p>
  * </p>
  *
+ * @param <API_RETURN_TYPE> Type of value returned by API
+ * @param <DB_RETURN_TYPE>  Type of value returned by DB
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class DbCachedValueProvider<RETURN_TYPE> implements ProviderWithArg<RETURN_TYPE, FetchType> {
+public class DbCachedValueProvider<API_RETURN_TYPE, DB_RETURN_TYPE> implements ProviderWithArg<DB_RETURN_TYPE, FetchType> {
 
-    private final DbCachedValueProviderWithArg<RETURN_TYPE, Void> delegate;
+    private final DbCachedValueProviderWithArg<API_RETURN_TYPE, DB_RETURN_TYPE, Void> delegate;
 
-    public DbCachedValueProvider(Provider<RETURN_TYPE> apiFetcher,
-                                 DbWriter<RETURN_TYPE> dbWriter,
-                                 Provider<RETURN_TYPE> dbReader) {
-        ProviderWithArg<RETURN_TYPE, Void> apiFetcherWithArg = VoidArgumentFactory.addVoidArg(apiFetcher);
-        DbSaverWithArg<RETURN_TYPE, Void> dbWriterWithArg = VoidArgumentFactory.addVoidArg(dbWriter);
-        ProviderWithArg<RETURN_TYPE, Void> dbReaderWithArg = VoidArgumentFactory.addVoidArg(dbReader);
-        delegate = new DbCachedValueProviderWithArg<RETURN_TYPE, Void>(apiFetcherWithArg,
+    public DbCachedValueProvider(Provider<API_RETURN_TYPE> apiFetcher,
+                                 DbWriter<API_RETURN_TYPE> dbWriter,
+                                 Provider<DB_RETURN_TYPE> dbReader) {
+        ProviderWithArg<API_RETURN_TYPE, Void> apiFetcherWithArg = VoidArgumentFactory.addVoidArg(apiFetcher);
+        DbSaverWithArg<API_RETURN_TYPE, Void> dbWriterWithArg = VoidArgumentFactory.addVoidArg(dbWriter);
+        ProviderWithArg<DB_RETURN_TYPE, Void> dbReaderWithArg = VoidArgumentFactory.addVoidArg(dbReader);
+        delegate = new DbCachedValueProviderWithArg<API_RETURN_TYPE, DB_RETURN_TYPE, Void>(apiFetcherWithArg,
                 dbWriterWithArg, dbReaderWithArg);
     }
 
     @Override
-    public RETURN_TYPE get(FetchType arg) {
+    public DB_RETURN_TYPE get(FetchType arg) {
         return delegate.get(new DbCacheArg<Void>(null, arg));
     }
 }
