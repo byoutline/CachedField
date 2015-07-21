@@ -23,7 +23,7 @@ public class DbCachedValueProvider<API_RETURN_TYPE, DB_RETURN_TYPE> implements P
                                  DbWriter<API_RETURN_TYPE> dbWriter,
                                  Provider<DB_RETURN_TYPE> dbReader) {
         ProviderWithArg<API_RETURN_TYPE, Void> apiFetcherWithArg = VoidArgumentFactory.addVoidArg(apiFetcher);
-        DbSaverWithArg<API_RETURN_TYPE, Void> dbWriterWithArg = VoidArgumentFactory.addVoidArg(dbWriter);
+        DbWriterWithArg<API_RETURN_TYPE, Void> dbWriterWithArg = VoidArgumentFactory.addVoidArg(dbWriter);
         ProviderWithArg<DB_RETURN_TYPE, Void> dbReaderWithArg = VoidArgumentFactory.addVoidArg(dbReader);
         delegate = new DbCachedValueProviderWithArg<API_RETURN_TYPE, DB_RETURN_TYPE, Void>(apiFetcherWithArg,
                 dbWriterWithArg, dbReaderWithArg);
