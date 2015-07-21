@@ -38,7 +38,7 @@ boolean removeStateListener(FieldStateListener listener);
 ```
 Allows adding and removing listeners that will be informed about 
 [FieldState](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/FieldState.java) 
-changes(like starting to load value). This can be usefull for displaying busy indicator in graphical applications.
+changes(like starting to load value). This can be useful for displaying busy indicator in graphical applications.
 
 #### Parametric fields ####
 
