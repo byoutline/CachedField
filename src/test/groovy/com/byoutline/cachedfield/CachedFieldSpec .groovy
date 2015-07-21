@@ -1,5 +1,7 @@
 package com.byoutline.cachedfield
 
+import com.byoutline.cachedfield.internal.DefaultExecutors
+import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
 
 import javax.inject.Provider
@@ -139,5 +141,84 @@ class CachedFieldSpec extends spock.lang.Specification {
 
         then:
         postedStates == [FieldState.NOT_LOADED]
+    }
+
+    def "should inform error listener if value getter throws exception"() {
+        given:
+        def exceptionThrown = new RuntimeException()
+        Exception resultEx = null;
+        def valueProv = { throw exceptionThrown } as Provider<String>
+        def errorList = { resultEx = it } as ErrorListener
+        CachedField field = new CachedFieldImpl(
+                MockFactory.getSameSessionIdProvider(),
+                valueProv,
+                MockFactory.getSuccessListener(),
+                errorList,
+                MoreExecutors.newDirectExecutorService(),
+                DefaultExecutors.createDefaultStateListenerExecutor()
+        )
+
+        when:
+        field.postValue()
+
+        then:
+        resultEx == exceptionThrown
+    }
+
+
+    def "should inform error listener if success listener throws exception"() {
+        given:
+        Exception exceptionThrown = new RuntimeException()
+        Exception resultEx = null
+        def successListener = {throw exceptionThrown} as SuccessListener<String>
+        def errorListener = { resultEx = it } as ErrorListener
+        CachedField field = new CachedFieldImpl(
+                MockFactory.getSameSessionIdProvider(),
+                MockFactory.getDelayedStringGetter(value, 2),
+                successListener,
+                errorListener,
+                MoreExecutors.newDirectExecutorService(),
+                DefaultExecutors.createDefaultStateListenerExecutor()
+        )
+        when:
+        field.postValue()
+
+        then:
+        resultEx == exceptionThrown
+    }
+
+    def "should allow self removing state listeners"() {
+        given:
+        Exception resultEx = null
+        def errorListener = { resultEx = it } as ErrorListener
+        CachedField field = MockFactory.getCachedField(value, errorListener)
+        def stateListeners = [new SelfRemovingFieldStateListener(field),
+                              new SelfRemovingFieldStateListener(field),
+                              new SelfRemovingFieldStateListener(field)]
+        stateListeners.each { field.addStateListener(it) }
+        when:
+        field.postValue()
+        MockFactory.waitUntilFieldLoads(field)
+        then:
+        resultEx == null
+        stateListeners.findAll { it.called }.size() == 3
+    }
+
+    def "should call success once if asked about value during load"() {
+        given:
+        int callCount = 0
+        def successListener = {callCount++} as SuccessListener<String>
+        CachedField field = new CachedFieldImpl(
+                MockFactory.getSameSessionIdProvider(),
+                MockFactory.getDelayedStringGetter(value),
+                successListener
+        )
+        when:
+        field.postValue()
+        MockFactory.waitUntilFieldReachesState(field, FieldState.CURRENTLY_LOADING)
+        field.postValue()
+        MockFactory.waitUntilFieldLoads(field)
+        then:
+        callCount == 1
     }
 }

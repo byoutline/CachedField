@@ -8,12 +8,13 @@ import javax.annotation.Nonnull;
 import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * Thread safe value storage, that nulls out its content when session changes.
  *
  * @param <VALUE_TYPE> Type of stored value
- * @param <ARG_TYPE> Type of argument needed to calculate value
+ * @param <ARG_TYPE>   Type of argument needed to calculate value
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public class CachedValue<VALUE_TYPE, ARG_TYPE> {
@@ -23,10 +24,13 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     private ARG_TYPE arg;
     private String valueSession;
     private final List<FieldStateListener> fieldStateListeners = new ArrayList<FieldStateListener>(2);
-    public final Provider<String> sessionProvider;
+    private final Provider<String> sessionProvider;
+    private final Executor stateListenerExecutor;
 
-    public CachedValue(@Nonnull Provider<String> sessionProvider) {
+    public CachedValue(@Nonnull Provider<String> sessionProvider,
+                       @Nonnull Executor stateListenerExecutor) {
         this.sessionProvider = sessionProvider;
+        this.stateListenerExecutor = stateListenerExecutor;
     }
 
     private void checkSession() {
@@ -50,7 +54,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     public synchronized void valueLoadingFailed() {
         drop();
     }
-    
+
     public synchronized void drop() {
         value = null;
         arg = null;
@@ -67,7 +71,22 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
             return;
         }
         fieldState = newState;
-        for (FieldStateListener fieldStateListener : fieldStateListeners) {
+        informStateListeners(newState);
+    }
+
+    private void informStateListeners(final FieldState newState) {
+        stateListenerExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                informStateListenersSync(newState);
+            }
+        });
+    }
+
+    private void informStateListenersSync(FieldState newState) {
+        // Iterate over copy of listeners to guard against listeners modification.
+        List<FieldStateListener> stateListeners = new ArrayList<FieldStateListener>(fieldStateListeners);
+        for (FieldStateListener fieldStateListener : stateListeners) {
             fieldStateListener.fieldStateChanged(newState);
         }
     }
