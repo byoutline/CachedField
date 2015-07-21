@@ -8,8 +8,10 @@ import javax.annotation.Nonnull;
 import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import static com.byoutline.cachedfield.internal.DefaultExecutors.createDefaultStateListenerExecutor;
+import static com.byoutline.cachedfield.internal.DefaultExecutors.createDefaultValueGetterExecutor;
 
 /**
  * Cached field where value getter requires single argument. If argument does
@@ -43,7 +45,8 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
                                   @Nonnull ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter,
                                   @Nonnull SuccessListenerWithArg<RETURN_TYPE, ARG_TYPE> successHandler,
                                   @Nonnull ErrorListenerWithArg<ARG_TYPE> errorHandler) {
-        this(sessionProvider, valueGetter, successHandler, errorHandler, createDefaultValueGetterExecutor(), createDefaultStateListenerExecutor());
+        this(sessionProvider, valueGetter, successHandler, errorHandler,
+                createDefaultValueGetterExecutor(), createDefaultStateListenerExecutor());
     }
 
     /**
@@ -143,17 +146,4 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
         return value.removeStateListener(listener);
     }
 
-    static Executor createDefaultStateListenerExecutor() {
-        // Execute on same thread.
-        return new Executor() {
-            @Override
-            public void execute(Runnable command) {
-                command.run();
-            }
-        };
-    }
-
-    static ExecutorService createDefaultValueGetterExecutor() {
-        return Executors.newCachedThreadPool();
-    }
 }

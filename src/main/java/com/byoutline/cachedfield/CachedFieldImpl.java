@@ -1,5 +1,6 @@
 package com.byoutline.cachedfield;
 
+import com.byoutline.cachedfield.internal.DefaultExecutors;
 import com.byoutline.cachedfield.internal.StubErrorListener;
 import com.byoutline.cachedfield.internal.VoidArgumentFactory;
 
@@ -51,8 +52,8 @@ public class CachedFieldImpl<RETURN_TYPE> implements CachedField<RETURN_TYPE> {
             @Nonnull SuccessListener<RETURN_TYPE> successHandler,
             @Nonnull ErrorListener errorHandler) {
         this(sessionProvider, valueGetter, successHandler, errorHandler,
-                CachedFieldWithArgImpl.createDefaultValueGetterExecutor(),
-                CachedFieldWithArgImpl.createDefaultStateListenerExecutor());
+                DefaultExecutors.createDefaultValueGetterExecutor(),
+                DefaultExecutors.createDefaultStateListenerExecutor());
     }
 
     public CachedFieldImpl(@Nonnull Provider<String> sessionProvider,

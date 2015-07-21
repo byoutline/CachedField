@@ -1,5 +1,6 @@
 package com.byoutline.cachedfield
 
+import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
 
@@ -154,7 +155,7 @@ class CachedFieldSpec extends spock.lang.Specification {
                 MockFactory.getSuccessListener(),
                 errorList,
                 MoreExecutors.newDirectExecutorService(),
-                CachedFieldWithArgImpl.createDefaultStateListenerExecutor()
+                DefaultExecutors.createDefaultStateListenerExecutor()
         )
 
         when:
@@ -177,7 +178,7 @@ class CachedFieldSpec extends spock.lang.Specification {
                 successListener,
                 errorListener,
                 MoreExecutors.newDirectExecutorService(),
-                CachedFieldWithArgImpl.createDefaultStateListenerExecutor()
+                DefaultExecutors.createDefaultStateListenerExecutor()
         )
         when:
         field.postValue()
@@ -209,7 +210,7 @@ class CachedFieldSpec extends spock.lang.Specification {
         def successListener = {callCount++} as SuccessListener<String>
         CachedField field = new CachedFieldImpl(
                 MockFactory.getSameSessionIdProvider(),
-                MockFactory.getDelayedStringGetter(value, 2),
+                MockFactory.getDelayedStringGetter(value),
                 successListener
         )
         when:
