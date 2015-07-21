@@ -17,11 +17,11 @@ public class DbCachedValueProviderWithArg<API_RETURN_TYPE, DB_RETURN_TYPE, ARG_T
         implements ProviderWithArg<DB_RETURN_TYPE, DbCacheArg<ARG_TYPE>> {
 
     private final ProviderWithArg<API_RETURN_TYPE, ARG_TYPE> apiValueProvider;
-    private final DbSaverWithArg<API_RETURN_TYPE, ARG_TYPE> dbSaver;
+    private final DbWriterWithArg<API_RETURN_TYPE, ARG_TYPE> dbSaver;
     private final ProviderWithArg<DB_RETURN_TYPE, ARG_TYPE> dbValueProvider;
 
     public DbCachedValueProviderWithArg(ProviderWithArg<API_RETURN_TYPE, ARG_TYPE> apiValueProvider,
-                                        DbSaverWithArg<API_RETURN_TYPE, ARG_TYPE> dbSaver,
+                                        DbWriterWithArg<API_RETURN_TYPE, ARG_TYPE> dbSaver,
                                         ProviderWithArg<DB_RETURN_TYPE, ARG_TYPE> dbValueProvider) {
         this.apiValueProvider = apiValueProvider;
         this.dbSaver = dbSaver;
