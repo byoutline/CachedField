@@ -67,11 +67,18 @@ If you prefer to have more control over Threads on which value loading (or calli
 #### Including in projects ####
 Add as a dependency to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.cachedfield:cachedfield:1.4.0'
+compile 'com.byoutline.cachedfield:cachedfield:1.4.1'
 ```
 
 #### Latest changes ####
-* 1.4.0 Added support for providing custom ```ExecutorService```/```Executor``` for value loading and state listener calls 
+* 1.4.1 Renamed inconsistently named of ```DbSaverWithArg``` to ```DbWriterWithArg```
+* 1.4.0 
+  * Added support for providing custom ```ExecutorService```/```Executor``` for value loading and state listener calls
+  * Added DB Cache utils - You can use ```DbCachedValueProvider```/```DbCachedValueProviderWithArg``` to combine
+  steps of fetching data from API, saving it to db, and loading it from DB. It allows later to decide whether you
+  want to reload data from API or from DB by passing ```FetchType.API``` or ```FetchType.DB``` as argument to ```post```
+  and ```reload```
+ 
 * 1.3.4 Build script refactor. Should not change public API.
 * 1.3.3 Java 1.6 compatibility
 * 1.3.2 
