@@ -55,7 +55,7 @@ public class LoadThread<RETURN_TYPE, ARG_TYPE> extends Thread {
                 } catch (Exception ex) {
                     forcePostError(ex);
                 }
-                value.setValue(fetchedValue, arg);
+                value.setSuccess(fetchedValue, arg);
             }
         } catch (Exception ex) {
             postError(ex);
@@ -74,6 +74,7 @@ public class LoadThread<RETURN_TYPE, ARG_TYPE> extends Thread {
     }
 
     private void forcePostError(Exception ex) {
+        value.setFailure(ex, arg);
         errorListener.valueLoadingFailed(ex, arg);
         value.valueLoadingFailed();
     }

@@ -1,6 +1,10 @@
 package com.byoutline.cachedfield.internal;
 
-import com.byoutline.cachedfield.FieldState;
+import com.byoutline.cachedfield.cachedendpoint.CallResult;
+import com.byoutline.cachedfield.cachedendpoint.EndpointState;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Simple storage of value and state.
@@ -9,11 +13,14 @@ import com.byoutline.cachedfield.FieldState;
  */
 public class StateAndValue<VALUE_TYPE, ARG_TYPE> {
 
-    public final FieldState state;
-    public final VALUE_TYPE value;
+    @Nonnull
+    public final EndpointState state;
+    @Nonnull
+    public final CallResult<VALUE_TYPE> value;
+    @Nullable
     public final ARG_TYPE arg;
 
-    public StateAndValue(FieldState state, VALUE_TYPE value, ARG_TYPE arg) {
+    public StateAndValue(@Nonnull EndpointState state, @Nonnull CallResult<VALUE_TYPE> value, @Nullable ARG_TYPE arg) {
         this.state = state;
         this.value = value;
         this.arg = arg;

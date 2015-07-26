@@ -1,7 +1,9 @@
 package com.byoutline.cachedfield.internal;
 
 import com.byoutline.cachedfield.FieldState;
-import com.byoutline.cachedfield.FieldStateListener;
+import com.byoutline.cachedfield.cachedendpoint.CallResult;
+import com.byoutline.cachedfield.cachedendpoint.EndpointState;
+import com.byoutline.cachedfield.cachedendpoint.EndpointStateListener;
 import com.byoutline.eventcallback.internal.SessionChecker;
 
 import javax.annotation.Nonnull;
@@ -19,11 +21,12 @@ import java.util.concurrent.Executor;
  */
 public class CachedValue<VALUE_TYPE, ARG_TYPE> {
 
-    private FieldState fieldState = FieldState.NOT_LOADED;
-    private VALUE_TYPE value;
+    private EndpointState fieldState = EndpointState.BEFORE_CALL;
+    private VALUE_TYPE successValue;
+    private Exception errorValue;
     private ARG_TYPE arg;
     private String valueSession;
-    private final List<FieldStateListener> fieldStateListeners = new ArrayList<FieldStateListener>(2);
+    private final List<EndpointStateListener> fieldStateListeners = new ArrayList<EndpointStateListener>(2);
     private final Provider<String> sessionProvider;
     private final Executor stateListenerExecutor;
 
@@ -41,14 +44,22 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     }
 
     public synchronized void loadingStarted() {
-        setState(FieldState.CURRENTLY_LOADING);
+        setState(EndpointState.DURING_CALL);
         this.valueSession = sessionProvider.get();
     }
 
-    public synchronized void setValue(VALUE_TYPE value, ARG_TYPE arg) {
-        this.value = value;
+    public synchronized void setSuccess(VALUE_TYPE value, ARG_TYPE arg) {
+        this.successValue = value;
+        this.errorValue = null;
         this.arg = arg;
-        setState(FieldState.LOADED);
+        setState(EndpointState.CALL_SUCCESS);
+    }
+
+    public synchronized void setFailure(Exception reason, ARG_TYPE arg) {
+        this.successValue = null;
+        this.errorValue = reason;
+        this.arg = arg;
+        setState(EndpointState.CALL_FAILED);
     }
 
     public synchronized void valueLoadingFailed() {
@@ -56,17 +67,18 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     }
 
     public synchronized void drop() {
-        value = null;
+        successValue = null;
+        errorValue = null;
         arg = null;
-        setState(FieldState.NOT_LOADED);
+        setState(EndpointState.BEFORE_CALL);
     }
 
     public synchronized StateAndValue<VALUE_TYPE, ARG_TYPE> getStateAndValue() {
         checkSession();
-        return new StateAndValue<VALUE_TYPE, ARG_TYPE>(fieldState, value, arg);
+        return new StateAndValue<VALUE_TYPE, ARG_TYPE>(fieldState, new CallResult<VALUE_TYPE>(successValue, errorValue), arg);
     }
 
-    private void setState(FieldState newState) {
+    private void setState(EndpointState newState) {
         if (newState == fieldState) {
             return;
         }
@@ -74,7 +86,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
         informStateListeners(newState);
     }
 
-    private void informStateListeners(final FieldState newState) {
+    private void informStateListeners(final EndpointState newState) {
         stateListenerExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -83,10 +95,10 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
         });
     }
 
-    private void informStateListenersSync(FieldState newState) {
+    private void informStateListenersSync(EndpointState newState) {
         // Iterate over copy of listeners to guard against listeners modification.
-        List<FieldStateListener> stateListeners = new ArrayList<FieldStateListener>(fieldStateListeners);
-        for (FieldStateListener fieldStateListener : stateListeners) {
+        List<EndpointStateListener> stateListeners = new ArrayList<EndpointStateListener>(fieldStateListeners);
+        for (EndpointStateListener fieldStateListener : stateListeners) {
             fieldStateListener.fieldStateChanged(newState);
         }
     }
@@ -98,7 +110,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
      * @param listener
      * @throws IllegalArgumentException if listener is null
      */
-    public synchronized void addStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
+    public synchronized void addStateListener(@Nonnull EndpointStateListener listener) throws IllegalArgumentException {
         checkListenerNonNull(listener);
         fieldStateListeners.add(listener);
     }
@@ -111,12 +123,12 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
      * false otherwise
      * @throws IllegalArgumentException if listener is null
      */
-    public synchronized boolean removeStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
+    public synchronized boolean removeStateListener(@Nonnull EndpointStateListener listener) throws IllegalArgumentException {
         checkListenerNonNull(listener);
         return fieldStateListeners.remove(listener);
     }
 
-    private void checkListenerNonNull(FieldStateListener listener) throws IllegalArgumentException {
+    private void checkListenerNonNull(EndpointStateListener listener) throws IllegalArgumentException {
         if (listener == null) {
             throw new IllegalArgumentException("Listener cannot be null");
         }

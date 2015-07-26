@@ -1,0 +1,37 @@
+package com.byoutline.cachedfield.cachedendpoint;
+
+import com.byoutline.cachedfield.FieldState;
+import com.byoutline.cachedfield.FieldStateListener;
+
+import javax.annotation.Nonnull;
+
+public class FieldStateListenerWrapper implements EndpointStateListener {
+    @Nonnull
+    private final FieldStateListener delegate;
+
+    public FieldStateListenerWrapper(@Nonnull FieldStateListener delegate) {
+        this.delegate = delegate;
+    }
+
+    @Override
+    public void fieldStateChanged(EndpointState newState) {
+        FieldState state = EndpointState.toFieldState(newState);
+        delegate.fieldStateChanged(state);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FieldStateListenerWrapper that = (FieldStateListenerWrapper) o;
+
+        return delegate.equals(that.delegate);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+}

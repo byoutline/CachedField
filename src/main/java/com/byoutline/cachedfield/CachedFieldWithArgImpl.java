@@ -1,5 +1,7 @@
 package com.byoutline.cachedfield;
 
+import com.byoutline.cachedfield.cachedendpoint.EndpointState;
+import com.byoutline.cachedfield.cachedendpoint.FieldStateListenerWrapper;
 import com.byoutline.cachedfield.internal.CachedValue;
 import com.byoutline.cachedfield.internal.LoadThread;
 import com.byoutline.cachedfield.internal.StateAndValue;
@@ -90,7 +92,8 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
             return;
         }
         StateAndValue<RETURN_TYPE, ARG_TYPE> stateAndValue = value.getStateAndValue();
-        switch (stateAndValue.state) {
+        FieldState state = EndpointState.toFieldState(stateAndValue.state);
+        switch (state) {
             case NOT_LOADED:
                 refresh(arg);
                 break;
@@ -98,7 +101,7 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
                 // Event will be posted when value is fully loaded.
                 break;
             case LOADED:
-                successListener.valueLoaded(stateAndValue.value, stateAndValue.arg);
+                successListener.valueLoaded(stateAndValue.value.getSuccessResult(), stateAndValue.arg);
                 break;
         }
     }
@@ -128,7 +131,7 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
 
     @Override
     public FieldState getState() {
-        return value.getStateAndValue().state;
+        return EndpointState.toFieldState(value.getStateAndValue().state);
     }
 
     @Override
@@ -138,12 +141,11 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
 
     @Override
     public void addStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
-        value.addStateListener(listener);
+        value.addStateListener(new FieldStateListenerWrapper(listener));
     }
 
     @Override
     public boolean removeStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
-        return value.removeStateListener(listener);
+        return value.removeStateListener(new FieldStateListenerWrapper(listener));
     }
-
 }
