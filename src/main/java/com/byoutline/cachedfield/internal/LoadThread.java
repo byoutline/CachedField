@@ -44,7 +44,7 @@ public class LoadThread<RETURN_TYPE, ARG_TYPE> extends Thread {
     @Override
     public void run() {
         try {
-            value.loadingStarted();
+            value.loadingStarted(arg);
             RETURN_TYPE fetchedValue = valueGetter.get(arg);
             // We want to successfully inform either success or error listener.
             // If success listener crashes we try to inform error listener.

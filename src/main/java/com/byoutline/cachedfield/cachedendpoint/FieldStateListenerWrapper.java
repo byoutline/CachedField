@@ -2,6 +2,7 @@ package com.byoutline.cachedfield.cachedendpoint;
 
 import com.byoutline.cachedfield.FieldState;
 import com.byoutline.cachedfield.FieldStateListener;
+import com.byoutline.cachedfield.internal.StateAndValue;
 
 import javax.annotation.Nonnull;
 
@@ -14,8 +15,8 @@ public class FieldStateListenerWrapper implements EndpointStateListener {
     }
 
     @Override
-    public void fieldStateChanged(EndpointState newState) {
-        FieldState state = EndpointState.toFieldState(newState);
+    public void endpointStateChanged(StateAndValue currentState) {
+        FieldState state = EndpointState.toFieldState(currentState.state);
         delegate.fieldStateChanged(state);
     }
 

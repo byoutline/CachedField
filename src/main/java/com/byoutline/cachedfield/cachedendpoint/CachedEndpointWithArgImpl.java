@@ -79,12 +79,12 @@ public class CachedEndpointWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedE
     }
 
     @Override
-    public void addStateListener(@Nonnull EndpointStateListener listener) throws IllegalArgumentException {
+    public void addEndpointListener(@Nonnull EndpointStateListener listener) throws IllegalArgumentException {
         value.addStateListener(listener);
     }
 
     @Override
-    public boolean removeStateListener(@Nonnull EndpointStateListener listener) throws IllegalArgumentException {
+    public boolean removeEndpointListener(@Nonnull EndpointStateListener listener) throws IllegalArgumentException {
         return value.removeStateListener(listener);
     }
 

@@ -43,7 +43,8 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
         }
     }
 
-    public synchronized void loadingStarted() {
+    public synchronized void loadingStarted(ARG_TYPE arg) {
+        this.arg = arg;
         setState(EndpointState.DURING_CALL);
         this.valueSession = sessionProvider.get();
     }
@@ -75,6 +76,10 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
 
     public synchronized StateAndValue<VALUE_TYPE, ARG_TYPE> getStateAndValue() {
         checkSession();
+        return getStateAndValueWithoutSessionCheck();
+    }
+
+    private StateAndValue<VALUE_TYPE, ARG_TYPE> getStateAndValueWithoutSessionCheck() {
         return new StateAndValue<VALUE_TYPE, ARG_TYPE>(fieldState, new CallResult<VALUE_TYPE>(successValue, errorValue), arg);
     }
 
@@ -83,10 +88,10 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
             return;
         }
         fieldState = newState;
-        informStateListeners(newState);
+        informStateListeners(getStateAndValueWithoutSessionCheck());
     }
 
-    private void informStateListeners(final EndpointState newState) {
+    private void informStateListeners(final StateAndValue<VALUE_TYPE, ARG_TYPE> newState) {
         stateListenerExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -95,11 +100,11 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
         });
     }
 
-    private void informStateListenersSync(EndpointState newState) {
+    private void informStateListenersSync(StateAndValue<VALUE_TYPE, ARG_TYPE> newState) {
         // Iterate over copy of listeners to guard against listeners modification.
         List<EndpointStateListener> stateListeners = new ArrayList<EndpointStateListener>(fieldStateListeners);
         for (EndpointStateListener fieldStateListener : stateListeners) {
-            fieldStateListener.fieldStateChanged(newState);
+            fieldStateListener.endpointStateChanged(newState);
         }
     }
 

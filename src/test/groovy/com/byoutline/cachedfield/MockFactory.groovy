@@ -1,10 +1,13 @@
 package com.byoutline.cachedfield
 
+import com.byoutline.cachedfield.cachedendpoint.CachedEndpointWithArgImpl
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.byoutline.cachedfield.internal.StubErrorListener
 import com.byoutline.cachedfield.internal.StubFieldStateListener
+import com.google.common.util.concurrent.MoreExecutors
 
 import javax.inject.Provider
+import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.FutureTask
 
@@ -109,6 +112,32 @@ static CachedField getLoadedCachedField(String value, FieldStateListener fieldSt
     waitUntilFieldLoads(field)
     field.addStateListener(fieldStateListener)
     return field
+}
+
+static CachedEndpointWithArgImpl<String, Integer> getCachedEndpoint(Map<Integer, String> argToValueMap) {
+    return new CachedEndpointWithArgImpl(
+            getSameSessionIdProvider(),
+            getStringIntGetter(argToValueMap),
+            DefaultExecutors.createDefaultValueGetterExecutor(),
+            DefaultExecutors.createDefaultStateListenerExecutor()
+    )
+}
+
+static CachedEndpointWithArgImpl<String, Integer> getCachedEndpointBlockingValueProv(Map<Integer, String> argToValueMap) {
+    return new CachedEndpointWithArgImpl(
+            getSameSessionIdProvider(),
+            getStringIntGetter(argToValueMap),
+            MoreExecutors.newDirectExecutorService(),
+            DefaultExecutors.createDefaultStateListenerExecutor()
+    )
+}
+static CachedEndpointWithArgImpl<String, Integer> getCachedEndpointBlocking(Map<Integer, String> argToValueMap) {
+    return new CachedEndpointWithArgImpl(
+            getSameSessionIdProvider(),
+            getStringIntGetter(argToValueMap),
+            MoreExecutors.newDirectExecutorService(),
+            { it.run() } as Executor
+    )
 }
 
 static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap) {
