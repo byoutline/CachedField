@@ -141,11 +141,11 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
 
     @Override
     public void addStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
-        value.addStateListener(new FieldStateListenerWrapper(listener));
+        value.addStateListener(new FieldStateListenerWrapper<RETURN_TYPE, ARG_TYPE>(listener));
     }
 
     @Override
     public boolean removeStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
-        return value.removeStateListener(new FieldStateListenerWrapper(listener));
+        return value.removeStateListener(new FieldStateListenerWrapper<RETURN_TYPE, ARG_TYPE>(listener));
     }
 }

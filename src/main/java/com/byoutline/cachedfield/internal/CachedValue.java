@@ -116,7 +116,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
      * @param listener
      * @throws IllegalArgumentException if listener is null
      */
-    public synchronized void addStateListener(@Nonnull EndpointStateListener listener) throws IllegalArgumentException {
+    public synchronized void addStateListener(@Nonnull EndpointStateListener<VALUE_TYPE, ARG_TYPE> listener) throws IllegalArgumentException {
         checkListenerNonNull(listener);
         fieldStateListeners.add(listener);
     }
@@ -129,7 +129,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
      * false otherwise
      * @throws IllegalArgumentException if listener is null
      */
-    public synchronized boolean removeStateListener(@Nonnull EndpointStateListener listener) throws IllegalArgumentException {
+    public synchronized boolean removeStateListener(@Nonnull EndpointStateListener<VALUE_TYPE, ARG_TYPE> listener) throws IllegalArgumentException {
         checkListenerNonNull(listener);
         return fieldStateListeners.remove(listener);
     }

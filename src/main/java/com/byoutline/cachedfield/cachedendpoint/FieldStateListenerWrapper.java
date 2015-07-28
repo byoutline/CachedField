@@ -6,7 +6,7 @@ import com.byoutline.cachedfield.internal.StateAndValue;
 
 import javax.annotation.Nonnull;
 
-public class FieldStateListenerWrapper implements EndpointStateListener {
+public class FieldStateListenerWrapper<RETURN_TYPE, ARG_TYPE> implements EndpointStateListener<RETURN_TYPE, ARG_TYPE> {
     @Nonnull
     private final FieldStateListener delegate;
 
