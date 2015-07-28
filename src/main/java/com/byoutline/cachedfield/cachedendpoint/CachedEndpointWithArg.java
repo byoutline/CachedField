@@ -26,7 +26,7 @@ public interface CachedEndpointWithArg<RETURN_TYPE, ARG_TYPE> {
      * @param listener
      * @throws IllegalArgumentException if listener is null
      */
-    void addEndpointListener(EndpointStateListener listener);
+    void addEndpointListener(EndpointStateListener<RETURN_TYPE, ARG_TYPE> listener);
 
     /**
      * Remove field state listener
@@ -36,5 +36,5 @@ public interface CachedEndpointWithArg<RETURN_TYPE, ARG_TYPE> {
      * false otherwise
      * @throws IllegalArgumentException if listener is null
      */
-    boolean removeEndpointListener(EndpointStateListener listener);
+    boolean removeEndpointListener(EndpointStateListener<RETURN_TYPE, ARG_TYPE> listener);
 }
