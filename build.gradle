@@ -24,11 +24,8 @@ configurations {
     provided
 }
 
-sourceSets {
-    main {
-        compileClasspath += configurations.provided
-    }
-}
+sourceSets.main.compileClasspath += configurations.provided
+javadoc.classpath += configurations.provided
 
 dependencies {
     compile 'javax.inject:javax.inject:1'
