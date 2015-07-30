@@ -139,5 +139,23 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         then:
         stateList.postedStates == [EndpointState.BEFORE_CALL]
     }
+
+    def "should not allow adding null state listeners"() {
+        given:
+        def field = MockFactory.getCachedEndpointBlocking(argToValueMap)
+        when:
+        field.addEndpointListener(null)
+        then:
+        thrown IllegalArgumentException
+    }
+
+    def "should not allow removing null state listeners"() {
+        given:
+        def field = MockFactory.getCachedEndpointBlocking(argToValueMap)
+        when:
+        field.removeEndpointListener(null)
+        then:
+        thrown IllegalArgumentException
+    }
 }
 
