@@ -14,8 +14,8 @@ import javax.annotation.Nullable;
 public abstract class StateAndValue<VALUE_TYPE, ARG_TYPE> {
 
     public static <VALUE_TYPE, ARG_TYPE> StateAndValue<VALUE_TYPE, ARG_TYPE> create(@Nonnull EndpointState state,
-                                                              @Nonnull CallResult<VALUE_TYPE> value,
-                                                              @Nullable ARG_TYPE arg) {
+                                                                                    @Nonnull CallResult<VALUE_TYPE> value,
+                                                                                    @Nullable ARG_TYPE arg) {
         return new AutoValue_StateAndValue<VALUE_TYPE, ARG_TYPE>(state, value, arg);
     }
 

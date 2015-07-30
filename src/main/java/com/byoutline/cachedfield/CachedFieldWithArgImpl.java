@@ -102,13 +102,6 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
 
     @Override
     public void refresh(ARG_TYPE arg) {
-        loadValue(arg);
-    }
-
-    /**
-     * Loads value in separate thread.
-     */
-    private void loadValue(final ARG_TYPE arg) {
         valueLoader.loadValue(arg);
     }
 

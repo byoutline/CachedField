@@ -37,7 +37,7 @@ public interface CachedField<RETURN_TYPE> {
     void addStateListener(FieldStateListener listener);
 
     /**
-     * Remove field state listener
+     * Remove field state listener.
      *
      * @param listener
      * @return true if listeners collection was modified by this operation,

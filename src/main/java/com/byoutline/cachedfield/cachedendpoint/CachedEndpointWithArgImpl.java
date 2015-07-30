@@ -16,7 +16,8 @@ import java.util.concurrent.ExecutorService;
  * @param <ARG_TYPE>    Argument needed to calculate value.
  * @author Sebastian Kacprzak <nait at naitbit.com>
  */
-public class CachedEndpointWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedEndpointWithArg<RETURN_TYPE, ARG_TYPE> {
+public class CachedEndpointWithArgImpl<RETURN_TYPE, ARG_TYPE>
+        implements CachedEndpointWithArg<RETURN_TYPE, ARG_TYPE> {
 
     private final CachedValue<RETURN_TYPE, ARG_TYPE> value;
     private final ValueLoader<RETURN_TYPE, ARG_TYPE> valueLoader;
@@ -43,13 +44,6 @@ public class CachedEndpointWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedE
 
     @Override
     public void call(ARG_TYPE arg) {
-        loadValue(arg);
-    }
-
-    /**
-     * Loads value in separate thread.
-     */
-    private void loadValue(final ARG_TYPE arg) {
         valueLoader.loadValue(arg);
     }
 

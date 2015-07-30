@@ -80,7 +80,7 @@ public class LoadThread<RETURN_TYPE, ARG_TYPE> extends Thread {
     private void forcePostError(Exception ex) {
         value.setFailure(ex, arg);
         errorListener.valueLoadingFailed(ex, arg);
-        if(dropValueOnFailure) {
+        if (dropValueOnFailure) {
             value.drop();
         }
     }

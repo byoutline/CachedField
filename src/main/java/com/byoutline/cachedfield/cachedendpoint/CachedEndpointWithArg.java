@@ -28,7 +28,7 @@ public interface CachedEndpointWithArg<RETURN_TYPE, ARG_TYPE> {
     void addEndpointListener(EndpointStateListener<RETURN_TYPE, ARG_TYPE> listener);
 
     /**
-     * Remove field state listener
+     * Remove field state listener.
      *
      * @param listener
      * @return true if listeners collection was modified by this operation,
