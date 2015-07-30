@@ -5,36 +5,23 @@ import com.byoutline.cachedfield.FieldStateListener;
 import com.byoutline.cachedfield.cachedendpoint.EndpointState;
 import com.byoutline.cachedfield.cachedendpoint.EndpointStateListener;
 import com.byoutline.cachedfield.cachedendpoint.StateAndValue;
+import com.google.auto.value.AutoValue;
 
 import javax.annotation.Nonnull;
 
-public class FieldStateListenerWrapper<RETURN_TYPE, ARG_TYPE> implements EndpointStateListener<RETURN_TYPE, ARG_TYPE> {
-    @Nonnull
-    private final FieldStateListener delegate;
+@AutoValue
+public abstract class FieldStateListenerWrapper<RETURN_TYPE, ARG_TYPE> implements EndpointStateListener<RETURN_TYPE, ARG_TYPE> {
 
-    public FieldStateListenerWrapper(@Nonnull FieldStateListener delegate) {
-        this.delegate = delegate;
+    public static <RETURN_TYPE, ARG_TYPE> FieldStateListenerWrapper<RETURN_TYPE, ARG_TYPE> create(
+            @Nonnull FieldStateListener delegate) {
+        return new AutoValue_FieldStateListenerWrapper<RETURN_TYPE, ARG_TYPE>(delegate);
     }
 
     @Override
     public void endpointStateChanged(StateAndValue currentState) {
         FieldState state = EndpointState.toFieldState(currentState.getState());
-        delegate.fieldStateChanged(state);
+        getDelegate().fieldStateChanged(state);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        FieldStateListenerWrapper that = (FieldStateListenerWrapper) o;
-
-        return delegate.equals(that.delegate);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return delegate.hashCode();
-    }
+    abstract FieldStateListener getDelegate();
 }
