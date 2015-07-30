@@ -64,7 +64,9 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
                                   @Nonnull ErrorListenerWithArg<ARG_TYPE> errorHandler,
                                   @Nonnull ExecutorService valueGetterExecutor,
                                   @Nonnull Executor stateListenerExecutor) {
-        this.value = new CachedValue<RETURN_TYPE, ARG_TYPE>(sessionProvider, stateListenerExecutor);
+        boolean informStateListenerOnAdd = false;
+        this.value = new CachedValue<RETURN_TYPE, ARG_TYPE>(
+                sessionProvider, stateListenerExecutor, informStateListenerOnAdd);
         this.valueLoader = new ValueLoader<RETURN_TYPE, ARG_TYPE>(valueGetter,
                 successHandler, errorHandler, value, valueGetterExecutor, true);
         this.successListener = successHandler;

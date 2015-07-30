@@ -6,7 +6,6 @@ import com.byoutline.cachedfield.cachedendpoint.EndpointState
 import com.byoutline.cachedfield.cachedendpoint.EndpointStateListener
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.google.common.util.concurrent.MoreExecutors
-import spock.lang.Ignore
 import spock.lang.Shared
 
 import javax.inject.Provider
@@ -38,7 +37,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
     def "should remove state listener"() {
         given:
         EndpointState state = EndpointState.BEFORE_CALL
-        def stateListener = { newState -> state = newState } as EndpointStateListener<String, Integer>
+        def stateListener = { newState -> state = newState.getState() } as EndpointStateListener<String, Integer>
         CachedEndpointWithArg field = MockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
         field.addEndpointListener(stateListener)
         when:
@@ -66,7 +65,6 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         }
     }
 
-    @Ignore
     def "should inform endpoint state listener about current state"() {
         given:
         def stateList = new StubCachedEndpointWithArg()
@@ -87,6 +85,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         def stateList = new StubCachedEndpointWithArg()
         CachedEndpointWithArg field = MockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
         field.addEndpointListener(stateList)
+        stateList.clear()
 
         when:
         field.call(1)
@@ -104,6 +103,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         def stateList = new StubCachedEndpointWithArg()
         field.call(1)
         field.addEndpointListener(stateList)
+        stateList.clear()
 
         when:
         field.drop()
@@ -128,6 +128,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         def stateList = new StubCachedEndpointWithArg()
         field.call(1)
         field.addEndpointListener(stateList)
+        stateList.clear()
 
         when:
         // Asking for state will force CachedField to check its current state

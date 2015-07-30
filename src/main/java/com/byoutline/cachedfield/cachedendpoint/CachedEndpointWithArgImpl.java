@@ -34,7 +34,9 @@ public class CachedEndpointWithArgImpl<RETURN_TYPE, ARG_TYPE>
                                      @Nonnull ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter,
                                      @Nonnull ExecutorService valueGetterExecutor,
                                      @Nonnull Executor stateListenerExecutor) {
-        this.value = new CachedValue<RETURN_TYPE, ARG_TYPE>(sessionProvider, stateListenerExecutor);
+        boolean informStateListenerOnAdd = true;
+        this.value = new CachedValue<RETURN_TYPE, ARG_TYPE>(
+                sessionProvider, stateListenerExecutor, informStateListenerOnAdd);
         this.valueLoader = new ValueLoader<RETURN_TYPE, ARG_TYPE>(valueGetter,
                 new StubSuccessListenerWithArg<RETURN_TYPE, ARG_TYPE>(),
                 new StubErrorListenerWithArg<ARG_TYPE>(),

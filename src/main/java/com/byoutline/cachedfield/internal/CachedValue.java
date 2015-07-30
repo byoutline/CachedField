@@ -31,11 +31,14 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
             new ArrayList<EndpointStateListener<VALUE_TYPE, ARG_TYPE>>(2);
     private final Provider<String> sessionProvider;
     private final Executor stateListenerExecutor;
+    private final boolean informStateListenerOnAdd;
 
     public CachedValue(@Nonnull Provider<String> sessionProvider,
-                       @Nonnull Executor stateListenerExecutor) {
+                       @Nonnull Executor stateListenerExecutor,
+                       boolean informStateListenerOnAdd) {
         this.sessionProvider = sessionProvider;
         this.stateListenerExecutor = stateListenerExecutor;
+        this.informStateListenerOnAdd = informStateListenerOnAdd;
     }
 
     private void checkSession() {
@@ -116,6 +119,9 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     public synchronized void addStateListener(@Nonnull EndpointStateListener<VALUE_TYPE, ARG_TYPE> listener) throws IllegalArgumentException {
         checkListenerNonNull(listener);
         fieldStateListeners.add(listener);
+        if(informStateListenerOnAdd) {
+            informStateListeners(getStateAndValue());
+        }
     }
 
     /**
