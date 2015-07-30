@@ -1,8 +1,10 @@
-package com.byoutline.cachedfield.cachedendpoint;
+package com.byoutline.cachedfield.internal.cachedendpoint;
 
 import com.byoutline.cachedfield.FieldState;
 import com.byoutline.cachedfield.FieldStateListener;
-import com.byoutline.cachedfield.internal.StateAndValue;
+import com.byoutline.cachedfield.cachedendpoint.EndpointState;
+import com.byoutline.cachedfield.cachedendpoint.EndpointStateListener;
+import com.byoutline.cachedfield.cachedendpoint.StateAndValue;
 
 import javax.annotation.Nonnull;
 

@@ -1,7 +1,6 @@
 package com.byoutline.cachedfield.cachedendpoint;
 
 import com.byoutline.cachedfield.FieldState;
-import com.byoutline.cachedfield.internal.StateAndValue;
 
 /**
  * Wrapper for endpoint allowing executing calls from fragments/activities without leaking them.

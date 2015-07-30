@@ -2,9 +2,9 @@ package com.byoutline.cachedfield.cachedendpoint;
 
 import com.byoutline.cachedfield.ProviderWithArg;
 import com.byoutline.cachedfield.internal.CachedValue;
-import com.byoutline.cachedfield.internal.StateAndValue;
 import com.byoutline.cachedfield.internal.StubErrorListenerWithArg;
 import com.byoutline.cachedfield.internal.ValueLoader;
+import com.byoutline.cachedfield.internal.cachedendpoint.StubSuccessListenerWithArg;
 
 import javax.annotation.Nonnull;
 import javax.inject.Provider;

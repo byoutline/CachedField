@@ -1,4 +1,4 @@
-package com.byoutline.cachedfield.cachedendpoint;
+package com.byoutline.cachedfield.internal.cachedendpoint;
 
 import com.byoutline.cachedfield.SuccessListenerWithArg;
 

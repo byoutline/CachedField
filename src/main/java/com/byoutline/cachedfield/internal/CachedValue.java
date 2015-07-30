@@ -4,6 +4,7 @@ import com.byoutline.cachedfield.FieldState;
 import com.byoutline.cachedfield.cachedendpoint.CallResult;
 import com.byoutline.cachedfield.cachedendpoint.EndpointState;
 import com.byoutline.cachedfield.cachedendpoint.EndpointStateListener;
+import com.byoutline.cachedfield.cachedendpoint.StateAndValue;
 import com.byoutline.eventcallback.internal.SessionChecker;
 
 import javax.annotation.Nonnull;

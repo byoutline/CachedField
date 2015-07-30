@@ -1,7 +1,7 @@
 package com.byoutline.cachedfield
 
 import com.byoutline.cachedfield.cachedendpoint.EndpointStateListener
-import com.byoutline.cachedfield.internal.StateAndValue
+import com.byoutline.cachedfield.cachedendpoint.StateAndValue
 
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>

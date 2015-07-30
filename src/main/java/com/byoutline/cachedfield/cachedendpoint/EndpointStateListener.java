@@ -1,7 +1,5 @@
 package com.byoutline.cachedfield.cachedendpoint;
 
-import com.byoutline.cachedfield.internal.StateAndValue;
-
 /**
  * Listener that will be informed when call state changes(ie: from loading to
  * loaded successfully).

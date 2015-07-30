@@ -1,7 +1,4 @@
-package com.byoutline.cachedfield.internal;
-
-import com.byoutline.cachedfield.cachedendpoint.CallResult;
-import com.byoutline.cachedfield.cachedendpoint.EndpointState;
+package com.byoutline.cachedfield.cachedendpoint;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
