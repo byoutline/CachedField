@@ -2,15 +2,14 @@ package com.byoutline.cachedfield.cachedendpoint;
 
 import com.byoutline.cachedfield.ProviderWithArg;
 import com.byoutline.cachedfield.internal.CachedValue;
-import com.byoutline.cachedfield.internal.LoadThread;
 import com.byoutline.cachedfield.internal.StateAndValue;
 import com.byoutline.cachedfield.internal.StubErrorListenerWithArg;
+import com.byoutline.cachedfield.internal.ValueLoader;
 
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 /**
  * @param <RETURN_TYPE> Type of value to be cached
@@ -19,11 +18,8 @@ import java.util.concurrent.Future;
  */
 public class CachedEndpointWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedEndpointWithArg<RETURN_TYPE, ARG_TYPE> {
 
-    private final ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter;
     private final CachedValue<RETURN_TYPE, ARG_TYPE> value;
-    private final ExecutorService valueGetterExecutor;
-    private LoadThread fetchThread;
-    private Future fetchFuture;
+    private final ValueLoader<RETURN_TYPE, ARG_TYPE> valueLoader;
 
     /**
      * @param sessionProvider       Provider that returns String unique for current
@@ -38,8 +34,10 @@ public class CachedEndpointWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedE
                                      @Nonnull ExecutorService valueGetterExecutor,
                                      @Nonnull Executor stateListenerExecutor) {
         this.value = new CachedValue<RETURN_TYPE, ARG_TYPE>(sessionProvider, stateListenerExecutor);
-        this.valueGetter = valueGetter;
-        this.valueGetterExecutor = valueGetterExecutor;
+        this.valueLoader = new ValueLoader<RETURN_TYPE, ARG_TYPE>(valueGetter,
+                new StubSuccessListenerWithArg<RETURN_TYPE, ARG_TYPE>(),
+                new StubErrorListenerWithArg<ARG_TYPE>(),
+                value, valueGetterExecutor, false);
     }
 
 
@@ -52,20 +50,7 @@ public class CachedEndpointWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedE
      * Loads value in separate thread.
      */
     private void loadValue(final ARG_TYPE arg) {
-        if (fetchFuture != null) {
-            // Cancel thread if it was not yet starter.
-            fetchFuture.cancel(false);
-            // If thread was cancelled before it was started inform error listeners.
-            if (fetchThread != null) {
-                fetchThread.interruptAndInformListenersIfNeeded();
-            }
-        }
-        // We use thread instead of pure runnable so we can interrupt loading.
-        fetchThread = new LoadThread<RETURN_TYPE, ARG_TYPE>(valueGetter,
-                new StubSuccessListenerWithArg<RETURN_TYPE, ARG_TYPE>(),
-                new StubErrorListenerWithArg<ARG_TYPE>(),
-                value, arg);
-        fetchFuture = valueGetterExecutor.submit(fetchThread);
+        valueLoader.loadValue(arg);
     }
 
     @Override
@@ -87,5 +72,4 @@ public class CachedEndpointWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedE
     public boolean removeEndpointListener(@Nonnull EndpointStateListener<RETURN_TYPE, ARG_TYPE> listener) throws IllegalArgumentException {
         return value.removeStateListener(listener);
     }
-
 }

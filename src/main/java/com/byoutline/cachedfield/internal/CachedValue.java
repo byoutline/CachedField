@@ -64,10 +64,6 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
         setState(EndpointState.CALL_FAILED);
     }
 
-    public synchronized void valueLoadingFailed() {
-        drop();
-    }
-
     public synchronized void drop() {
         successValue = null;
         errorValue = null;
