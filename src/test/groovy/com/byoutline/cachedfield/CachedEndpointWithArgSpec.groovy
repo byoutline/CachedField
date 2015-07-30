@@ -80,7 +80,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         stateList.postedArgs == [null]
     }
 
-    def "should inform endpoint state listener about changes on call"() {
+    def "should inform endpoint state listener about changes on successful call"() {
         given:
         def stateList = new StubCachedEndpointWithArg()
         CachedEndpointWithArg field = MockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
@@ -95,6 +95,28 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         stateList.postedSuccess == [null, 'a']
         stateList.postedFailure == [null, null]
         stateList.postedArgs == [1, 1]
+    }
+
+    def "should inform endpoint state listener about changes on failed call"() {
+        given:
+        def stateList = new StubCachedEndpointWithArg()
+        def ex = new IllegalArgumentException("test")
+        CachedEndpointWithArg field = new CachedEndpointWithArgImpl(
+                MockFactory.getSameSessionIdProvider(),
+                { key -> throw ex } as ProviderWithArg<String, Integer>,
+                MoreExecutors.newDirectExecutorService(),
+                DefaultExecutors.createDefaultStateListenerExecutor())
+        field.addEndpointListener(stateList)
+        stateList.clear()
+
+        when:
+        field.call(3)
+
+        then:
+        stateList.postedStates == [EndpointState.DURING_CALL, EndpointState.CALL_FAILED]
+        stateList.postedSuccess == [null, null]
+        stateList.postedFailure == [null, ex]
+        stateList.postedArgs == [3, 3]
     }
 
     def "should inform endpoint state listener about changes on drop"() {
