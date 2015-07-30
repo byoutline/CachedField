@@ -86,7 +86,7 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
             return;
         }
         StateAndValue<RETURN_TYPE, ARG_TYPE> stateAndValue = value.getStateAndValue();
-        FieldState state = EndpointState.toFieldState(stateAndValue.state);
+        FieldState state = EndpointState.toFieldState(stateAndValue.getState());
         switch (state) {
             case NOT_LOADED:
                 refresh(arg);
@@ -95,7 +95,7 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
                 // Event will be posted when value is fully loaded.
                 break;
             case LOADED:
-                successListener.valueLoaded(stateAndValue.value.getSuccessResult(), stateAndValue.arg);
+                successListener.valueLoaded(stateAndValue.getValue().getSuccessResult(), stateAndValue.getArg());
                 break;
         }
     }
@@ -114,7 +114,7 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
 
     @Override
     public FieldState getState() {
-        return EndpointState.toFieldState(value.getStateAndValue().state);
+        return EndpointState.toFieldState(value.getStateAndValue().getState());
     }
 
     @Override

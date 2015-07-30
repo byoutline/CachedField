@@ -18,7 +18,7 @@ public class FieldStateListenerWrapper<RETURN_TYPE, ARG_TYPE> implements Endpoin
 
     @Override
     public void endpointStateChanged(StateAndValue currentState) {
-        FieldState state = EndpointState.toFieldState(currentState.state);
+        FieldState state = EndpointState.toFieldState(currentState.getState());
         delegate.fieldStateChanged(state);
     }
 

@@ -1,5 +1,7 @@
 package com.byoutline.cachedfield.cachedendpoint;
 
+import com.google.auto.value.AutoValue;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -8,23 +10,21 @@ import javax.annotation.Nullable;
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class StateAndValue<VALUE_TYPE, ARG_TYPE> {
+@AutoValue
+public abstract class StateAndValue<VALUE_TYPE, ARG_TYPE> {
+
+    public static <VALUE_TYPE, ARG_TYPE> StateAndValue<VALUE_TYPE, ARG_TYPE> create(@Nonnull EndpointState state,
+                                                              @Nonnull CallResult<VALUE_TYPE> value,
+                                                              @Nullable ARG_TYPE arg) {
+        return new AutoValue_StateAndValue<VALUE_TYPE, ARG_TYPE>(state, value, arg);
+    }
 
     @Nonnull
-    public final EndpointState state;
+    public abstract EndpointState getState();
+
     @Nonnull
-    public final CallResult<VALUE_TYPE> value;
+    public abstract CallResult<VALUE_TYPE> getValue();
+
     @Nullable
-    public final ARG_TYPE arg;
-
-    public StateAndValue(@Nonnull EndpointState state, @Nonnull CallResult<VALUE_TYPE> value, @Nullable ARG_TYPE arg) {
-        this.state = state;
-        this.value = value;
-        this.arg = arg;
-    }
-
-    @Override
-    public String toString() {
-        return "StateAndValue{" + "state=" + state + ", value=" + value + ", arg=" + arg + '}';
-    }
+    public abstract ARG_TYPE getArg();
 }

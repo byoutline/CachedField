@@ -78,7 +78,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     }
 
     private StateAndValue<VALUE_TYPE, ARG_TYPE> getStateAndValueWithoutSessionCheck() {
-        return new StateAndValue<VALUE_TYPE, ARG_TYPE>(fieldState, CallResult.<VALUE_TYPE>create(successValue, errorValue), arg);
+        return StateAndValue.<VALUE_TYPE, ARG_TYPE>create(fieldState, CallResult.<VALUE_TYPE>create(successValue, errorValue), arg);
     }
 
     private void setState(EndpointState newState) {
