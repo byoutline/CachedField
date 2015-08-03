@@ -67,5 +67,5 @@ If you prefer to have more control over Threads on which value loading (or calli
 #### Including in projects ####
 Add as a dependency to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.cachedfield:cachedfield:1.4.1'
+compile 'com.byoutline.cachedfield:cachedfield:1.5.0'
 ```
