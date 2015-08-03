@@ -3,7 +3,6 @@ package com.byoutline.cachedfield.cachedendpoint;
 import com.byoutline.cachedfield.ProviderWithArg;
 import com.byoutline.cachedfield.internal.CachedValue;
 import com.byoutline.cachedfield.internal.ValueLoader;
-import com.byoutline.cachedfield.internal.cachedendpoint.CallEndListener;
 import com.byoutline.cachedfield.internal.cachedendpoint.CallEndWrapperWithArg;
 
 import javax.annotation.Nonnull;

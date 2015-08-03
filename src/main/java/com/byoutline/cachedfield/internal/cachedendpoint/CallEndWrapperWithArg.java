@@ -2,6 +2,7 @@ package com.byoutline.cachedfield.internal.cachedendpoint;
 
 import com.byoutline.cachedfield.ErrorListenerWithArg;
 import com.byoutline.cachedfield.SuccessListenerWithArg;
+import com.byoutline.cachedfield.cachedendpoint.CallEndListener;
 import com.byoutline.cachedfield.cachedendpoint.CallResult;
 import com.byoutline.cachedfield.cachedendpoint.EndpointState;
 import com.byoutline.cachedfield.cachedendpoint.StateAndValue;
