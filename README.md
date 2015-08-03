@@ -63,6 +63,21 @@ thread without blocking it(with possible exception of your state lister blocking
 If you prefer to have more control over Threads on which value loading (or calling state listeners) is executed
 ```CachedFieldImpl``` accepts ```ExecutorService``` and ```Executor``` as arguments in constructor.
 
+#### CachedEndpoint ####
+If you have API calls that do not fit into ```CachedField``` (most of non GET calls) you may prefer to use
+```CachedEndpoint``` instead. 
+
+```CachedEndpoint``` differences compared to```CachedField```(other than different names and packages):
+  * ```call()``` will always make an API call 
+  (even if value was already loaded with same arguments - like ```refresh()```)
+  * After failed call value is not dropped, and instead ```Exception``` is cached.
+  * ```EndpointState``` compared to ```FieldState``` have additional state ```CALL_FAILED```
+  * Instead of separate ```ErrorListener``` and ```SuccessListener``` there is only one ```CallEndListener```
+  * Cached value can be read directly by ```getStateAndValue()```
+  * Adding ```EndpointStateListener``` results in it being informed about current state and value
+  
+Some of the ```CachedEndpoint``` specification is still not decided (mostly behaviour with multiple concurrent calls
+  to one endpoint). Therefore it should be considered beta feature, as the behaviour  may be adjusted in the future.
 
 #### Including in projects ####
 Add as a dependency to your ```build.gradle```:
