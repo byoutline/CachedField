@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class LoadThread<RETURN_TYPE, ARG_TYPE> extends Thread {
+class LoadThread<RETURN_TYPE, ARG_TYPE> extends Thread {
     private final ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter;
     private final SuccessListenerWithArg<RETURN_TYPE, ARG_TYPE> successListener;
     private final ErrorListenerWithArg<ARG_TYPE> errorListener;
