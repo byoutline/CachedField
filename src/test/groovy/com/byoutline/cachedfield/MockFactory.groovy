@@ -1,11 +1,11 @@
 package com.byoutline.cachedfield
 
 import com.byoutline.cachedfield.cachedendpoint.CachedEndpointWithArgImpl
+import com.byoutline.cachedfield.cachedendpoint.CallEndListener
 import com.byoutline.cachedfield.cachedendpoint.StateAndValue
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.byoutline.cachedfield.internal.StubErrorListener
 import com.byoutline.cachedfield.internal.StubFieldStateListener
-import com.byoutline.cachedfield.internal.cachedendpoint.CallEndListener
 import com.google.common.util.concurrent.MoreExecutors
 
 import javax.inject.Provider
