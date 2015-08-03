@@ -12,6 +12,17 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
 /**
+ * Wrapper for endpoint allowing executing calls from fragments/activities without leaking them.
+ * <p>
+ * Other than cache it also provides:
+ * <ul>
+ * <li>session checks(dropping cache if session was changed)</li>
+ * <li>informing {@link EndpointStateListener} when call occurs which allows showing progress in ui</li>
+ * <li>customizing {@link Executor}s for making call and informing state listeners for easier testing and
+ * ui callbacks</li>
+ * </ul>
+ * </p>
+ *
  * @param <RETURN_TYPE> Type of value to be cached
  * @param <ARG_TYPE>    Argument needed to calculate value.
  * @author Sebastian Kacprzak <nait at naitbit.com>
