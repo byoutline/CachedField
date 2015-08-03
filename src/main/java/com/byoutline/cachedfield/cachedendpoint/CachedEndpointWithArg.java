@@ -1,26 +1,17 @@
-package com.byoutline.cachedfield;
+package com.byoutline.cachedfield.cachedendpoint;
+
+import com.byoutline.cachedfield.FieldState;
 
 /**
- * Field of which getting value takes time (because it is downloaded from remote
- * source, or needs heavy calculations), so it is wrapped for caching.
+ * Wrapper for endpoint allowing executing calls from fragments/activities without leaking them.
  *
  * @param <RETURN_TYPE> Type of cached value.
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public interface CachedField<RETURN_TYPE> {
+public interface CachedEndpointWithArg<RETURN_TYPE, ARG_TYPE> {
+    StateAndValue<RETURN_TYPE, ARG_TYPE> getStateAndValue();
 
-    FieldState getState();
-
-    /**
-     * Informs {@link SuccessListener} when value is ready.
-     */
-    void postValue();
-
-    /**
-     * Force value to refresh(be fetched again from remote source or calculated
-     * again).
-     */
-    void refresh();
+    void call(ARG_TYPE arg);
 
     /**
      * Forget cached value, so memory can be reclaimed.
@@ -34,7 +25,7 @@ public interface CachedField<RETURN_TYPE> {
      * @param listener
      * @throws IllegalArgumentException if listener is null
      */
-    void addStateListener(FieldStateListener listener);
+    void addEndpointListener(EndpointStateListener<RETURN_TYPE, ARG_TYPE> listener);
 
     /**
      * Remove field state listener.
@@ -44,5 +35,5 @@ public interface CachedField<RETURN_TYPE> {
      * false otherwise
      * @throws IllegalArgumentException if listener is null
      */
-    boolean removeStateListener(FieldStateListener listener);
+    boolean removeEndpointListener(EndpointStateListener<RETURN_TYPE, ARG_TYPE> listener);
 }

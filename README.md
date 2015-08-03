@@ -63,27 +63,24 @@ thread without blocking it(with possible exception of your state lister blocking
 If you prefer to have more control over Threads on which value loading (or calling state listeners) is executed
 ```CachedFieldImpl``` accepts ```ExecutorService``` and ```Executor``` as arguments in constructor.
 
+#### CachedEndpoint ####
+If you have API calls that do not fit into ```CachedField``` (most of non GET calls) you may prefer to use
+```CachedEndpoint``` instead. 
+
+```CachedEndpoint``` differences compared to```CachedField```(other than different names and packages):
+  * ```call()``` will always make an API call 
+  (even if value was already loaded with same arguments - like ```refresh()```)
+  * After failed call value is not dropped, and instead ```Exception``` is cached.
+  * ```EndpointState``` compared to ```FieldState``` have additional state ```CALL_FAILED```
+  * Instead of separate ```ErrorListener``` and ```SuccessListener``` there is only one ```CallEndListener```
+  * Cached value can be read directly by ```getStateAndValue()```
+  * Adding ```EndpointStateListener``` results in it being informed about current state and value
+  
+Some of the ```CachedEndpoint``` specification is still not decided (mostly behaviour with multiple concurrent calls
+  to one endpoint). Therefore it should be considered beta feature, as the behaviour  may be adjusted in the future.
 
 #### Including in projects ####
 Add as a dependency to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.cachedfield:cachedfield:1.4.1'
+compile 'com.byoutline.cachedfield:cachedfield:1.5.0'
 ```
-
-#### Latest changes ####
-* 1.4.1 Renamed inconsistently named of ```DbSaverWithArg``` to ```DbWriterWithArg```
-* 1.4.0 
-  * Added support for providing custom ```ExecutorService```/```Executor``` for value loading and state listener calls
-  * Added DB Cache utils - You can use ```DbCachedValueProvider```/```DbCachedValueProviderWithArg``` to combine
-  steps of fetching data from API, saving it to db, and loading it from DB. It allows later to decide whether you
-  want to reload data from API or from DB by passing ```FetchType.API``` or ```FetchType.DB``` as argument to ```post```
-  and ```reload```
- 
-* 1.3.4 Build script refactor. Should not change public API.
-* 1.3.3 Java 1.6 compatibility
-* 1.3.2 
-  * Added ```CachedFieldWithArg``` that allows to pass argument to value Provider. 
-  * Changed ```FieldStateListener``` api from requiring it in constructor to more traditional add/remove listener.
-* 1.3.1 Added ability to pass ```FieldStateListener``` to constructor that will be informed each time CachedField state changes. 
-That can be useful for displaying busy indicator in graphical applications.
-* 1.3.0 Added method ```drop()``` that can be used to force clear a cached value. That can be used when fe: system runs low on memory.

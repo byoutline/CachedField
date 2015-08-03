@@ -5,7 +5,7 @@ package com.byoutline.cachedfield;
  * source, or needs heavy calculations), so it is wrapped for caching.
  *
  * @param <RETURN_TYPE> Type of cached value.
- * @param <ARG_TYPE> Argument needed to calculate value.
+ * @param <ARG_TYPE>    Argument needed to calculate value.
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public interface CachedFieldWithArg<RETURN_TYPE, ARG_TYPE> {

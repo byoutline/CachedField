@@ -25,32 +25,32 @@ public class CachedFieldImpl<RETURN_TYPE> implements CachedField<RETURN_TYPE> {
      * successfully calculated values.
      *
      * @param sessionProvider Provider that returns String unique for current
-     * session. When session changes cached value will be dropped.
-     * @param valueGetter Provider that synchronously calculates/fetches value
-     * and returns it.
+     *                        session. When session changes cached value will be dropped.
+     * @param valueGetter     Provider that synchronously calculates/fetches value
+     *                        and returns it.
      * @param successListener Listener that will be informed when value is
-     * successfully calculated.
+     *                        successfully calculated.
      */
     public CachedFieldImpl(@Nonnull Provider<String> sessionProvider,
-            @Nonnull Provider<RETURN_TYPE> valueGetter,
-            @Nonnull SuccessListener<RETURN_TYPE> successListener) {
+                           @Nonnull Provider<RETURN_TYPE> valueGetter,
+                           @Nonnull SuccessListener<RETURN_TYPE> successListener) {
         this(sessionProvider, valueGetter, successListener, new StubErrorListener());
     }
 
     /**
      * @param sessionProvider Provider that returns String unique for current
-     * session. When session changes cached value will be dropped.
-     * @param valueGetter Provider that synchronously calculates/fetches value
-     * and returns it.
-     * @param successHandler Listener that will be informed when value is
-     * successfully calculated.
-     * @param errorHandler Listener that will be be informed when calculation of
-     * value fails.
+     *                        session. When session changes cached value will be dropped.
+     * @param valueGetter     Provider that synchronously calculates/fetches value
+     *                        and returns it.
+     * @param successHandler  Listener that will be informed when value is
+     *                        successfully calculated.
+     * @param errorHandler    Listener that will be be informed when calculation of
+     *                        value fails.
      */
     public CachedFieldImpl(@Nonnull Provider<String> sessionProvider,
-            @Nonnull Provider<RETURN_TYPE> valueGetter,
-            @Nonnull SuccessListener<RETURN_TYPE> successHandler,
-            @Nonnull ErrorListener errorHandler) {
+                           @Nonnull Provider<RETURN_TYPE> valueGetter,
+                           @Nonnull SuccessListener<RETURN_TYPE> successHandler,
+                           @Nonnull ErrorListener errorHandler) {
         this(sessionProvider, valueGetter, successHandler, errorHandler,
                 DefaultExecutors.createDefaultValueGetterExecutor(),
                 DefaultExecutors.createDefaultStateListenerExecutor());
