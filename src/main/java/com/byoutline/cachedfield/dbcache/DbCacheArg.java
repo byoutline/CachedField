@@ -1,43 +1,25 @@
 package com.byoutline.cachedfield.dbcache;
 
+import com.google.auto.value.AutoValue;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
+ * Simple storage of base argument, and a {@link FetchType}. Equals and hashcode compares both values.
+ *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class DbCacheArg<ARG_TYPE> {
-    private final ARG_TYPE arg;
-    private final FetchType fetchType;
+@AutoValue
+public abstract class DbCacheArg<ARG_TYPE> {
 
-    public DbCacheArg(ARG_TYPE arg, @Nonnull FetchType fetchType) {
-        this.arg = arg;
-        this.fetchType = fetchType;
+    public static <ARG_TYPE> DbCacheArg<ARG_TYPE> create(@Nullable ARG_TYPE arg, @Nonnull FetchType fetchType) {
+        return new AutoValue_DbCacheArg<ARG_TYPE>(arg, fetchType);
     }
 
-    public ARG_TYPE getArg() {
-        return arg;
-    }
+    @Nullable
+    public abstract ARG_TYPE getArg();
 
-    public FetchType getFetchType() {
-        return fetchType;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DbCacheArg<?> that = (DbCacheArg<?>) o;
-
-        if (!arg.equals(that.arg)) return false;
-        return fetchType == that.fetchType;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = arg.hashCode();
-        result = 31 * result + (fetchType != null ? fetchType.hashCode() : 0);
-        return result;
-    }
+    @Nonnull
+    public abstract FetchType getFetchType();
 }

@@ -7,7 +7,8 @@ import java.util.concurrent.Executors;
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class DefaultExecutors {
+public final class DefaultExecutors {
+
     public static Executor createDefaultStateListenerExecutor() {
         // Execute on same thread.
         return new Executor() {

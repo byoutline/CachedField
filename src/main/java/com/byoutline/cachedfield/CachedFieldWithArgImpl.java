@@ -1,14 +1,15 @@
 package com.byoutline.cachedfield;
 
+import com.byoutline.cachedfield.cachedendpoint.EndpointState;
+import com.byoutline.cachedfield.cachedendpoint.StateAndValue;
 import com.byoutline.cachedfield.internal.CachedValue;
-import com.byoutline.cachedfield.internal.LoadThread;
-import com.byoutline.cachedfield.internal.StateAndValue;
+import com.byoutline.cachedfield.internal.ValueLoader;
+import com.byoutline.cachedfield.internal.cachedendpoint.FieldStateListenerWrapper;
 
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 import static com.byoutline.cachedfield.internal.DefaultExecutors.createDefaultStateListenerExecutor;
 import static com.byoutline.cachedfield.internal.DefaultExecutors.createDefaultValueGetterExecutor;
@@ -23,13 +24,9 @@ import static com.byoutline.cachedfield.internal.DefaultExecutors.createDefaultV
  */
 public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFieldWithArg<RETURN_TYPE, ARG_TYPE> {
 
-    private final ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter;
     private final SuccessListenerWithArg<RETURN_TYPE, ARG_TYPE> successListener;
-    private final ErrorListenerWithArg<ARG_TYPE> errorListener;
     private final CachedValue<RETURN_TYPE, ARG_TYPE> value;
-    private final ExecutorService valueGetterExecutor;
-    private LoadThread fetchThread;
-    private Future fetchFuture;
+    private final ValueLoader<RETURN_TYPE, ARG_TYPE> valueLoader;
 
     /**
      * @param sessionProvider Provider that returns String unique for current
@@ -67,11 +64,12 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
                                   @Nonnull ErrorListenerWithArg<ARG_TYPE> errorHandler,
                                   @Nonnull ExecutorService valueGetterExecutor,
                                   @Nonnull Executor stateListenerExecutor) {
-        this.value = new CachedValue<RETURN_TYPE, ARG_TYPE>(sessionProvider, stateListenerExecutor);
-        this.valueGetter = valueGetter;
+        boolean informStateListenerOnAdd = false;
+        this.value = new CachedValue<RETURN_TYPE, ARG_TYPE>(
+                sessionProvider, stateListenerExecutor, informStateListenerOnAdd);
+        this.valueLoader = new ValueLoader<RETURN_TYPE, ARG_TYPE>(valueGetter,
+                successHandler, errorHandler, value, valueGetterExecutor, true);
         this.successListener = successHandler;
-        this.errorListener = errorHandler;
-        this.valueGetterExecutor = valueGetterExecutor;
     }
 
     private boolean argChanged(ARG_TYPE newArg) {
@@ -90,7 +88,8 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
             return;
         }
         StateAndValue<RETURN_TYPE, ARG_TYPE> stateAndValue = value.getStateAndValue();
-        switch (stateAndValue.state) {
+        FieldState state = EndpointState.toFieldState(stateAndValue.getState());
+        switch (state) {
             case NOT_LOADED:
                 refresh(arg);
                 break;
@@ -98,37 +97,19 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
                 // Event will be posted when value is fully loaded.
                 break;
             case LOADED:
-                successListener.valueLoaded(stateAndValue.value, stateAndValue.arg);
+                successListener.valueLoaded(stateAndValue.getValue().getSuccessResult(), stateAndValue.getArg());
                 break;
         }
     }
 
     @Override
     public void refresh(ARG_TYPE arg) {
-        loadValue(arg);
-    }
-
-    /**
-     * Loads value in separate thread.
-     */
-    private void loadValue(final ARG_TYPE arg) {
-        if (fetchFuture != null) {
-            // Cancel thread if it was not yet starter.
-            fetchFuture.cancel(false);
-            // If thread was cancelled before it was started inform error listeners.
-            if (fetchThread != null) {
-                fetchThread.interruptAndInformListenersIfNeeded();
-            }
-        }
-        // We use thread instead of pure runnable so we can interrupt loading.
-        fetchThread = new LoadThread<RETURN_TYPE, ARG_TYPE>(valueGetter,
-                successListener, errorListener, value, arg);
-        fetchFuture = valueGetterExecutor.submit(fetchThread);
+        valueLoader.loadValue(arg);
     }
 
     @Override
     public FieldState getState() {
-        return value.getStateAndValue().state;
+        return EndpointState.toFieldState(value.getStateAndValue().getState());
     }
 
     @Override
@@ -138,12 +119,11 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
 
     @Override
     public void addStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
-        value.addStateListener(listener);
+        value.addStateListener(FieldStateListenerWrapper.<RETURN_TYPE, ARG_TYPE>create(listener));
     }
 
     @Override
     public boolean removeStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
-        return value.removeStateListener(listener);
+        return value.removeStateListener(FieldStateListenerWrapper.<RETURN_TYPE, ARG_TYPE>create(listener));
     }
-
 }

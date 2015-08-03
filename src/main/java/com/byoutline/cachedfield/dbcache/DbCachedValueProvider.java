@@ -31,6 +31,6 @@ public class DbCachedValueProvider<API_RETURN_TYPE, DB_RETURN_TYPE> implements P
 
     @Override
     public DB_RETURN_TYPE get(FetchType arg) {
-        return delegate.get(new DbCacheArg<Void>(null, arg));
+        return delegate.get(DbCacheArg.<Void>create(null, arg));
     }
 }
