@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Simple storage of value and state.
+ * Simple storage of value and state. Equals and hashcode compares all values.
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */

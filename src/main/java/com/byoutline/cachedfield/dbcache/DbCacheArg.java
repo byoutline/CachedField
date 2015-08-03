@@ -6,6 +6,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
+ * Simple storage of base argument, and a {@link FetchType}. Equals and hashcode compares both values.
+ *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 @AutoValue
