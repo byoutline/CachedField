@@ -1,14 +1,17 @@
 apply plugin: 'java'
+apply plugin: 'propdeps'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'http://repo.spring.io/plugins-release' }
     }
 
     dependencies {
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1'
+        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
     }
 }
 
@@ -18,13 +21,6 @@ repositories {
     mavenCentral()
 //    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
-
-configurations {
-    provided
-}
-
-sourceSets.main.compileClasspath += configurations.provided
-javadoc.classpath += configurations.provided
 
 dependencies {
     compile 'javax.inject:javax.inject:1'
