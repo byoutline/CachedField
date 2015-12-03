@@ -1,3 +1,4 @@
+* 1.5.1 Lower method count of dependencies.
 * 1.5.0 Added CachedEndpointWithArg to allow using ```CachedField``` like API for non ```GET``` calls.
 * 1.4.1 Renamed inconsistently named of ```DbSaverWithArg``` to ```DbWriterWithArg```
 * 1.4.0 
