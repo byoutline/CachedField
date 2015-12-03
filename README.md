@@ -79,8 +79,18 @@ If you have API calls that do not fit into ```CachedField``` (most of non GET ca
 Some of the ```CachedEndpoint``` specification is still not decided (mostly behaviour with multiple concurrent calls
   to one endpoint). Therefore it should be considered beta feature, as the behaviour  may be adjusted in the future.
 
+#### Session Id ####
+Passing a provider of session id to CachedField allows it to check if cached value is still valid. For example
+it will ensure that when user switches accounts data from old account will never be shown (even if it arrives after
+account switch). Depending on application either session token, user name, or even empty string may be valid for this check.
+As `sessionProvider` is standard [Provider](https://docs.oracle.com/javaee/7/api/javax/inject/Provider.html) you
+may use Dependency Injection like [Dagger](https://google.github.io/dagger/) to create it ([example](https://github.com/byoutline/kickmaterial/blob/ee314bff89335c7186df56f0b9fe578b81e7b6d6/app/src/main/java/com/byoutline/kickmaterial/dagger/AppModule.java))
+By default `sessionProvider` must be passed to `CachedFieldImpl` constructor, but some libraries like [OttoCachedField](https://github.com/byoutline/OttoCachedField)
+allow to set default provider for whole project.
+ 
+
 #### Including in projects ####
 Add as a dependency to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.cachedfield:cachedfield:1.5.0'
+compile 'com.byoutline.cachedfield:cachedfield:1.5.1'
 ```
