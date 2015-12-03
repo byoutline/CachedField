@@ -92,5 +92,5 @@ allow to set default provider for whole project.
 #### Including in projects ####
 Add as a dependency to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.cachedfield:cachedfield:1.5.0'
+compile 'com.byoutline.cachedfield:cachedfield:1.5.1'
 ```
