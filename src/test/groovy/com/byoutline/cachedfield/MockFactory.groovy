@@ -69,6 +69,16 @@ static ExecutorService getAsyncFirstTaskSyncOtherExecutorService() {
     ] as ExecutorService
 }
 
+static CachedField<String> getCachedFieldBlockingVal() {
+    return new CachedFieldImpl<String>(
+            getSameSessionIdProvider(),
+            getStringGetter("val"),
+            getSuccessListener(),
+            {} as ErrorListener,
+            MoreExecutors.newDirectExecutorService(),
+            DefaultExecutors.createDefaultStateListenerExecutor())
+}
+
 static CachedField<String> getCachedField(String value, ErrorListener errorHandler) {
     return new CachedFieldImpl<String>(
             getSameSessionIdProvider(),
@@ -120,6 +130,10 @@ static CallEndListener<String, Integer> getStubCallEndListener() {
     {StateAndValue<String, Integer> callResult -> } as CallEndListener<String, Integer>
 }
 
+static CachedEndpointWithArgImpl<String, Integer> getCachedEndpointBlockingVal() {
+    return getCachedEndpointBlockingValueProv([arg: 'val'] as Map<Integer, String>)
+}
+
 static CachedEndpointWithArgImpl<String, Integer> getCachedEndpoint(Map<Integer, String> argToValueMap) {
     return new CachedEndpointWithArgImpl(
             getSameSessionIdProvider(),
@@ -147,6 +161,10 @@ static CachedEndpointWithArgImpl<String, Integer> getCachedEndpointBlocking(Map<
             MoreExecutors.newDirectExecutorService(),
             { it.run() } as Executor
     )
+}
+
+static CachedFieldWithArg getCachedFieldWithArgBlockingVal() {
+    return getCachedFieldWithArg([arg: 'val'] as Map<Integer, String>, MoreExecutors.newDirectExecutorService())
 }
 
 static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueMap) {

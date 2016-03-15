@@ -50,8 +50,8 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
 
     public synchronized void loadingStarted(ARG_TYPE arg) {
         this.arg = arg;
-        setState(EndpointState.DURING_CALL);
         this.valueSession = sessionProvider.get();
+        setState(EndpointState.DURING_CALL);
     }
 
     public synchronized void setSuccess(VALUE_TYPE value, ARG_TYPE arg) {
@@ -72,6 +72,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
         successValue = null;
         errorValue = null;
         arg = null;
+        valueSession = null;
         setState(EndpointState.BEFORE_CALL);
     }
 
