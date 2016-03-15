@@ -16,14 +16,14 @@ buildscript {
 
 repositories {
     mavenCentral()
-    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+//    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
     provided files('libs/espresso-idling-resource-2.2-release-no-dep.jar')
     provided 'com.google.android:android:4.1.1.4'
 
-    compile 'com.byoutline.cachedfield:cachedfield:1.5.2-SNAPSHOT'
+    compile 'com.byoutline.cachedfield:cachedfield:1.5.2'
 }
 
 
