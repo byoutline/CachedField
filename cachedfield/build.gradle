@@ -15,7 +15,7 @@ buildscript {
     }
 }
 
-apply from: 'gradle/byoutline/javaLib.gradle'
+apply from: '../gradle/byoutline/javaLib.gradle'
 
 repositories {
     mavenCentral()
@@ -32,4 +32,4 @@ dependencies {
     testCompile 'com.google.guava:guava:18.0'
 }
 
-apply from: 'maven-push.gradle'
+apply from: '../maven-push.gradle'
