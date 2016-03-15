@@ -90,7 +90,7 @@ allow to set default provider for whole project.
  
 #### Testing with Espresso on Android ####
 For instrumented tests on Android you may want to register your Cached Fields/Endpoints as 
-[IdlingResources](https://developer.android.com/reference/android/support/test/espresso/IdlingResource.html)
+[IdlingResources](https://developer.android.com/reference/android/support/test/espresso/IdlingResource.html).
 Easiest way to do that is creating with `CachedFieldIdlingResource.from` method that takes any amount of 
 Cached Fields/Endpoints and notifies Espresso when any of them is working. 
 For example your test set up may look like this:
