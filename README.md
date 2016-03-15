@@ -88,9 +88,30 @@ may use Dependency Injection like [Dagger](https://google.github.io/dagger/) to 
 By default `sessionProvider` must be passed to `CachedFieldImpl` constructor, but some libraries like [OttoCachedField](https://github.com/byoutline/OttoCachedField)
 allow to set default provider for whole project.
  
+#### Testing with Espresso on Android ####
+For instrumented tests on Android you may want to register your Cached Fields/Endpoints as 
+[IdlingResources](https://developer.android.com/reference/android/support/test/espresso/IdlingResource.html).
+Easiest way to do that is creating with `CachedFieldIdlingResource.from` method that takes any amount of 
+Cached Fields/Endpoints and notifies Espresso when any of them is working. 
+For example your test set up may look like this:
+
+```java
+private CachedFieldIdlingResource cachedFieldIdlingResource;
+
+@Before
+public void registerIdlingResources() {
+    cachedFieldIdlingResource = CachedFieldIdlingResource.from(field1, field2, field3);
+    Espresso.registerIdlingResources(cachedFieldIdlingResource);
+}
+
+@After
+public void unregisterIdlingResources() {
+    Espresso.unregisterIdlingResources(cachedFieldIdlingResource);
+}
+```
 
 #### Including in projects ####
 Add as a dependency to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.cachedfield:cachedfield:1.5.1'
+compile 'com.byoutline.cachedfield:cachedfield:1.5.2'
 ```
