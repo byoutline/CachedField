@@ -44,14 +44,31 @@ class CachedFieldsListenerSpec extends Specification {
     def "endpoint should notify about field starting to load"() {
         given:
         def listenerStates = []
-        def field = MockFactory.getCachedFieldWithArgBlockingVal()
+        def field = MockFactory.getCachedEndpointBlockingVal()
         def instance = CachedFieldsListener.from(field)
         instance.setListener { listenerStates.add(it) }
 
         when:
-        field.postValue(3)
+        field.call(3)
 
         then:
         listenerStates == [true, false]
+    }
+
+    def "getRegisterCount should contain counts of fields"() {
+        given:
+        def instance = CachedFieldsListener.from(
+                [MockFactory.getCachedFieldBlockingVal(), MockFactory.getCachedFieldBlockingVal(), MockFactory.getCachedFieldBlockingVal()],
+                [MockFactory.getCachedFieldWithArgBlockingVal(), MockFactory.getCachedFieldWithArgBlockingVal()],
+                [MockFactory.getCachedEndpointBlockingVal()]
+        )
+
+        when:
+        def result = instance.getRegisterCount()
+
+        then:
+        result.contains('3')
+        result.contains('2')
+        result.contains('1')
     }
 }

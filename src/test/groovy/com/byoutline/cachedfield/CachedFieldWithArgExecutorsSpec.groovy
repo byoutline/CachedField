@@ -78,7 +78,7 @@ class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
         field.postValue(10000)
         // Give some (minimal) time to propagate Thread.interrupt, since we
         // are running this post synchronously.
-        field.postValue(1)
+        field.postValue(2)
 
         then:
         valueLoadingInterrupted
