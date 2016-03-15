@@ -26,9 +26,9 @@ public class CachedFieldsListener implements FieldStateListener, EndpointStateLi
     public CachedFieldsListener(Collection<CachedField> fieldsNoArgs,
                                 Collection<CachedFieldWithArg> fields,
                                 Collection<CachedEndpointWithArg> endpoints) {
-        this.fieldsNoArgs = fieldsNoArgs;
-        this.fields = fields;
-        this.endpoints = endpoints;
+        this.fieldsNoArgs = new ArrayList<CachedField>(fieldsNoArgs);
+        this.fields = new ArrayList<CachedFieldWithArg>(fields);
+        this.endpoints = new ArrayList<CachedEndpointWithArg>(endpoints);
     }
 
     @SuppressWarnings("unchecked")

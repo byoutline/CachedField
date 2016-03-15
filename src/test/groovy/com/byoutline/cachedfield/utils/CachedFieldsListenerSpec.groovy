@@ -71,4 +71,19 @@ class CachedFieldsListenerSpec extends Specification {
         result.contains('2')
         result.contains('1')
     }
+
+    def "unregisterFromFields should stop tracking fields"() {
+        given:
+        def listenerStates = []
+        def field = MockFactory.getCachedFieldBlockingVal()
+        def instance = CachedFieldsListener.from(field)
+        instance.setListener { listenerStates.add(it) }
+
+        when:
+        instance.unregisterFromFields()
+
+        then:
+        field.postValue()
+        listenerStates == []
+    }
 }
