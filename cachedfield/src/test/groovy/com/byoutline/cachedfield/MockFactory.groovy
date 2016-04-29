@@ -205,6 +205,7 @@ static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueM
 
 static void waitUntilFieldLoads(CachedField field) {
     waitUntilFieldReachesState(field, FieldState.LOADED)
+    sleep 2 // wait for success listener to get informed
 }
 
 static void waitUntilFieldReachesState(CachedField field, FieldState state) {
@@ -223,6 +224,7 @@ static void waitUntilFieldWithArgLoads(CachedFieldWithArg field) {
         sleep 1
         sleepCount++
     }
+    sleep 2 // wait for success listener to get informed
 }
 
 static void loadValue(CachedFieldWithArg<String, Integer> field, Integer arg) {

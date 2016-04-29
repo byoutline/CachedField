@@ -118,8 +118,8 @@ class CachedFieldSpec extends spock.lang.Specification {
 
         when:
         field.refresh()
-        sleep 1
-        MockFactory.waitUntilFieldLoads(field)
+        sleep 1 // Wait for field to switch from LOADED to CURRENTLY_LOADING.
+        MockFactory.waitUntilFieldLoads(field) // Wait until it finishes loading.
 
         then:
         postedStates == [FieldState.CURRENTLY_LOADING, FieldState.LOADED]
@@ -159,28 +159,6 @@ class CachedFieldSpec extends spock.lang.Specification {
                 DefaultExecutors.createDefaultStateListenerExecutor()
         )
 
-        when:
-        field.postValue()
-
-        then:
-        resultEx == exceptionThrown
-    }
-
-
-    def "should inform error listener if success listener throws exception"() {
-        given:
-        Exception exceptionThrown = new RuntimeException()
-        Exception resultEx = null
-        def successListener = {throw exceptionThrown} as SuccessListener<String>
-        def errorListener = { resultEx = it } as ErrorListener
-        CachedField field = new CachedFieldImpl(
-                MockFactory.getSameSessionIdProvider(),
-                MockFactory.getDelayedStringGetter(value, 2),
-                successListener,
-                errorListener,
-                MoreExecutors.newDirectExecutorService(),
-                DefaultExecutors.createDefaultStateListenerExecutor()
-        )
         when:
         field.postValue()
 

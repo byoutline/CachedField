@@ -98,5 +98,24 @@ class CachedFieldWithArgSpec extends spock.lang.Specification {
         then:
         resultArg == 1
     }
+
+
+    def "should have field state set to LOADED when success listener is informed"() {
+        given:
+        FieldState fieldState = null
+        def successListener = new SuccessListenerWithArg<String, Integer>() {
+            CachedFieldWithArg field
+            @Override
+            void valueLoaded(String value, Integer arg) {
+                fieldState = field.getState()
+            }
+        }
+        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, successListener)
+        successListener.field = field
+        when:
+        MockFactory.loadValue(field, 1)
+        then:
+        fieldState == FieldState.LOADED
+    }
 }
 
