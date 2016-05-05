@@ -113,5 +113,5 @@ public void unregisterIdlingResources() {
 #### Including in projects ####
 Add as a dependency to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.cachedfield:cachedfield:1.5.2'
+compile 'com.byoutline.cachedfield:cachedfield:1.5.3'
 ```
