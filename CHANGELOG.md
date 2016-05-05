@@ -1,3 +1,5 @@
+* 1.5.3 Revert change from 1.3.4 (now field state is again set before informing success listeners - 1.3.4 allowed for rare race conditions)
+* 1.5.2 CachedFieldsListeners added to utils - allows listening to multiple CachedFields and CachedEndpoints at once
 * 1.5.1 Lower method count of dependencies.
 * 1.5.0 Added CachedEndpointWithArg to allow using ```CachedField``` like API for non ```GET``` calls.
 * 1.4.1 Renamed inconsistently named of ```DbSaverWithArg``` to ```DbWriterWithArg```
