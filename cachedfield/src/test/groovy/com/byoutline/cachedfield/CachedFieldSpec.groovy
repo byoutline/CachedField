@@ -3,6 +3,7 @@ package com.byoutline.cachedfield
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
+import spock.lang.Specification
 
 import javax.inject.Provider
 
@@ -10,25 +11,25 @@ import javax.inject.Provider
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class CachedFieldSpec extends spock.lang.Specification {
+class CachedFieldSpec extends Specification {
     @Shared
     String value = "value"
     SuccessListener<String> stubSuccessListener = {} as SuccessListener<String>
 
 
     def "postValue should return immediately"() {
-        given:
+        given: 'instance that takes very long to load'
         CachedField field = MockFactory.getDelayedCachedField(value, 1000, stubSuccessListener)
 
-        when:
+        when: 'postValue is called'
         boolean tookToLong = false
         Thread.start {
-            sleep 15
+            sleep 30
             tookToLong = true;
         }
         field.postValue()
 
-        then:
+        then: 'postValue does not block'
         if (tookToLong) {
             throw new AssertionError("Test took to long to execute")
         }

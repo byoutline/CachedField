@@ -3,6 +3,7 @@ package com.byoutline.cachedfield
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
+import spock.lang.Specification
 
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
@@ -12,7 +13,7 @@ import java.util.concurrent.FutureTask
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
+class CachedFieldWithArgExecutorsSpec extends Specification {
     @Shared
     Map<Integer, String> argToValueMap = [1: 'a', 2: 'b']
 

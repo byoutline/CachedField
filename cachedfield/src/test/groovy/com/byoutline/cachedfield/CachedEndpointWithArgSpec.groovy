@@ -7,6 +7,7 @@ import com.byoutline.cachedfield.cachedendpoint.EndpointStateListener
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
+import spock.lang.Specification
 
 import javax.inject.Provider
 
@@ -14,7 +15,7 @@ import javax.inject.Provider
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class CachedEndpointWithArgSpec extends spock.lang.Specification {
+class CachedEndpointWithArgSpec extends Specification {
     @Shared
     Map<Integer, String> argToValueMap = [1: 'a', 2: 'b']
 
