@@ -1,0 +1,124 @@
+package com.byoutline.ibuscachedfield
+
+import com.byoutline.cachedfield.CachedField
+import com.byoutline.cachedfield.FieldState
+import com.byoutline.cachedfield.FieldStateListener
+import com.byoutline.eventcallback.IBus
+import com.byoutline.eventcallback.ResponseEvent
+import spock.lang.Shared
+import spock.lang.Unroll
+
+import javax.inject.Provider
+
+/**
+ *
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
+ */
+class IBusCachedFieldSpec extends spock.lang.Specification {
+    @Shared
+    String value = "value"
+    @Shared
+    Exception exception = new RuntimeException("Cached Field test exception")
+    ResponseEvent<String> successEvent
+    ResponseEvent<Exception> errorEvent
+    IBus bus
+
+    static void postAndWaitUntilFieldStopsLoading(CachedField field) {
+        boolean duringValueLoad = true
+        def listener = { FieldState newState ->
+            if (newState == FieldState.NOT_LOADED || newState == FieldState.LOADED) {
+                duringValueLoad = false
+            }
+        } as FieldStateListener
+
+        field.addStateListener(listener)
+        field.postValue()
+        while (duringValueLoad) {
+            sleep 1
+        }
+        field.removeStateListener(listener)
+    }
+
+    def setup() {
+        bus = Mock()
+        successEvent = Mock()
+        errorEvent = Mock()
+    }
+
+    def "postValue should return immediately"() {
+        given:
+        CachedField field = MockFactory.fieldWithoutArgBuilder(bus)
+                .withValueProvider(MockFactory.getDelayedStringGetter(value, 1000))
+                .withSuccessEvent(successEvent)
+                .build();
+
+        when:
+        boolean tookToLong = false
+        Thread.start {
+            sleep 15
+            tookToLong = true;
+        }
+        field.postValue()
+
+        then:
+        if (tookToLong) {
+            throw new AssertionError("Test took to long to execute")
+        }
+    }
+
+    @Unroll
+    def "should post success times: #sC, error times: #eC for valueProvider: #valProv"() {
+        when:
+        CachedField field = MockFactory.fieldWithoutArgBuilder(bus)
+                .withValueProvider(valProv)
+                .withSuccessEvent(successEvent)
+                .withResponseErrorEvent(errorEvent)
+                .build();
+        postAndWaitUntilFieldStopsLoading(field)
+
+        then:
+        sC * successEvent.setResponse(value)
+        eC * errorEvent.setResponse(exception)
+
+        where:
+        sC | eC | valProv
+        0  | 1  | MockFactory.getFailingStringGetter(exception)
+        1  | 0  | MockFactory.getStringGetter(value)
+    }
+
+    def "postValue should post generic error"() {
+        given:
+        Object expEvent = "exp"
+        CachedField field = MockFactory.fieldWithoutArgBuilder(bus)
+                .withValueProvider(MockFactory.getFailingStringGetter(exception))
+                .withSuccessEvent(successEvent)
+                .withGenericErrorEvent(expEvent)
+                .build();
+
+        when:
+        postAndWaitUntilFieldStopsLoading(field)
+
+        then:
+        1 * bus.post(expEvent)
+    }
+
+    def "when custom bus passed to builder it should be used instead of default"() {
+        given:
+        def sessionProv = { return "custom" } as Provider<String>
+        IBus customBus = Mock()
+        CachedField field = MockFactory.fieldWithoutArgBuilder(bus)
+                .withValueProvider(MockFactory.getStringGetter("val"))
+                .withSuccessEvent(successEvent)
+                .withResponseErrorEvent(errorEvent)
+                .withCustomSessionIdProvider(sessionProv)
+                .withCustomBus(customBus)
+                .build();
+
+        when:
+        postAndWaitUntilFieldStopsLoading(field)
+
+        then:
+        1 * customBus.post(_)
+        0 * bus.post(_)
+    }
+}

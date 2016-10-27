@@ -1,3 +1,4 @@
 rootProject.name = 'CachedField'
-include 'cachedfield', 'idlingresource', 'ottocachedfield', 'observablecachedfield'
+include 'cachedfield', 'idlingresource', 'ottocachedfield', 'ottoobservablecachedfield'
+include 'ibuscachedfield', 'observablecachedfield', 'eventbuscachedfield'
 
