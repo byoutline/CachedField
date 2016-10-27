@@ -1,3 +1,4 @@
+#### CachedField ####
 * 1.5.3 Revert change from 1.3.4 (now field state is again set before informing success listeners - 1.3.4 allowed for rare race conditions)
 * 1.5.2 CachedFieldsListeners added to utils - allows listening to multiple CachedFields and CachedEndpoints at once
 * 1.5.1 Lower method count of dependencies.
@@ -18,3 +19,24 @@
 * 1.3.1 Added ability to pass ```FieldStateListener``` to constructor that will be informed each time CachedField state changes. 
 That can be useful for displaying busy indicator in graphical applications.
 * 1.3.0 Added method ```drop()``` that can be used to force clear a cached value. That can be used when fe: system runs low on memory.
+
+#### OttoCachedField ####
+* 1.6.3 RetrofitHelper added  - methods that allow easier use of CachedField for Retrofit 2.
+* 1.6.2 No new features, call to bus that did nothing removed.
+* 1.6.1 No new features, call to bus that did nothing removed.
+* 1.6.0 MainThreadExecutor class added for convenience of Android projects.
+* 1.5.2 No new features, new module with OttoObservableCachedField added with separate numeration.
+* 1.5.1 OttoCachedEndpointWithArg constructor is now protected instead of package private, so users can extend this class to hide long generic types.
+* 1.5.0 Added OttoCachedEndpoint to allow using CachedField like API for non GET calls ([read more](https://github.com/byoutline/CachedField#cachedendpoint))
+* 1.4.0 
+  * Added support for providing custom ```ExecutorService```/```Executor``` for value loading and state listener calls
+  * Added DB Cache utils - You can use ```withApiFetcher```, ```withDbWriter```, ```withDbReader``` methods in builders to combine
+  steps of fetching data from API, saving it to db, and loading it from DB. It allows to decide at runtime whether you
+  want to reload data from API or from DB by passing ```FetchType.API``` or ```FetchType.DB``` as argument to ```post```
+  and ```reload```
+  * Changed builders to allow calling ```withCustomSessionIdProvider``` and ```withCustomBus``` in any order.
+  
+#### ObservableCachedField ####
+* 1.1.0 universal `CachedFieldBuilder` added
+* 1.0.1 Dependencies updated
+* 1.0.0 Initial release (imported from KickMaterial)

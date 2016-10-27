@@ -5,9 +5,7 @@ CachedField
  master:  [![Build Status](https://travis-ci.org/byoutline/CachedField.svg?branch=master)](https://travis-ci.org/byoutline/CachedField)
  develop: [![Build Status](https://travis-ci.org/byoutline/CachedField.svg?branch=develop)](https://travis-ci.org/byoutline/CachedField)
 
-Wrapper for expensive resources.
-
-If you use ```Otto``` bus take a look at [OttoCachedField](https://github.com/byoutline/OttoCachedField)
+Wrapper for expensive resources. Allows you to separate concerns of how to load the values from how to use them.
 
 #### Interface description ####
 Each [Cached field](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/CachedField.java) supports following methods:
@@ -54,14 +52,23 @@ and its return value(if any) will be discarded and
 [ErrorListenerWithArg](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/ErrorListenerWithArg.java) 
 (if any) will be called instead.
 
+Parametric field classes have ```withArg``` suffix, and behave same as their no arg counterparts. 
+Split exist only to enforce passing extra argument to methods that depend on it.
+
+without arguments                              | with arguments
+-----------------------------------------------|-----------------------------------------------
+[CachedField](https://github.com/byoutline/CachedField/blob/master/cachedfield/src/main/java/com/byoutline/cachedfield/CachedField.java)  | [CachedFieldWithArg](https://github.com/byoutline/CachedField/blob/master/cachedfield/src/main/java/com/byoutline/cachedfield/CachedFieldWithArg.java)
+[ResponseEvent](https://github.com/byoutline/EventCallback/blob/master/eventcallback-api/src/main/java/com/byoutline/eventcallback/ResponseEvent.java) | [ResponseEventWithArg](https://github.com/byoutline/CachedField/blob/feature/merge_ottocachedfield/ottocachedfield/src/main/java/com/byoutline/ottocachedfield/events/ResponseEventWithArg.java)
+[ResponseEventImpl](https://github.com/byoutline/EventCallback/blob/master/eventcallback-api/src/main/java/com/byoutline/eventcallback/ResponseEventImpl.java) | [ResponseEventWithArgImpl](https://github.com/byoutline/CachedField/blob/feature/merge_ottocachedfield/ottocachedfield/src/main/java/com/byoutline/ottocachedfield/events/ResponseEventWithArgImpl.java)
+[Provider](https://docs.oracle.com/javaee/7/api/javax/inject/Provider.html) | [ProviderWithArg](https://github.com/byoutline/CachedField/blob/feature/merge_ottocachedfield/cachedfield/src/main/java/com/byoutline/cachedfield/ProviderWithArg.java)
 
 #### Controlling execution threads ####
  By default loading of value is executed asynchronously on background thread, and listeners are called
 without thread switching. This means that by default you can safely invoke ```CachedField``` methods on UI
-thread without blocking it(with possible exception of your state lister blocking it during ```drop``` call).
+thread without blocking it.
 
-If you prefer to have more control over Threads on which value loading (or calling state listeners) is executed
-```CachedFieldImpl``` accepts ```ExecutorService``` and ```Executor``` as arguments in constructor.
+If you prefer to have more control over Threads on which value loading (or calling state listeners) you can specify custom 
+```ExecutorService``` and ```Executor``` (Either by passing constructor arguments to ```CachedFieldImpl``` directly or by setting [defaults](#init-common-settings), or by [builder](#declare-your-fields) )
 
 #### CachedEndpoint ####
 If you have API calls that do not fit into ```CachedField``` (most of non GET calls) you may prefer to use
@@ -88,6 +95,51 @@ may use Dependency Injection like [Dagger](https://google.github.io/dagger/) to 
 By default `sessionProvider` must be passed to `CachedFieldImpl` constructor, but some libraries like [OttoCachedField](https://github.com/byoutline/OttoCachedField)
 allow to set default provider for whole project.
  
+
+
+### Getting started ###
+
+#### Including in projects ####
+Add as a dependency to your ```build.gradle```:
+ * recommended for pure Java:
+```groovy
+compile 'com.byoutline.cachedfield:cachedfield:1.5.3'
+```
+ * recommended for Android (comes with most unversal builder that allows to build any other `CachedField` and supports [Android Data Binding](https://developer.android.com/tools/data-binding/):
+```groovy
+compile 'com.byoutline.ottocachedfield:observablecachedfield:1.1.0'
+```
+
+##### Init common settings #####
+To avoid passing same values to each of your CachedFields put following into your code (typically to ```Application``` ```onCreate``` method).
+```java
+OttoCachedField.init(sessionIdProvider, bus);
+```
+where bus is [Otto](https://github.com/square/otto) bus instance, and 
+[sessionIdProvider](#session-id) is a ```Provider``` of current session. ```Provider``` is 
+supposed to return same string as long as same user is logged in. Typically it something like authorization header for your API calls.
+
+##### Declare your fields #####
+
+Start by typing `CachedFieldBuilder().` and follow autocompletion in your IDE through fluent interface. 
+This will allow you to build `CachedField` that you need. 
+For example you will be able to select:
+ * whether you require argument or not (`.withValueProvider*`)
+ * whether you want to post results by bus ( `withSuccessEvent`, `withErrorEvent`)
+ * whether you want to use DataBinding `Observable` (`asObservable`)
+ * whether you want to get [CachedEndpoint](#CachedEndpoint) instead of `CachedField`
+ * whether you want to use custom or default `session provider` or `bus`
+ 
+ for example
+```java
+new CachedFieldBuilder()
+        .withValueProvider(service::getValueFromApi)
+        .asObservable()
+        .build();
+```
+
+Note: if you are using `Retrofit 2` and your service returns `Call` you can convert it to `Provider` with `apiValueProv` static method.
+
 #### Testing with Espresso on Android ####
 For instrumented tests on Android you may want to register your Cached Fields/Endpoints as 
 [IdlingResources](https://developer.android.com/reference/android/support/test/espresso/IdlingResource.html).
@@ -110,8 +162,5 @@ public void unregisterIdlingResources() {
 }
 ```
 
-#### Including in projects ####
-Add as a dependency to your ```build.gradle```:
-```groovy
-compile 'com.byoutline.cachedfield:cachedfield:1.5.3'
-```
+#### Displaying progress on Android ####
+If you want to have indicator that is synchronized with state of your `CachedField(s)` check out [WaitLayout](https://github.com/byoutline/SecretSauce) which will display spinner any time any of the registered Fields/Endpoints is working.
