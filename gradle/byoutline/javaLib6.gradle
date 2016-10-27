@@ -1,0 +1,4 @@
+def scriptPath = '../gradle/byoutline/'
+apply from: scriptPath + 'forceJava6.gradle'
+apply from: scriptPath + 'javaLibBase.gradle'
+
