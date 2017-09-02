@@ -7,11 +7,13 @@ import com.byoutline.eventcallback.ResponseEvent;
 import com.byoutline.ibuscachedfield.internal.ErrorEvent;
 import com.byoutline.ibuscachedfield.internal.IBusErrorListener;
 import com.byoutline.ibuscachedfield.internal.IBusSuccessListener;
-import de.greenrobot.event.EventBus;
 
-import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+
+import javax.inject.Provider;
+
+import de.greenrobot.event.EventBus;
 
 import static com.byoutline.cachedfield.internal.DefaultExecutors.createDefaultStateListenerExecutor;
 import static com.byoutline.cachedfield.internal.DefaultExecutors.createDefaultValueGetterExecutor;

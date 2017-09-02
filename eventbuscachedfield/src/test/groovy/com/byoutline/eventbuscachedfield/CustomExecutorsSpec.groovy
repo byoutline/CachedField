@@ -7,6 +7,7 @@ import com.byoutline.ibuscachedfield.events.ResponseEventWithArgImpl
 import com.google.common.util.concurrent.MoreExecutors
 import de.greenrobot.event.EventBus
 import spock.lang.Shared
+import spock.lang.Specification
 
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
@@ -16,7 +17,7 @@ import java.util.concurrent.FutureTask
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class CustomExecutorsSpec extends spock.lang.Specification {
+class CustomExecutorsSpec extends Specification {
     @Shared
     String value = "value"
     @Shared
@@ -34,14 +35,14 @@ class CustomExecutorsSpec extends spock.lang.Specification {
         ResponseEvent<String> successEvent = new ResponseEventImpl<>()
         ResponseEvent<Exception> errorEvent = new ResponseEventImpl<>()
         ExecutorService executor = [
-                submit: { called = true; return new FutureTask((Runnable) it, null); }
+                submit: { called = true; return new FutureTask((Runnable) it, null) }
         ] as ExecutorService
         EventBusCachedField field = EventBusCachedField.builder()
                 .withValueProvider(MockFactory.getStringGetter(value))
                 .withSuccessEvent(successEvent)
                 .withGenericErrorEvent(errorEvent)
                 .withCustomValueGetterExecutor(executor)
-                .build();
+                .build()
 
         when:
         field.postValue()
@@ -62,7 +63,7 @@ class CustomExecutorsSpec extends spock.lang.Specification {
                 .withGenericErrorEvent(errorEvent)
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
                 .withCustomStateListenerExecutor(stateListenersExecutor)
-                .build();
+                .build()
 
         when:
         field.postValue()
@@ -78,14 +79,14 @@ class CustomExecutorsSpec extends spock.lang.Specification {
         ResponseEventWithArg<String, Integer> successEvent = new ResponseEventWithArgImpl<>()
         ResponseEventWithArg<Exception, Integer> errorEvent = new ResponseEventWithArgImpl<>()
         ExecutorService executor = [
-                submit: { called = true; return new FutureTask((Runnable) it, null); }
+                submit: { called = true; return new FutureTask((Runnable) it, null) }
         ] as ExecutorService
         EventBusCachedFieldWithArg field = EventBusCachedFieldWithArg.builder()
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
                 .withCustomValueGetterExecutor(executor)
-                .build();
+                .build()
 
         when:
         field.postValue()
@@ -106,7 +107,7 @@ class CustomExecutorsSpec extends spock.lang.Specification {
                 .withResponseErrorEvent(errorEvent)
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
                 .withCustomStateListenerExecutor(stateListenersExecutor)
-                .build();
+                .build()
 
         when:
         field.postValue()

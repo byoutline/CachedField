@@ -5,19 +5,21 @@ import com.byoutline.cachedfield.cachedendpoint.CallResult
 import com.byoutline.cachedfield.cachedendpoint.EndpointState
 import com.byoutline.cachedfield.cachedendpoint.StateAndValue
 import com.byoutline.eventcallback.IBus
+import com.byoutline.ibuscachedfield.events.ResponseEventWithArg
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
+import spock.lang.Specification
 import spock.lang.Unroll
 
 /**
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class CachedEndpointWithArgSpec extends spock.lang.Specification {
+class CachedEndpointWithArgSpec extends Specification {
     @Shared
     Map<Integer, String> argToValueMap = [1: 'a', 2: 'b']
     @Shared
-    com.byoutline.ibuscachedfield.events.ResponseEventWithArg<StateAndValue<String, Integer>, Integer> resultEvent
+    ResponseEventWithArg<StateAndValue<String, Integer>, Integer> resultEvent
     IBus bus
 
     def setup() {
@@ -32,7 +34,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withResultEvent(resultEvent)
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
-                .build();
+                .build()
         when:
         field.call(arg)
 
@@ -55,7 +57,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
                 .withValueProvider(MockFactory.getFailingStringGetterWithArg())
                 .withResultEvent(resultEvent)
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
-                .build();
+                .build()
         when:
         field.call(2)
 

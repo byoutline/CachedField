@@ -1,6 +1,5 @@
 package com.byoutline.eventbuscachedfield;
 
-import com.byoutline.cachedfield.CachedField;
 import com.byoutline.cachedfield.ProviderWithArg;
 import com.byoutline.cachedfield.dbcache.DbCachedValueProvider;
 import com.byoutline.cachedfield.dbcache.DbWriter;
@@ -10,11 +9,13 @@ import com.byoutline.eventcallback.ResponseEvent;
 import com.byoutline.ibuscachedfield.IBusCachedFieldBuilder;
 import com.byoutline.ibuscachedfield.builders.CachedFieldConstructorWrapper;
 import com.byoutline.ibuscachedfield.internal.ErrorEvent;
-import de.greenrobot.event.EventBus;
 
-import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+
+import javax.inject.Provider;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Fluent interface builder of {@link EventBusCachedField}. If you do not like

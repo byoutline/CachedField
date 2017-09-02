@@ -25,7 +25,7 @@ class CachedFieldSpec extends Specification {
         boolean tookToLong = false
         Thread.start {
             sleep 30
-            tookToLong = true;
+            tookToLong = true
         }
         field.postValue()
 
@@ -46,7 +46,7 @@ class CachedFieldSpec extends Specification {
         boolean tookToLong = false
         Thread.start {
             sleep 15
-            tookToLong = true;
+            tookToLong = true
         }
         field.postValue()
 
@@ -148,7 +148,7 @@ class CachedFieldSpec extends Specification {
     def "should inform error listener if value getter throws exception"() {
         given:
         def exceptionThrown = new RuntimeException()
-        Exception resultEx = null;
+        Exception resultEx = null
         def valueProv = { throw exceptionThrown } as Provider<String>
         def errorList = { resultEx = it } as ErrorListener
         CachedField field = new CachedFieldImpl(
@@ -187,7 +187,7 @@ class CachedFieldSpec extends Specification {
     def "should call success once if asked about value during load"() {
         given:
         int callCount = 0
-        def successListener = {callCount++} as SuccessListener<String>
+        def successListener = { callCount++ } as SuccessListener<String>
         CachedField field = new CachedFieldImpl(
                 MockFactory.getSameSessionIdProvider(),
                 MockFactory.getDelayedStringGetter(value),

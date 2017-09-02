@@ -6,6 +6,7 @@ import com.byoutline.cachedfield.FieldStateListener
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg
 import de.greenrobot.event.EventBus
 import spock.lang.Shared
+import spock.lang.Specification
 import spock.lang.Unroll
 
 import javax.inject.Provider
@@ -14,7 +15,7 @@ import javax.inject.Provider
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class EventBusCachedFieldWithArgSpec extends spock.lang.Specification {
+class EventBusCachedFieldWithArgSpec extends Specification {
     @Shared
     Map<Integer, String> argToValueMap = [1: 'a', 2: 'b']
     ResponseEventWithArg<String, Integer> successEvent
@@ -54,7 +55,7 @@ class EventBusCachedFieldWithArgSpec extends spock.lang.Specification {
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .build();
+                .build()
         when:
         postAndWaitUntilFieldStopsLoading(field, arg)
 
@@ -72,8 +73,8 @@ class EventBusCachedFieldWithArgSpec extends spock.lang.Specification {
 
     def "postValue should post error with argument"() {
         given:
-        Exception errorVal = null;
-        Integer errorArg = null;
+        Exception errorVal = null
+        Integer errorArg = null
         ResponseEventWithArg<Exception, Integer> errorEvent =
                 { Exception val, Integer arg ->
                     errorVal = val; errorArg = arg
@@ -82,7 +83,7 @@ class EventBusCachedFieldWithArgSpec extends spock.lang.Specification {
                 .withValueProvider(MockFactory.getFailingStringGetterWithArg())
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .build();
+                .build()
         when:
         postAndWaitUntilFieldStopsLoading(field, 2)
 
@@ -101,7 +102,7 @@ class EventBusCachedFieldWithArgSpec extends spock.lang.Specification {
                 .withResponseErrorEvent(errorEvent)
                 .withCustomSessionIdProvider(sessionProv)
                 .withCustomBus(customBus)
-                .build();
+                .build()
 
         when:
         postAndWaitUntilFieldStopsLoading(field, 1)

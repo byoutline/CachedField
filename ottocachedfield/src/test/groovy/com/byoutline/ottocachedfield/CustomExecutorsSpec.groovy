@@ -35,14 +35,14 @@ class CustomExecutorsSpec extends Specification {
         ResponseEvent<String> successEvent = new ResponseEventImpl<>()
         ResponseEvent<Exception> errorEvent = new ResponseEventImpl<>()
         ExecutorService executor = [
-                submit: { called = true; return new FutureTask((Runnable) it, null); }
+                submit: { called = true; return new FutureTask((Runnable) it, null) }
         ] as ExecutorService
         OttoCachedField field = OttoCachedField.builder()
                 .withValueProvider(MockFactory.getStringGetter(value))
                 .withSuccessEvent(successEvent)
                 .withGenericErrorEvent(errorEvent)
                 .withCustomValueGetterExecutor(executor)
-                .build();
+                .build()
 
         when:
         field.postValue()
@@ -63,7 +63,7 @@ class CustomExecutorsSpec extends Specification {
                 .withGenericErrorEvent(errorEvent)
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
                 .withCustomStateListenerExecutor(stateListenersExecutor)
-                .build();
+                .build()
 
         when:
         field.postValue()
@@ -79,14 +79,14 @@ class CustomExecutorsSpec extends Specification {
         ResponseEventWithArg<String, Integer> successEvent = new ResponseEventWithArgImpl<>()
         ResponseEventWithArg<Exception, Integer> errorEvent = new ResponseEventWithArgImpl<>()
         ExecutorService executor = [
-                submit: { called = true; return new FutureTask((Runnable) it, null); }
+                submit: { called = true; return new FutureTask((Runnable) it, null) }
         ] as ExecutorService
         OttoCachedFieldWithArg field = OttoCachedFieldWithArg.builder()
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
                 .withCustomValueGetterExecutor(executor)
-                .build();
+                .build()
 
         when:
         field.postValue()
@@ -107,7 +107,7 @@ class CustomExecutorsSpec extends Specification {
                 .withResponseErrorEvent(errorEvent)
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
                 .withCustomStateListenerExecutor(stateListenersExecutor)
-                .build();
+                .build()
 
         when:
         field.postValue()

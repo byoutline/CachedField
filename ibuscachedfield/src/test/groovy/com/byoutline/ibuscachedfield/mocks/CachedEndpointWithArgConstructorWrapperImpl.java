@@ -9,9 +9,10 @@ import com.byoutline.ibuscachedfield.builders.CachedEndpointWithArgConstructorWr
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg;
 import com.byoutline.ibuscachedfield.internal.BusCallEndListener;
 
-import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+
+import javax.inject.Provider;
 
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>

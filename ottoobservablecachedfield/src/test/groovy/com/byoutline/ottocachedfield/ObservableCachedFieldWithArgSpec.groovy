@@ -12,7 +12,7 @@ import spock.lang.Unroll
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class ObservableCachedFieldWithArgSpec extends Specification {
+class ObservableCachedFieldWithArgSpec extends Specification {
     @Shared
     Map<Integer, String> argToValueMap = [1: 'a', 2: 'b']
 
@@ -28,7 +28,7 @@ public class ObservableCachedFieldWithArgSpec extends Specification {
                 .withValueProviderWithArg(MockFactory.getStringGetter(argToValueMap))
                 .asObservable()
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
-                .build();
+                .build()
         boolean called = false
         def callback = new Observable.OnPropertyChangedCallback() {
 
@@ -48,8 +48,8 @@ public class ObservableCachedFieldWithArgSpec extends Specification {
         obs.get() == val
 
         where:
-        val  | arg
-        'a'  | 1
-        'b'  | 2
+        val | arg
+        'a' | 1
+        'b' | 2
     }
 }

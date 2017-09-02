@@ -5,6 +5,7 @@ import com.byoutline.cachedfield.dbcache.FetchType
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArgImpl
 import de.greenrobot.event.EventBus
 import spock.lang.Shared
+import spock.lang.Specification
 
 import javax.inject.Provider
 
@@ -12,7 +13,7 @@ import javax.inject.Provider
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class DbCacheSpec extends spock.lang.Specification {
+class DbCacheSpec extends Specification {
     @Shared
     String value = "value"
     @Shared
@@ -39,7 +40,7 @@ class DbCacheSpec extends spock.lang.Specification {
                 .withDbReader(MockFactory.getStringGetter(value))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .build();
+                .build()
 
         when:
         EventBusCachedFieldWithArgSpec.postAndWaitUntilFieldStopsLoading(field, FetchType.API)
@@ -58,7 +59,7 @@ class DbCacheSpec extends spock.lang.Specification {
                 .withDbReader(MockFactory.getStringGetter(differentValue))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .build();
+                .build()
 
         when:
         EventBusCachedFieldWithArgSpec.postAndWaitUntilFieldStopsLoading(field, FetchType.DB)
@@ -77,7 +78,7 @@ class DbCacheSpec extends spock.lang.Specification {
                 .withDbWriter(dbSaver)
                 .withDbReader({ return 1 } as Provider<Integer>)
                 .withSuccessEvent(event)
-                .build();
+                .build()
 
         when:
         EventBusCachedFieldWithArgSpec.postAndWaitUntilFieldStopsLoading(field, FetchType.API)

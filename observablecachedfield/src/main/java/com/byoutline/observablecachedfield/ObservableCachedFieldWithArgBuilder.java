@@ -8,11 +8,16 @@ import com.byoutline.ibuscachedfield.IBusCachedFieldWithArgBuilder;
 import com.byoutline.ibuscachedfield.builders.CachedFieldWithArgConstructorWrapper;
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg;
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArgImpl;
-import com.byoutline.ibuscachedfield.internal.*;
+import com.byoutline.ibuscachedfield.internal.IBusErrorListenerWithArg;
+import com.byoutline.ibuscachedfield.internal.IBusSuccessListenerWithArg;
+import com.byoutline.ibuscachedfield.internal.NullArgumentException;
+import com.byoutline.ibuscachedfield.internal.StubErrorListenerWithArg;
+import com.byoutline.ibuscachedfield.internal.StubSuccessListenerWithArg;
 
-import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+
+import javax.inject.Provider;
 
 /**
  * Fluent interface builder of {@link ObservableCachedFieldWithArg}.

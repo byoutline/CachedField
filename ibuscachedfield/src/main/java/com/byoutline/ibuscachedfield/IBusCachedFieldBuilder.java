@@ -5,9 +5,10 @@ import com.byoutline.eventcallback.ResponseEvent;
 import com.byoutline.ibuscachedfield.builders.CachedFieldConstructorWrapper;
 import com.byoutline.ibuscachedfield.internal.ErrorEvent;
 
-import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+
+import javax.inject.Provider;
 
 /**
  * Fluent interface builder of {@link CachedField}.

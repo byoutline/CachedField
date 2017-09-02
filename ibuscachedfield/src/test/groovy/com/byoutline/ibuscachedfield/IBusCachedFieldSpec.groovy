@@ -6,6 +6,7 @@ import com.byoutline.cachedfield.FieldStateListener
 import com.byoutline.eventcallback.IBus
 import com.byoutline.eventcallback.ResponseEvent
 import spock.lang.Shared
+import spock.lang.Specification
 import spock.lang.Unroll
 
 import javax.inject.Provider
@@ -14,7 +15,7 @@ import javax.inject.Provider
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class IBusCachedFieldSpec extends spock.lang.Specification {
+class IBusCachedFieldSpec extends Specification {
     @Shared
     String value = "value"
     @Shared
@@ -50,13 +51,13 @@ class IBusCachedFieldSpec extends spock.lang.Specification {
         CachedField field = MockFactory.fieldWithoutArgBuilder(bus)
                 .withValueProvider(MockFactory.getDelayedStringGetter(value, 1000))
                 .withSuccessEvent(successEvent)
-                .build();
+                .build()
 
         when:
         boolean tookToLong = false
         Thread.start {
             sleep 15
-            tookToLong = true;
+            tookToLong = true
         }
         field.postValue()
 
@@ -73,7 +74,7 @@ class IBusCachedFieldSpec extends spock.lang.Specification {
                 .withValueProvider(valProv)
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .build();
+                .build()
         postAndWaitUntilFieldStopsLoading(field)
 
         then:
@@ -93,7 +94,7 @@ class IBusCachedFieldSpec extends spock.lang.Specification {
                 .withValueProvider(MockFactory.getFailingStringGetter(exception))
                 .withSuccessEvent(successEvent)
                 .withGenericErrorEvent(expEvent)
-                .build();
+                .build()
 
         when:
         postAndWaitUntilFieldStopsLoading(field)
@@ -112,7 +113,7 @@ class IBusCachedFieldSpec extends spock.lang.Specification {
                 .withResponseErrorEvent(errorEvent)
                 .withCustomSessionIdProvider(sessionProv)
                 .withCustomBus(customBus)
-                .build();
+                .build()
 
         when:
         postAndWaitUntilFieldStopsLoading(field)

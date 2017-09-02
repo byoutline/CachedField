@@ -12,7 +12,7 @@ static Provider<String> getSameSessionIdProvider() {
 }
 
 static Provider<String> getMultiSessionIdProvider() {
-    int i = 1;
+    int i = 1
     return { return "sessionId" + i++ } as Provider<String>
 }
 

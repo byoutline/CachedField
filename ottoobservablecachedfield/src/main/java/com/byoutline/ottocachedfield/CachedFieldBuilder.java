@@ -1,20 +1,34 @@
 package com.byoutline.ottocachedfield;
 
-import com.byoutline.cachedfield.*;
+import com.byoutline.cachedfield.ErrorListener;
+import com.byoutline.cachedfield.ErrorListenerWithArg;
+import com.byoutline.cachedfield.ProviderWithArg;
+import com.byoutline.cachedfield.SuccessListener;
+import com.byoutline.cachedfield.SuccessListenerWithArg;
 import com.byoutline.cachedfield.cachedendpoint.StateAndValue;
 import com.byoutline.eventcallback.ResponseEvent;
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg;
-import com.byoutline.ibuscachedfield.internal.*;
+import com.byoutline.ibuscachedfield.internal.ErrorEvent;
+import com.byoutline.ibuscachedfield.internal.IBusErrorListener;
+import com.byoutline.ibuscachedfield.internal.IBusErrorListenerWithArg;
+import com.byoutline.ibuscachedfield.internal.IBusSuccessListener;
+import com.byoutline.ibuscachedfield.internal.IBusSuccessListenerWithArg;
+import com.byoutline.ibuscachedfield.internal.NullArgumentException;
+import com.byoutline.ibuscachedfield.internal.StubErrorListener;
+import com.byoutline.ibuscachedfield.internal.StubErrorListenerWithArg;
+import com.byoutline.ibuscachedfield.internal.StubSuccessListener;
+import com.byoutline.ibuscachedfield.internal.StubSuccessListenerWithArg;
 import com.byoutline.observablecachedfield.ObservableCachedField;
 import com.byoutline.observablecachedfield.ObservableCachedFieldWithArg;
 import com.byoutline.ottoeventcallback.OttoIBus;
 import com.squareup.otto.Bus;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Provider;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>

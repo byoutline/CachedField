@@ -9,12 +9,13 @@ import com.byoutline.ibuscachedfield.events.ResponseEventWithArgImpl
 import com.byoutline.ibuscachedfield.internal.NullArgumentException
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
+import spock.lang.Specification
 import spock.lang.Unroll
 
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class ObservableCachedFieldWithArgSpec extends spock.lang.Specification {
+class ObservableCachedFieldWithArgSpec extends Specification {
     @Shared
     Map<Integer, String> argToValueMap = [1: 'a', 2: 'b']
 
@@ -25,7 +26,7 @@ public class ObservableCachedFieldWithArgSpec extends spock.lang.Specification {
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withoutEvents()
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
-                .build();
+                .build()
         boolean called = false
         def callback = new Observable.OnPropertyChangedCallback() {
 
@@ -59,7 +60,7 @@ public class ObservableCachedFieldWithArgSpec extends spock.lang.Specification {
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(new ResponseEventWithArgImpl<Exception, Integer>())
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
-                .build();
+                .build()
         when:
         field.postValue(1)
         then:
@@ -74,7 +75,7 @@ public class ObservableCachedFieldWithArgSpec extends spock.lang.Specification {
                 .withSuccessEvent(new ResponseEventWithArgImpl<String, Integer>())
                 .withResponseErrorEvent(errorEvent)
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
-                .build();
+                .build()
         when:
         field.postValue(8)
         then:

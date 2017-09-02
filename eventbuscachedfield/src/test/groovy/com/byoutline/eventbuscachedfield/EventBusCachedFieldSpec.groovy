@@ -6,6 +6,7 @@ import com.byoutline.cachedfield.FieldStateListener
 import com.byoutline.eventcallback.ResponseEvent
 import de.greenrobot.event.EventBus
 import spock.lang.Shared
+import spock.lang.Specification
 import spock.lang.Unroll
 
 import javax.inject.Provider
@@ -14,7 +15,7 @@ import javax.inject.Provider
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class EventBusCachedFieldSpec extends spock.lang.Specification {
+class EventBusCachedFieldSpec extends Specification {
     @Shared
     String value = "value"
     @Shared
@@ -54,13 +55,13 @@ class EventBusCachedFieldSpec extends spock.lang.Specification {
         EventBusCachedField field = EventBusCachedField.builder()
                 .withValueProvider(MockFactory.getDelayedStringGetter(value, 1000))
                 .withSuccessEvent(successEvent)
-                .build();
+                .build()
 
         when:
         boolean tookToLong = false
         Thread.start {
             sleep 15
-            tookToLong = true;
+            tookToLong = true
         }
         field.postValue()
 
@@ -77,7 +78,7 @@ class EventBusCachedFieldSpec extends spock.lang.Specification {
                 .withValueProvider(valProv)
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .build();
+                .build()
         postAndWaitUntilFieldStopsLoading(field)
 
         then:
@@ -97,7 +98,7 @@ class EventBusCachedFieldSpec extends spock.lang.Specification {
                 .withValueProvider(MockFactory.getFailingStringGetter(exception))
                 .withSuccessEvent(successEvent)
                 .withGenericErrorEvent(expEvent)
-                .build();
+                .build()
 
         when:
         postAndWaitUntilFieldStopsLoading(field)
@@ -116,7 +117,7 @@ class EventBusCachedFieldSpec extends spock.lang.Specification {
                 .withResponseErrorEvent(errorEvent)
                 .withCustomSessionIdProvider(sessionProv)
                 .withCustomBus(customBus)
-                .build();
+                .build()
 
         when:
         postAndWaitUntilFieldStopsLoading(field)

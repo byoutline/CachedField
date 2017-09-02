@@ -26,12 +26,12 @@ class DefaultObservableBuilderArgsSpec extends Specification {
         thrown(NullArgumentException)
 
         where:
-        builder                  | name
+        builder                 | name
         new CachedFieldBuilder()
                 .withValueProviderWithArg(MockFactory.getStringGetter(argToValueMap))
-                .asObservable()  | "ObservableCachedFieldWithArg"
+                .asObservable() | "ObservableCachedFieldWithArg"
         new CachedFieldBuilder()
                 .withValueProvider(MockFactory.getStringGetter("str"))
-                .asObservable()  | "ObservableCachedField(no arg)"
+                .asObservable() | "ObservableCachedField(no arg)"
     }
 }

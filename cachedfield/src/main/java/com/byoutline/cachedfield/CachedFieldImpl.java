@@ -4,10 +4,11 @@ import com.byoutline.cachedfield.internal.DefaultExecutors;
 import com.byoutline.cachedfield.internal.StubErrorListener;
 import com.byoutline.cachedfield.internal.VoidArgumentFactory;
 
-import javax.annotation.Nonnull;
-import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+
+import javax.annotation.Nonnull;
+import javax.inject.Provider;
 
 /**
  * Default implementation of {@link CachedField}. Loads value on separate thread

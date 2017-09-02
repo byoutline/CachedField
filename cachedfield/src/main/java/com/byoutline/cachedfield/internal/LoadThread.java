@@ -4,9 +4,10 @@ import com.byoutline.cachedfield.ErrorListenerWithArg;
 import com.byoutline.cachedfield.ProviderWithArg;
 import com.byoutline.cachedfield.SuccessListenerWithArg;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Thread that loads {@link #valueGetter} into {@link #valueGetter} and informs listener.

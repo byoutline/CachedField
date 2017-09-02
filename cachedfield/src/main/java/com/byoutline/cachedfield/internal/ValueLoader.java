@@ -4,9 +4,10 @@ import com.byoutline.cachedfield.ErrorListenerWithArg;
 import com.byoutline.cachedfield.ProviderWithArg;
 import com.byoutline.cachedfield.SuccessListenerWithArg;
 
-import javax.annotation.Nonnull;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>

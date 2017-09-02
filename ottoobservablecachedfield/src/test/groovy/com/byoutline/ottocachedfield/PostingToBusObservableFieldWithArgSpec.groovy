@@ -11,7 +11,7 @@ import spock.lang.Unroll
 
 import javax.inject.Provider
 
-import static com.byoutline.ottocachedfield.MockFactory.failingStringGetterWithArg
+import static com.byoutline.ottocachedfield.MockFactory.getFailingStringGetterWithArg
 import static com.byoutline.ottocachedfield.MockFactory.getStringGetter
 
 /**
@@ -59,7 +59,7 @@ class PostingToBusObservableFieldWithArgSpec extends Specification {
                 .asObservable()
                 .withSuccessEvent(successEvent)
                 .withErrorEvent(errorEvent)
-                .build();
+                .build()
         when:
         postAndWaitUntilFieldStopsLoading(field, arg)
 
@@ -78,8 +78,8 @@ class PostingToBusObservableFieldWithArgSpec extends Specification {
     @Unroll
     def "postValue should post error with argument when created by: #name"() {
         given:
-        Exception errorVal = null;
-        Integer errorArg = null;
+        Exception errorVal = null
+        Integer errorArg = null
         ResponseEventWithArg<Exception, Integer> errorEvent =
                 { Exception val, Integer arg ->
                     errorVal = val; errorArg = arg
@@ -87,7 +87,7 @@ class PostingToBusObservableFieldWithArgSpec extends Specification {
         CachedFieldWithArg field = builder
                 .withSuccessEvent(successEvent)
                 .withErrorEvent(errorEvent)
-                .build();
+                .build()
         when:
         postAndWaitUntilFieldStopsLoading(field, 2)
 
@@ -96,9 +96,9 @@ class PostingToBusObservableFieldWithArgSpec extends Specification {
         errorArg == 2
 
         where:
-        name            | builder
-        "otto"          | new CachedFieldBuilder().withValueProviderWithArg(getFailingStringGetterWithArg())
-        "observable"    | new CachedFieldBuilder().withValueProviderWithArg(getFailingStringGetterWithArg()).asObservable()
+        name         | builder
+        "otto"       | new CachedFieldBuilder().withValueProviderWithArg(getFailingStringGetterWithArg())
+        "observable" | new CachedFieldBuilder().withValueProviderWithArg(getFailingStringGetterWithArg()).asObservable()
     }
 
     @Unroll
@@ -111,7 +111,7 @@ class PostingToBusObservableFieldWithArgSpec extends Specification {
                 .withErrorEvent(errorEvent)
                 .withCustomBus(customBus)
                 .withCustomSessionIdProvider(sessionProv)
-                .build();
+                .build()
 
         when:
         postAndWaitUntilFieldStopsLoading(field, 1)
@@ -121,8 +121,8 @@ class PostingToBusObservableFieldWithArgSpec extends Specification {
         0 * bus.post(_)
 
         where:
-        name            | builder
-        "otto"          | new CachedFieldBuilder().withValueProviderWithArg(getStringGetter(argToValueMap))
-        "observable"    | new CachedFieldBuilder().withValueProviderWithArg(getStringGetter(argToValueMap)).asObservable()
+        name         | builder
+        "otto"       | new CachedFieldBuilder().withValueProviderWithArg(getStringGetter(argToValueMap))
+        "observable" | new CachedFieldBuilder().withValueProviderWithArg(getStringGetter(argToValueMap)).asObservable()
     }
 }

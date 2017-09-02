@@ -3,7 +3,7 @@ package com.byoutline.ottocachedfield
 import com.byoutline.cachedfield.CachedFieldWithArg
 import com.byoutline.cachedfield.FieldState
 import com.byoutline.cachedfield.FieldStateListener
-import com.byoutline.ottocachedfield.events.ResponseEventWithArg
+import com.byoutline.ibuscachedfield.events.ResponseEventWithArg
 import com.squareup.otto.Bus
 import spock.lang.Shared
 import spock.lang.Specification
@@ -29,7 +29,7 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
         boolean duringValueLoad = true
         boolean loadingStarted = false
         def listener = { FieldState newState ->
-            switch(newState) {
+            switch (newState) {
                 case FieldState.NOT_LOADED:
                     if (loadingStarted) duringValueLoad = false
                     break
@@ -62,11 +62,11 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
     @Unroll
     def "should post value: #val #text, times: #sC for arg: #arg when created by: #builder.class.simpleName"() {
         given:
-        CachedFieldWithArg field = builder
+        CachedFieldWithArg field = builder()
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .build();
+                .build()
         when:
         postAndWaitUntilFieldStopsLoading(field, arg)
 
@@ -76,17 +76,17 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
         0 * errorEvent.setResponse(_, _)
 
         where:
-        val  | arg | builder              || sC
-        null | 0   | ottoWithArgBuilder() || 1
-        'a'  | 1   | ottoWithArgBuilder() || 1
-        'b'  | 2   | ottoWithArgBuilder() || 1
+        val  | arg | builder                  || sC
+        null | 0   | { ottoWithArgBuilder() } || 1
+        'a'  | 1   | { ottoWithArgBuilder() } || 1
+        'b'  | 2   | { ottoWithArgBuilder() } || 1
     }
 
     @Unroll
     def "postValue should post error with argument when created by: #builder.class.simpleName"() {
         given:
-        Exception errorVal = null;
-        Integer errorArg = null;
+        Exception errorVal = null
+        Integer errorArg = null
         ResponseEventWithArg<Exception, Integer> errorEvent =
                 { Exception val, Integer arg ->
                     errorVal = val; errorArg = arg
@@ -95,7 +95,7 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
                 .withValueProvider(MockFactory.getFailingStringGetterWithArg())
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .build();
+                .build()
         when:
         postAndWaitUntilFieldStopsLoading(field, 2)
 
@@ -118,7 +118,7 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
                 .withResponseErrorEvent(errorEvent)
                 .withCustomSessionIdProvider(sessionProv)
                 .withCustomBus(customBus)
-                .build();
+                .build()
 
         when:
         postAndWaitUntilFieldStopsLoading(field, 1)

@@ -63,13 +63,13 @@ class OttoCachedFieldSpec extends Specification {
         OttoCachedField field = OttoCachedField.builder()
                 .withValueProvider(MockFactory.getDelayedStringGetter(value, 1000))
                 .withSuccessEvent(successEvent)
-                .build();
+                .build()
 
         when:
         boolean tookToLong = false
         Thread.start {
             sleep 45
-            tookToLong = true;
+            tookToLong = true
         }
         field.postValue()
 
@@ -86,7 +86,7 @@ class OttoCachedFieldSpec extends Specification {
                 .withValueProvider(valProv)
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .build();
+                .build()
         when:
         postAndWaitUntilFieldStopsLoading(field)
 
@@ -107,7 +107,7 @@ class OttoCachedFieldSpec extends Specification {
                 .withValueProvider(MockFactory.getFailingStringGetter(exception))
                 .withSuccessEvent(successEvent)
                 .withGenericErrorEvent(expEvent)
-                .build();
+                .build()
 
         when:
         postAndWaitUntilFieldStopsLoading(field)
@@ -159,7 +159,7 @@ class OttoCachedFieldSpec extends Specification {
                 .withResponseErrorEvent(errorEvent)
                 .withCustomSessionIdProvider(sessionProv)
                 .withCustomBus(customBus)
-                .build();
+                .build()
 
         when:
         postAndWaitUntilFieldStopsLoading(field)

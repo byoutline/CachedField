@@ -18,13 +18,13 @@ import spock.lang.Unroll
 import javax.inject.Provider
 import java.util.concurrent.Executor
 
+import static com.byoutline.ottocachedfield.MockFactory.getSameSessionIdProvider
 import static com.byoutline.ottocachedfield.MockFactory.getStringGetter
-import static com.byoutline.ottocachedfield.MockFactory.sameSessionIdProvider
 
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class CachedFieldBuilderSpec extends Specification {
+class CachedFieldBuilderSpec extends Specification {
 
     @Shared
     String value = "val"
@@ -292,11 +292,11 @@ public class CachedFieldBuilderSpec extends Specification {
         then:
         customProviderCalled
         where:
-        name   | builder
-        'cF'   | inst()
+        name            | builder
+        'cF'            | inst()
                 .withValueProvider(getStringGetter(value))
                 .withSuccessEvent(successEvent)
-        'obsF no Bus' | inst()
+        'obsF no Bus'   | inst()
                 .withValueProvider(getStringGetter(value))
                 .asObservable()
         'obsF with Bus' | inst()
@@ -364,11 +364,11 @@ public class CachedFieldBuilderSpec extends Specification {
         then:
         customExecutorCalled
         where:
-        name   | builder
-        'cF'   | inst()
+        name            | builder
+        'cF'            | inst()
                 .withValueProvider(getStringGetter(value))
                 .withSuccessEvent(successEvent)
-        'obsF no Bus' | inst()
+        'obsF no Bus'   | inst()
                 .withValueProvider(getStringGetter(value))
                 .asObservable()
         'obsF with Bus' | inst()
@@ -417,7 +417,7 @@ public class CachedFieldBuilderSpec extends Specification {
                 .asEndpoint(responseEventWithArg)
     }
 
-    private CachedFieldBuilder inst() {
+    private static CachedFieldBuilder inst() {
         new CachedFieldBuilder()
     }
 }

@@ -5,10 +5,11 @@ import com.byoutline.cachedfield.internal.CachedValue;
 import com.byoutline.cachedfield.internal.ValueLoader;
 import com.byoutline.cachedfield.internal.cachedendpoint.CallEndWrapperWithArg;
 
-import javax.annotation.Nonnull;
-import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+
+import javax.annotation.Nonnull;
+import javax.inject.Provider;
 
 /**
  * Wrapper for endpoint allowing executing calls from fragments/activities without leaking them.

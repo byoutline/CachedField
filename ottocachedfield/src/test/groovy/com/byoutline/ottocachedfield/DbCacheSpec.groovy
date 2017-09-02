@@ -48,7 +48,7 @@ class DbCacheSpec extends Specification {
                 .withDbReader(MockFactory.getStringGetter(value))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .build();
+                .build()
 
         when:
         PostingToBusCachedFieldWithArgSpec.postAndWaitUntilFieldStopsLoading(field, FetchType.API)
@@ -66,14 +66,14 @@ class DbCacheSpec extends Specification {
             void saveToDb(String value, Integer arg) {
                 dbSaverArg = value
             }
-        };
-        OttoCachedFieldWithArg<String, DbCacheArg<Integer>> field = OttoCachedFieldWithArg.<String> builder()
+        }
+        OttoCachedFieldWithArg<String, DbCacheArg<Integer>> field = OttoCachedFieldWithArg.<String, Integer> builder()
                 .withApiFetcher(MockFactory.getStringGetter(argToValueMap))
                 .withDbWriter(dbSaver)
                 .withDbReader(MockFactory.getStringGetter(argToValueMap))
                 .withSuccessEvent(successEventWithArg)
                 .withResponseErrorEvent(errorEventWithArg)
-                .build();
+                .build()
 
         when:
         PostingToBusCachedFieldWithArgSpec.postAndWaitUntilFieldStopsLoading(field, DbCacheArg.create(1, FetchType.API))
@@ -92,7 +92,7 @@ class DbCacheSpec extends Specification {
                 .withDbReader(MockFactory.getStringGetter(differentValue))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .build();
+                .build()
 
         when:
         PostingToBusCachedFieldWithArgSpec.postAndWaitUntilFieldStopsLoading(field, FetchType.DB)
@@ -111,7 +111,7 @@ class DbCacheSpec extends Specification {
                 .withDbWriter(dbSaver)
                 .withDbReader({ return 1 } as Provider<Integer>)
                 .withSuccessEvent(event)
-                .build();
+                .build()
 
         when:
         PostingToBusCachedFieldWithArgSpec.postAndWaitUntilFieldStopsLoading(field, FetchType.API)

@@ -21,7 +21,7 @@ class CachedFieldWithArgExecutorsSpec extends Specification {
         given:
         boolean called = false
         ExecutorService executor = [
-                submit: { called = true; return new FutureTask((Runnable) it, null); }
+                submit: { called = true; return new FutureTask((Runnable) it, null) }
         ] as ExecutorService
         CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, executor)
 

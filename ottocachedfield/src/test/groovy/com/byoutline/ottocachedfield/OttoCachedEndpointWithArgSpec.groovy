@@ -3,6 +3,7 @@ package com.byoutline.ottocachedfield
 import com.byoutline.cachedfield.cachedendpoint.CallResult
 import com.byoutline.cachedfield.cachedendpoint.EndpointState
 import com.byoutline.cachedfield.cachedendpoint.StateAndValue
+import com.byoutline.ibuscachedfield.events.ResponseEventWithArg
 import com.google.common.util.concurrent.MoreExecutors
 import com.squareup.otto.Bus
 import spock.lang.Shared
@@ -17,7 +18,7 @@ class OttoCachedEndpointWithArgSpec extends Specification {
     @Shared
     Map<Integer, String> argToValueMap = [1: 'a', 2: 'b']
     @Shared
-    com.byoutline.ibuscachedfield.events.ResponseEventWithArg<StateAndValue<String, Integer>, Integer> resultEvent
+    ResponseEventWithArg<StateAndValue<String, Integer>, Integer> resultEvent
     Bus bus
 
     def setup() {
@@ -34,7 +35,7 @@ class OttoCachedEndpointWithArgSpec extends Specification {
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withResultEvent(resultEvent)
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
-                .build();
+                .build()
         when:
         field.call(arg)
 
@@ -57,7 +58,7 @@ class OttoCachedEndpointWithArgSpec extends Specification {
                 .withValueProvider(MockFactory.getFailingStringGetterWithArg())
                 .withResultEvent(resultEvent)
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
-                .build();
+                .build()
         when:
         field.call(2)
 

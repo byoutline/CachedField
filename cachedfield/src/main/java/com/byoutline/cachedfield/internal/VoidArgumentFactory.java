@@ -1,6 +1,10 @@
 package com.byoutline.cachedfield.internal;
 
-import com.byoutline.cachedfield.*;
+import com.byoutline.cachedfield.ErrorListener;
+import com.byoutline.cachedfield.ErrorListenerWithArg;
+import com.byoutline.cachedfield.ProviderWithArg;
+import com.byoutline.cachedfield.SuccessListener;
+import com.byoutline.cachedfield.SuccessListenerWithArg;
 import com.byoutline.cachedfield.dbcache.DbWriter;
 import com.byoutline.cachedfield.dbcache.DbWriterWithArg;
 

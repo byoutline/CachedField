@@ -17,7 +17,7 @@ static Provider<String> getSameSessionIdProvider() {
 }
 
 static Provider<String> getMultiSessionIdProvider() {
-    int i = 1;
+    int i = 1
     return { return "sessionId" + i++ } as Provider<String>
 }
 
@@ -55,7 +55,7 @@ static IBusCachedFieldWithArgBuilder<String, Integer, IBus, CachedFieldWithArg<S
     new IBusCachedFieldWithArgBuilder<String, Integer, IBus, CachedFieldWithArg<String, Integer>>(new CachedFieldWithArgConstructorWrapperImpl(), bus,
             getSameSessionIdProvider(),
             DefaultExecutors.createDefaultValueGetterExecutor(),
-            DefaultExecutors.createDefaultStateListenerExecutor()){}
+            DefaultExecutors.createDefaultStateListenerExecutor()) {}
 }
 
 static IBusCachedFieldBuilder<String, IBus, CachedField<String>> fieldWithoutArgBuilder(IBus bus) {
