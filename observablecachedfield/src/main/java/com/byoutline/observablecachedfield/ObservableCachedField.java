@@ -40,6 +40,10 @@ public class ObservableCachedField<RETURN_TYPE> implements CachedField<RETURN_TY
         return delegate.observable();
     }
 
+    public ObservableField<Exception> getObservableError() {
+        return delegate.getObservableError();
+    }
+
     @Override
     public FieldState getState() {
         return delegate.getState();

@@ -27,14 +27,7 @@ class ObservableCachedFieldWithArgSpec extends Specification {
                 .withoutEvents()
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
                 .build()
-        boolean called = false
-        def callback = new Observable.OnPropertyChangedCallback() {
-
-            @Override
-            void onPropertyChanged(Observable sender, int propertyId) {
-                called = true
-            }
-        }
+        def callback = new MockObservableCallback()
         ObservableField<String> obs = field.observable()
         obs.addOnPropertyChangedCallback(callback)
 
@@ -42,7 +35,7 @@ class ObservableCachedFieldWithArgSpec extends Specification {
         field.postValue(arg)
 
         then:
-        called
+        callback.called
         obs.get() == val
 
         where:
@@ -82,6 +75,24 @@ class ObservableCachedFieldWithArgSpec extends Specification {
         1 * errorEvent.setResponse(_, 8)
     }
 
+    def "should set error value in observable"() {
+        given:
+        ObservableCachedFieldWithArg field = builder()
+                .withValueProvider(MockFactory.getFailingStringGetterWithArg())
+                .withoutEvents()
+                .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
+                .build()
+        def callback = new MockObservableCallback()
+        ObservableField<String> errObs = field.getObservableError()
+        errObs.addOnPropertyChangedCallback(callback)
+        when:
+        field.postValue(8)
+        then:
+        callback.called
+        errObs.get() instanceof RuntimeException
+        errObs.get().message == "E8"
+    }
+
     def "builder should not allow null value getter"() {
         when:
         builder()
@@ -108,5 +119,14 @@ class ObservableCachedFieldWithArgSpec extends Specification {
         def busConverter = { b -> b } as ObservableCachedFieldWithArgBuilder.BusConverter<IBus>
         return new ObservableCachedFieldWithArgBuilder<String, Integer, IBus>(MockFactory.getSameSessionIdProvider(), bus, busConverter,
                 DefaultExecutors.createDefaultValueGetterExecutor(), DefaultExecutors.createDefaultStateListenerExecutor())
+    }
+}
+
+class MockObservableCallback extends Observable.OnPropertyChangedCallback {
+    public boolean called
+
+    @Override
+    void onPropertyChanged(Observable sender, int propertyId) {
+        called = true
     }
 }

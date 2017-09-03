@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     compile 'javax.inject:javax.inject:1'
-    compile 'com.google.code.findbugs:jsr305:3.0.0'
+    compile "com.google.code.findbugs:jsr305:$jsr305_ver"
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.byoutline.ibuscachedfield:ibuscachedfield:1.1.0'
     compile 'com.byoutline.ottoeventcallback:ottoeventcallback-api:1.0.1'

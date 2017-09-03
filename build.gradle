@@ -1,4 +1,9 @@
 buildscript {
+    project.ext {
+        jsr305_ver = '3.0.1'
+        kotlin_version = '1.1.51'
+    }
+
     repositories {
         mavenCentral()
         maven { url "https://plugins.gradle.org/m2/" }
@@ -8,6 +13,5 @@ buildscript {
     dependencies {
         classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1'
-
     }
 }
