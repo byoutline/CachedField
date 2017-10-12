@@ -1,6 +1,6 @@
 apply plugin: SpockTests
 
-public final class SpockTests implements Plugin<Project>{
+final class SpockTests implements Plugin<Project>{
 
     @Override
     void apply(Project project) {
@@ -8,7 +8,7 @@ public final class SpockTests implements Plugin<Project>{
         applyPlugins(project)
     }
 
-    private void addDependencies(Project project) {
+    private static void addDependencies(Project project) {
         project.afterEvaluate {
             def pd = project.dependencies
             pd.add('testCompile', 'org.codehaus.groovy:groovy-all:2.4.1')

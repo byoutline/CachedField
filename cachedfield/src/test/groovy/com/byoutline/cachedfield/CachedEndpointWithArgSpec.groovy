@@ -56,7 +56,7 @@ class CachedEndpointWithArgSpec extends Specification {
         boolean tookToLong = false
         Thread.start {
             sleep 15
-            tookToLong = true;
+            tookToLong = true
         }
         field.call(1)
 

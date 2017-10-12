@@ -106,6 +106,7 @@ class CachedFieldWithArgSpec extends Specification {
         FieldState fieldState = null
         def successListener = new SuccessListenerWithArg<String, Integer>() {
             CachedFieldWithArg field
+
             @Override
             void valueLoaded(String value, Integer arg) {
                 fieldState = field.getState()

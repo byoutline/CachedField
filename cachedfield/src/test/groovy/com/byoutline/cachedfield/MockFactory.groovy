@@ -18,7 +18,7 @@ static Provider<String> getSameSessionIdProvider() {
 }
 
 static Provider<String> getMultiSessionIdProvider() {
-    int i = 1;
+    int i = 1
     return { return "sessionId" + i++ } as Provider<String>
 }
 
@@ -43,15 +43,15 @@ static ProviderWithArg<String, Integer> getStringIntGetter(Map<Integer, String> 
 }
 
 static SuccessListener<String> getSuccessListener() {
-    return { value -> return } as SuccessListener<String>
+    return { value -> } as SuccessListener<String>
 }
 
 static SuccessListenerWithArg<String, Integer> getSuccessListenerWithArg() {
-    return { value, arg -> return } as SuccessListenerWithArg<String, Integer>
+    return { value, arg -> } as SuccessListenerWithArg<String, Integer>
 }
 
 static ErrorListenerWithArg<Integer> getErrorListenerWithArg() {
-    return { ex, arg -> return } as ErrorListenerWithArg<Integer>
+    return { ex, arg -> } as ErrorListenerWithArg<Integer>
 }
 
 static ExecutorService getAsyncFirstTaskSyncOtherExecutorService() {
@@ -127,7 +127,7 @@ static CachedField getLoadedCachedField(String value, FieldStateListener fieldSt
 }
 
 static CallEndListener<String, Integer> getStubCallEndListener() {
-    {StateAndValue<String, Integer> callResult -> } as CallEndListener<String, Integer>
+    { StateAndValue<String, Integer> callResult -> } as CallEndListener<String, Integer>
 }
 
 static CachedEndpointWithArgImpl<String, Integer> getCachedEndpointBlockingVal() {
@@ -153,6 +153,7 @@ static CachedEndpointWithArgImpl<String, Integer> getCachedEndpointBlockingValue
             DefaultExecutors.createDefaultStateListenerExecutor()
     )
 }
+
 static CachedEndpointWithArgImpl<String, Integer> getCachedEndpointBlocking(Map<Integer, String> argToValueMap) {
     return new CachedEndpointWithArgImpl(
             getSameSessionIdProvider(),

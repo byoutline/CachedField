@@ -3,19 +3,8 @@ apply plugin: 'propdeps'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'http://repo.spring.io/plugins-release' }
-    }
 
-    dependencies {
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1'
-        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
-    }
-}
-
-apply from: '../gradle/byoutline/javaLib.gradle'
+apply from: '../gradle/byoutline/javaLib6.gradle'
 
 repositories {
     mavenCentral()
@@ -25,7 +14,7 @@ repositories {
 dependencies {
     compile 'javax.inject:javax.inject:1'
     compile 'com.byoutline.eventcallback:eventcallback-api:1.0.1'
-    compile 'com.google.code.findbugs:jsr305:3.0.0'
+    compile "com.google.code.findbugs:jsr305:$jsr305_ver"
     provided 'com.google.auto.value:auto-value:1.1'
     // adds the @Generated annotation for auto value
     provided 'javax.annotation:jsr250-api:1.0'

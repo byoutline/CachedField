@@ -21,7 +21,7 @@ class CachedFieldWithArgExecutorsSpec extends Specification {
         given:
         boolean called = false
         ExecutorService executor = [
-                submit: { called = true; return new FutureTask((Runnable) it, null); }
+                submit: { called = true; return new FutureTask((Runnable) it, null) }
         ] as ExecutorService
         CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, executor)
 
@@ -79,7 +79,7 @@ class CachedFieldWithArgExecutorsSpec extends Specification {
         field.postValue(10000)
         // Give some (minimal) time to propagate Thread.interrupt, since we
         // are running this post synchronously.
-        field.postValue(2)
+        field.postValue(8)
 
         then:
         valueLoadingInterrupted

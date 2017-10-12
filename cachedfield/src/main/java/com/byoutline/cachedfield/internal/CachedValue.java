@@ -130,7 +130,7 @@ public class CachedValue<VALUE_TYPE, ARG_TYPE> {
     public synchronized void addStateListener(@Nonnull EndpointStateListener<VALUE_TYPE, ARG_TYPE> listener) throws IllegalArgumentException {
         checkListenerNonNull(listener);
         fieldStateListeners.add(listener);
-        if(informStateListenerOnAdd) {
+        if (informStateListenerOnAdd) {
             informStateListener(getStateAndValue(), listener);
         }
     }
