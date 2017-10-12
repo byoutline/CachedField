@@ -2,7 +2,9 @@ package com.byoutline.observablecachedfield
 
 import android.databinding.Observable
 import android.databinding.ObservableField
+import com.byoutline.cachedfield.ErrorListener
 import com.byoutline.cachedfield.MockFactory
+import com.byoutline.cachedfield.SuccessListener
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.byoutline.eventcallback.IBus
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg
@@ -113,6 +115,38 @@ class ObservableCachedFieldWithArgSpec extends Specification {
                 .build()
         then:
         thrown NullArgumentException
+    }
+
+    @Unroll
+    def "No arg version smoke test for value: #val"() {
+        given:
+        ObservableCachedField<String> field = new ObservableCachedField<String>(MockFactory.getSameSessionIdProvider(),
+                MockFactory.getStringGetter(val),
+                {} as SuccessListener<String>,
+                {} as ErrorListener,
+                MoreExecutors.newDirectExecutorService(),
+                DefaultExecutors.createDefaultStateListenerExecutor()
+        )
+        boolean called = false
+        def callback = new Observable.OnPropertyChangedCallback() {
+
+            @Override
+            void onPropertyChanged(Observable sender, int propertyId) {
+                called = true
+            }
+        }
+        ObservableField<String> obs = field.observable()
+        obs.addOnPropertyChangedCallback(callback)
+
+        when:
+        field.postValue()
+
+        then:
+        called
+        obs.get() == val
+
+        where:
+        val << ['a', 'b']
     }
 
     private ObservableCachedFieldWithArgBuilder<String, Integer, IBus> builder() {
