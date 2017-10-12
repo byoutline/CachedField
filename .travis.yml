@@ -10,14 +10,5 @@ notifications:
 env:
   - JAVA6_HOME=/usr/lib/jvm/java-6-openjdk-amd64 TERM=dumb JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64 TERM=dumb
 
-# Workaround for gradle wrapper download failure:
-# SSLException: java.security.ProviderException:
-# java.security.InvalidKeyException: EC parameters error
-# Caused by: java.security.NoSuchProviderException: no such provider: SunEC
-install:
- - jdk_switcher use openjdk8
- - ./gradlew classes testClasses --stacktrace
- - jdk_switcher use openjdk7
-
-after_success:
-  - ./gradlew jacocoTestReport coveralls --debug --stacktrace
+script:
+  - ./gradlew build cobertura coveralls

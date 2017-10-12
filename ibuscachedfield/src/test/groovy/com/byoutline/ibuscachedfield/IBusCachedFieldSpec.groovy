@@ -38,6 +38,8 @@ class IBusCachedFieldSpec extends Specification {
             sleep 1
         }
         field.removeStateListener(listener)
+        // allow thread switch from state listener executor to success listener
+        sleep 8
     }
 
     def setup() {

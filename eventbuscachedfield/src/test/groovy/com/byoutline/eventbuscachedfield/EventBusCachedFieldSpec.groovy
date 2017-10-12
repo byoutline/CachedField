@@ -39,7 +39,7 @@ class EventBusCachedFieldSpec extends Specification {
         }
         field.removeStateListener(listener)
         // allow thread switch from state listener executor to success listener
-        sleep 1
+        sleep 8
     }
 
     def setup() {
@@ -60,7 +60,7 @@ class EventBusCachedFieldSpec extends Specification {
         when:
         boolean tookToLong = false
         Thread.start {
-            sleep 15
+            sleep 40
             tookToLong = true
         }
         field.postValue()

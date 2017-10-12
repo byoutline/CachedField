@@ -37,7 +37,7 @@ class EventBusCachedFieldWithArgSpec extends Specification {
         }
         field.removeStateListener(listener)
         // allow thread switch from state listener executor to success listener
-        sleep 1
+        sleep 8
     }
 
     def setup() {

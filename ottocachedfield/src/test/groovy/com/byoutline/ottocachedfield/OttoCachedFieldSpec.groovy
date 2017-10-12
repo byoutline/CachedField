@@ -47,7 +47,7 @@ class OttoCachedFieldSpec extends Specification {
             sleep 1
         }
         field.removeStateListener(listener)
-        sleep 4
+        sleep 8
     }
 
     def setup() {

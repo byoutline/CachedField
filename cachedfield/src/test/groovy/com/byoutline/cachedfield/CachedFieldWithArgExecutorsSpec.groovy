@@ -79,7 +79,7 @@ class CachedFieldWithArgExecutorsSpec extends Specification {
         field.postValue(10000)
         // Give some (minimal) time to propagate Thread.interrupt, since we
         // are running this post synchronously.
-        field.postValue(2)
+        field.postValue(8)
 
         then:
         valueLoadingInterrupted

@@ -1,11 +1,43 @@
-apply plugin: "jacoco"
-apply plugin: 'com.github.kt3k.coveralls'
+repositories {
+    mavenCentral()
+}
 
-jacocoTestReport {
-    reports {
-        xml.enabled true // coveralls plugin depends on xml format report
-        html.enabled = true
-        csv.enabled false
-        html.destination "${buildDir}/jacocoHtml"
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'net.saliman.cobertura'
+
+    dependencies {
+        // Cobertura declares a dependency on the slf4j API, so we need to supply
+        // a runtime implementation to avoid NoClassDefFoundErrors
+        testRuntime "org.slf4j:slf4j-log4j12:1.7.5"
+        testRuntime "log4j:log4j:1.2.17"
+    }
+    cobertura {
+        coverageIgnoreTrivial = true
+        coverageFormats = [ 'xml', 'html' ]
+        coverageExcludes = ['.*AutoValue_.*']
     }
 }
+
+cobertura {
+    coverageFormats = ['xml', 'html']
+
+    rootProject.subprojects.each {
+        coverageDirs << file("${it.sourceSets.main.output.classesDir}")
+    }
+    coverageSourceDirs = []
+    rootProject.subprojects.each {
+        coverageSourceDirs += it.sourceSets.main.java.srcDirs
+    }
+    coverageMergeDatafiles = ['observablecachedfield',
+                              'ottocachedfield',
+                              'cachedfield',
+                              'ibuscachedfield',
+                              'ottoobservablecachedfield',
+                              'eventbuscachedfield']
+            .collect { new File("$it/build/cobertura/cobertura.ser") }
+    coverageIgnoreTrivial = true
+    coverageExcludes = ['.*AutoValue_.*']
+}
+
+test.dependsOn(subprojects.test)
