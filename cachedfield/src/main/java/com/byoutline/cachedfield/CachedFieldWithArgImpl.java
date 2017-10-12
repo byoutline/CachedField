@@ -1,6 +1,7 @@
 package com.byoutline.cachedfield;
 
 import com.byoutline.cachedfield.cachedendpoint.EndpointState;
+import com.byoutline.cachedfield.cachedendpoint.EndpointStateListener;
 import com.byoutline.cachedfield.cachedendpoint.StateAndValue;
 import com.byoutline.cachedfield.internal.CachedValue;
 import com.byoutline.cachedfield.internal.ValueLoader;
@@ -113,6 +114,11 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
     }
 
     @Override
+    public StateAndValue<RETURN_TYPE, ARG_TYPE> getStateAndValue() {
+        return value.getStateAndValue();
+    }
+
+    @Override
     public void drop() {
         value.drop();
     }
@@ -125,5 +131,17 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
     @Override
     public boolean removeStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
         return value.removeStateListener(FieldStateListenerWrapper.<RETURN_TYPE, ARG_TYPE>create(listener));
+    }
+
+    @Override
+    public void addEndpointListener(@Nonnull EndpointStateListener<RETURN_TYPE, ARG_TYPE> listener)
+            throws IllegalArgumentException {
+        value.addStateListener(listener);
+    }
+
+    @Override
+    public boolean removeEndpointListener(@Nonnull EndpointStateListener<RETURN_TYPE, ARG_TYPE> listener)
+            throws IllegalArgumentException {
+        return value.removeStateListener(listener);
     }
 }

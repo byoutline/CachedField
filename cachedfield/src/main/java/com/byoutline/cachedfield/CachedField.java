@@ -45,4 +45,6 @@ public interface CachedField<RETURN_TYPE> {
      * @throws IllegalArgumentException if listener is null
      */
     boolean removeStateListener(FieldStateListener listener);
+
+    CachedFieldWithArgImpl<RETURN_TYPE, Void> toCachedFieldWithArg();
 }

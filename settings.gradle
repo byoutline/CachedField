@@ -1,5 +1,5 @@
 rootProject.name = 'CachedField'
 include 'cachedfield', 'idlingresource', 'ottocachedfield', 'ottoobservablecachedfield'
-include 'ibuscachedfield', 'observablecachedfield', 'eventbuscachedfield'
+include 'ibuscachedfield', 'observablecachedfield', 'eventbuscachedfield', 'rxjava'
 include 'testhelpers'
 
