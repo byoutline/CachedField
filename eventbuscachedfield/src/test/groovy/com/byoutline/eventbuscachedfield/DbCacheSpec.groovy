@@ -1,5 +1,6 @@
 package com.byoutline.eventbuscachedfield
 
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.cachedfield.dbcache.DbWriter
 import com.byoutline.cachedfield.dbcache.FetchType
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArgImpl

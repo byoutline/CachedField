@@ -1,5 +1,6 @@
 package com.byoutline.ottocachedfield
 
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.ibuscachedfield.internal.NullArgumentException
 import spock.lang.Shared
 import spock.lang.Specification

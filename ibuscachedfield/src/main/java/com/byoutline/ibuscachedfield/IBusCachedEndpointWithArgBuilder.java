@@ -7,10 +7,9 @@ import com.byoutline.cachedfield.cachedendpoint.StateAndValue;
 import com.byoutline.ibuscachedfield.builders.CachedEndpointWithArgConstructorWrapper;
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg;
 
+import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-
-import javax.inject.Provider;
 
 /**
  * Fluent interface for building {@link CachedEndpointWithArgImpl}

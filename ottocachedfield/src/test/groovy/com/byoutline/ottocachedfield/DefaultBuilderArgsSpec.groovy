@@ -1,5 +1,6 @@
 package com.byoutline.ottocachedfield
 
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.eventcallback.ResponseEvent
 import com.byoutline.eventcallback.ResponseEventImpl
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg

@@ -7,12 +7,11 @@ import com.byoutline.cachedfield.cachedendpoint.EndpointStateListener;
 import com.byoutline.cachedfield.cachedendpoint.StateAndValue;
 import com.byoutline.eventcallback.internal.SessionChecker;
 
+import javax.annotation.Nonnull;
+import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
-
-import javax.annotation.Nonnull;
-import javax.inject.Provider;
 
 /**
  * Thread safe value storage, that nulls out its content when session changes.

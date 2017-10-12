@@ -18,8 +18,8 @@ import spock.lang.Unroll
 import javax.inject.Provider
 import java.util.concurrent.Executor
 
-import static com.byoutline.ottocachedfield.MockFactory.getSameSessionIdProvider
-import static com.byoutline.ottocachedfield.MockFactory.getStringGetter
+import static com.byoutline.cachedfield.MockFactory.getSameSessionIdProvider
+import static com.byoutline.cachedfield.MockFactory.getStringGetter
 
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>

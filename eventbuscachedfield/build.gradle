@@ -18,7 +18,7 @@ dependencies {
 
     provided 'com.google.android:android:4.1.1.4'
     testCompile 'com.google.android:android:4.1.1.4'
-    testCompile 'com.google.guava:guava:18.0'
+    testCompile project(':testhelpers')
 }
 
 apply from: '../maven-push.gradle'

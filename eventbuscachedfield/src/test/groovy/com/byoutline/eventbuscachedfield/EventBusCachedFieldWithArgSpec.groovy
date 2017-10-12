@@ -3,6 +3,7 @@ package com.byoutline.eventbuscachedfield
 import com.byoutline.cachedfield.CachedFieldWithArg
 import com.byoutline.cachedfield.FieldState
 import com.byoutline.cachedfield.FieldStateListener
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg
 import de.greenrobot.event.EventBus
 import spock.lang.Shared

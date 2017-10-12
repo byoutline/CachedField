@@ -2,6 +2,7 @@ package com.byoutline.observablecachedfield
 
 import android.databinding.Observable
 import android.databinding.ObservableField
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.byoutline.eventcallback.IBus
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg

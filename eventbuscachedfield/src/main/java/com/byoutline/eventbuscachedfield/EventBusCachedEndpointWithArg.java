@@ -7,11 +7,10 @@ import com.byoutline.eventcallback.IBus;
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg;
 import com.byoutline.ibuscachedfield.internal.BusCallEndListener;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 /**
  * {@link EventBusCachedField} like API for making non GET calls.

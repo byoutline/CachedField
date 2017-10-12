@@ -2,6 +2,7 @@ package com.byoutline.ibuscachedfield
 
 import com.byoutline.cachedfield.CachedField
 import com.byoutline.cachedfield.CachedFieldWithArg
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.eventcallback.IBus
 import com.byoutline.eventcallback.ResponseEvent
 import com.byoutline.eventcallback.ResponseEventImpl
@@ -38,7 +39,7 @@ class CustomExecutorsSpec extends Specification {
         ExecutorService executor = [
                 submit: { called = true; return new FutureTask((Runnable) it, null) }
         ] as ExecutorService
-        CachedField field = MockFactory.fieldWithoutArgBuilder(bus)
+        CachedField field = IBusMockFactory.fieldWithoutArgBuilder(bus)
                 .withValueProvider(MockFactory.getStringGetter(value))
                 .withSuccessEvent(successEvent)
                 .withGenericErrorEvent(errorEvent)
@@ -58,7 +59,7 @@ class CustomExecutorsSpec extends Specification {
         ResponseEvent<String> successEvent = new ResponseEventImpl<>()
         ResponseEvent<Exception> errorEvent = new ResponseEventImpl<>()
         Executor stateListenersExecutor = { called = true; it.run() } as Executor
-        CachedField field = MockFactory.fieldWithoutArgBuilder(bus)
+        CachedField field = IBusMockFactory.fieldWithoutArgBuilder(bus)
                 .withValueProvider(MockFactory.getStringGetter(value))
                 .withSuccessEvent(successEvent)
                 .withGenericErrorEvent(errorEvent)
@@ -82,7 +83,7 @@ class CustomExecutorsSpec extends Specification {
         ExecutorService executor = [
                 submit: { called = true; return new FutureTask((Runnable) it, null) }
         ] as ExecutorService
-        CachedFieldWithArg field = MockFactory.fieldWithArgBuilder(bus)
+        CachedFieldWithArg field = IBusMockFactory.fieldWithArgBuilder(bus)
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
@@ -102,7 +103,7 @@ class CustomExecutorsSpec extends Specification {
         ResponseEventWithArg<String, Integer> successEvent = new ResponseEventWithArgImpl<>()
         ResponseEventWithArg<Exception, Integer> errorEvent = new ResponseEventWithArgImpl<>()
         Executor stateListenersExecutor = { called = true; it.run() } as Executor
-        CachedFieldWithArg field = MockFactory.fieldWithArgBuilder(bus)
+        CachedFieldWithArg field = IBusMockFactory.fieldWithArgBuilder(bus)
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)

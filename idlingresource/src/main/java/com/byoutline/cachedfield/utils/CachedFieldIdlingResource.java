@@ -1,7 +1,6 @@
 package com.byoutline.cachedfield.utils;
 
 import android.support.test.espresso.IdlingResource;
-
 import com.byoutline.cachedfield.CachedField;
 import com.byoutline.cachedfield.CachedFieldWithArg;
 import com.byoutline.cachedfield.cachedendpoint.CachedEndpointWithArg;

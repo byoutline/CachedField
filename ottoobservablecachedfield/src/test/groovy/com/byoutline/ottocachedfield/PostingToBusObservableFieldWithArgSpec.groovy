@@ -3,6 +3,7 @@ package com.byoutline.ottocachedfield
 import com.byoutline.cachedfield.CachedFieldWithArg
 import com.byoutline.cachedfield.FieldState
 import com.byoutline.cachedfield.FieldStateListener
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.ottocachedfield.events.ResponseEventWithArg
 import com.squareup.otto.Bus
 import spock.lang.Shared
@@ -11,8 +12,8 @@ import spock.lang.Unroll
 
 import javax.inject.Provider
 
-import static com.byoutline.ottocachedfield.MockFactory.getFailingStringGetterWithArg
-import static com.byoutline.ottocachedfield.MockFactory.getStringGetter
+import static com.byoutline.cachedfield.MockFactory.getFailingStringGetterWithArg
+import static com.byoutline.cachedfield.MockFactory.getStringGetter
 
 /**
  *

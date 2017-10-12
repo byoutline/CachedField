@@ -9,10 +9,9 @@ import com.byoutline.ibuscachedfield.internal.ErrorEvent;
 import com.byoutline.ibuscachedfield.internal.IBusErrorListener;
 import com.byoutline.ibuscachedfield.internal.IBusSuccessListener;
 
+import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-
-import javax.inject.Provider;
 
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>

@@ -9,13 +9,11 @@ import com.byoutline.eventcallback.ResponseEvent;
 import com.byoutline.ibuscachedfield.IBusCachedFieldBuilder;
 import com.byoutline.ibuscachedfield.builders.CachedFieldConstructorWrapper;
 import com.byoutline.ibuscachedfield.internal.ErrorEvent;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
+import de.greenrobot.event.EventBus;
 
 import javax.inject.Provider;
-
-import de.greenrobot.event.EventBus;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Fluent interface builder of {@link EventBusCachedField}. If you do not like

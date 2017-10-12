@@ -19,7 +19,7 @@ dependencies {
     provided files('libs/binding-library-1.1.jar')
     testCompile files('libs/binding-library-1.1.jar')
     testCompile 'com.android.databinding:baseLibrary:1.1'
-    testCompile 'com.google.guava:guava:18.0'
+    testCompile project(':testhelpers')
 }
 
 apply from: '../maven-push.gradle'

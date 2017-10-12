@@ -2,7 +2,7 @@ package com.byoutline.ibuscachedfield
 
 import com.byoutline.cachedfield.CachedField
 import com.byoutline.cachedfield.CachedFieldWithArg
-import com.byoutline.cachedfield.ProviderWithArg
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.cachedfield.cachedendpoint.CachedEndpointWithArg
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.byoutline.eventcallback.IBus
@@ -10,64 +10,23 @@ import com.byoutline.ibuscachedfield.mocks.CachedEndpointWithArgConstructorWrapp
 import com.byoutline.ibuscachedfield.mocks.CachedFieldConstructorWrapperImpl
 import com.byoutline.ibuscachedfield.mocks.CachedFieldWithArgConstructorWrapperImpl
 
-import javax.inject.Provider
-
-static Provider<String> getSameSessionIdProvider() {
-    return { return "sessionId" } as Provider<String>
-}
-
-static Provider<String> getMultiSessionIdProvider() {
-    int i = 1
-    return { return "sessionId" + i++ } as Provider<String>
-}
-
-static Provider<String> getDelayedStringGetter(String value) {
-    return getDelayedStringGetter(value, 5)
-}
-
-static Provider<String> getDelayedStringGetter(String value, long sleepTime) {
-    return [get     : { Thread.sleep(sleepTime); return value },
-            toString: { sleepTime + "delayedStringGetter: " + value }] as Provider<String>
-}
-
-static Provider<String> getStringGetter(String value) {
-    return [get     : { return value },
-            toString: { "string getter: " + value }] as Provider<String>
-}
-
-static ProviderWithArg<String, Integer> getStringGetter(Map<Integer, String> argToValueMap) {
-    return [get     : { Integer arg -> return argToValueMap.get(arg) },
-            toString: { "string getter with arg: " + argToValueMap }
-    ] as ProviderWithArg<String, Integer>
-}
-
-static Provider<String> getFailingStringGetter(Exception ex) {
-    return [get     : { throw ex },
-            toString: { "fail provider with: " + ex }] as Provider<String>
-}
-
-static ProviderWithArg<String, Integer> getFailingStringGetterWithArg() {
-    return [get     : { Integer arg -> throw new RuntimeException("E" + arg) },
-            toString: { "fail provider with arg" }] as ProviderWithArg<String, Integer>
-}
-
 static IBusCachedFieldWithArgBuilder<String, Integer, IBus, CachedFieldWithArg<String, Integer>> fieldWithArgBuilder(IBus bus) {
     new IBusCachedFieldWithArgBuilder<String, Integer, IBus, CachedFieldWithArg<String, Integer>>(new CachedFieldWithArgConstructorWrapperImpl(), bus,
-            getSameSessionIdProvider(),
+            MockFactory.getSameSessionIdProvider(),
             DefaultExecutors.createDefaultValueGetterExecutor(),
             DefaultExecutors.createDefaultStateListenerExecutor()) {}
 }
 
 static IBusCachedFieldBuilder<String, IBus, CachedField<String>> fieldWithoutArgBuilder(IBus bus) {
     new IBusCachedFieldBuilder<String, IBus, CachedField<String>>(new CachedFieldConstructorWrapperImpl(), bus,
-            getSameSessionIdProvider(),
+            MockFactory.getSameSessionIdProvider(),
             DefaultExecutors.createDefaultValueGetterExecutor(),
             DefaultExecutors.createDefaultStateListenerExecutor()) {}
 }
 
 static IBusCachedEndpointWithArgBuilder<String, Integer, IBus, CachedEndpointWithArg<String, Integer>> endpointWithArgBuilder(IBus bus) {
     new IBusCachedEndpointWithArgBuilder<String, Integer, IBus, CachedEndpointWithArg<String, Integer>>(new CachedEndpointWithArgConstructorWrapperImpl(), bus,
-            getSameSessionIdProvider(),
+            MockFactory.getSameSessionIdProvider(),
             DefaultExecutors.createDefaultValueGetterExecutor(),
             DefaultExecutors.createDefaultStateListenerExecutor()) {}
 }

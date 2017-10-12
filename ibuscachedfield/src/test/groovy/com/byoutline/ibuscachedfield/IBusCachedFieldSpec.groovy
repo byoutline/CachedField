@@ -3,6 +3,7 @@ package com.byoutline.ibuscachedfield
 import com.byoutline.cachedfield.CachedField
 import com.byoutline.cachedfield.FieldState
 import com.byoutline.cachedfield.FieldStateListener
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.eventcallback.IBus
 import com.byoutline.eventcallback.ResponseEvent
 import spock.lang.Shared
@@ -50,7 +51,7 @@ class IBusCachedFieldSpec extends Specification {
 
     def "postValue should return immediately"() {
         given:
-        CachedField field = MockFactory.fieldWithoutArgBuilder(bus)
+        CachedField field = IBusMockFactory.fieldWithoutArgBuilder(bus)
                 .withValueProvider(MockFactory.getDelayedStringGetter(value, 1000))
                 .withSuccessEvent(successEvent)
                 .build()
@@ -72,7 +73,7 @@ class IBusCachedFieldSpec extends Specification {
     @Unroll
     def "should post success times: #sC, error times: #eC for valueProvider: #valProv"() {
         when:
-        CachedField field = MockFactory.fieldWithoutArgBuilder(bus)
+        CachedField field = IBusMockFactory.fieldWithoutArgBuilder(bus)
                 .withValueProvider(valProv)
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
@@ -92,7 +93,7 @@ class IBusCachedFieldSpec extends Specification {
     def "postValue should post generic error"() {
         given:
         Object expEvent = "exp"
-        CachedField field = MockFactory.fieldWithoutArgBuilder(bus)
+        CachedField field = IBusMockFactory.fieldWithoutArgBuilder(bus)
                 .withValueProvider(MockFactory.getFailingStringGetter(exception))
                 .withSuccessEvent(successEvent)
                 .withGenericErrorEvent(expEvent)
@@ -109,7 +110,7 @@ class IBusCachedFieldSpec extends Specification {
         given:
         def sessionProv = { return "custom" } as Provider<String>
         IBus customBus = Mock()
-        CachedField field = MockFactory.fieldWithoutArgBuilder(bus)
+        CachedField field = IBusMockFactory.fieldWithoutArgBuilder(bus)
                 .withValueProvider(MockFactory.getStringGetter("val"))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)

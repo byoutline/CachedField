@@ -5,10 +5,9 @@ import com.byoutline.cachedfield.cachedendpoint.CachedEndpointWithArg;
 import com.byoutline.eventcallback.ResponseEvent;
 import com.byoutline.ibuscachedfield.internal.ErrorEvent;
 
+import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-
-import javax.inject.Provider;
 
 /**
  * @param <RETURN_TYPE>  Type of object to be cached.

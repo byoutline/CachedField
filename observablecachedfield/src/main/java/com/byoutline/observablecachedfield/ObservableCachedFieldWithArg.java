@@ -1,16 +1,14 @@
 package com.byoutline.observablecachedfield;
 
 import android.databinding.ObservableField;
-
 import com.byoutline.cachedfield.CachedFieldWithArgImpl;
 import com.byoutline.cachedfield.ErrorListenerWithArg;
 import com.byoutline.cachedfield.ProviderWithArg;
 import com.byoutline.cachedfield.SuccessListenerWithArg;
 
+import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-
-import javax.inject.Provider;
 
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>

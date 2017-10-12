@@ -9,11 +9,7 @@ import com.byoutline.cachedfield.cachedendpoint.EndpointState;
 import com.byoutline.cachedfield.cachedendpoint.EndpointStateListener;
 import com.byoutline.cachedfield.cachedendpoint.StateAndValue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Bundles {@link CachedField}s, {@link CachedFieldWithArg}s and {@link CachedEndpointWithArg}s

@@ -1,5 +1,6 @@
 package com.byoutline.ottocachedfield
 
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.cachedfield.cachedendpoint.CallResult
 import com.byoutline.cachedfield.cachedendpoint.EndpointState
 import com.byoutline.cachedfield.cachedendpoint.StateAndValue

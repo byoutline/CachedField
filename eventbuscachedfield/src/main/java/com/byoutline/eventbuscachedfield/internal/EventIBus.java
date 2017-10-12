@@ -1,7 +1,6 @@
 package com.byoutline.eventbuscachedfield.internal;
 
 import com.byoutline.eventcallback.IBus;
-
 import de.greenrobot.event.EventBus;
 
 /**

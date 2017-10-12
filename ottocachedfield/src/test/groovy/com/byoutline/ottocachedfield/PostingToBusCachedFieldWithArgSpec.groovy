@@ -3,6 +3,7 @@ package com.byoutline.ottocachedfield
 import com.byoutline.cachedfield.CachedFieldWithArg
 import com.byoutline.cachedfield.FieldState
 import com.byoutline.cachedfield.FieldStateListener
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg
 import com.squareup.otto.Bus
 import spock.lang.Shared
@@ -11,7 +12,7 @@ import spock.lang.Unroll
 
 import javax.inject.Provider
 
-import static com.byoutline.ottocachedfield.MockFactory.ottoWithArgBuilder
+import static com.byoutline.ottocachedfield.OttoMockFactory.ottoWithArgBuilder
 
 /**
  *
@@ -104,7 +105,7 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
         errorArg == 2
 
         where:
-        builder << MockFactory.busCachedFieldsWithArgBuilders()
+        builder << OttoMockFactory.busCachedFieldsWithArgBuilders()
     }
 
     @Unroll
@@ -128,6 +129,6 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
         0 * bus.post(_)
 
         where:
-        builder << MockFactory.busCachedFieldsWithArgBuilders()
+        builder << OttoMockFactory.busCachedFieldsWithArgBuilders()
     }
 }

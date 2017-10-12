@@ -3,6 +3,7 @@ package com.byoutline.ibuscachedfield
 import com.byoutline.cachedfield.CachedFieldWithArg
 import com.byoutline.cachedfield.FieldState
 import com.byoutline.cachedfield.FieldStateListener
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.eventcallback.IBus
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg
 import spock.lang.Shared
@@ -51,7 +52,7 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
     @Unroll
     def "should post value: #val #text, times: #sC for arg: #arg"() {
         given:
-        CachedFieldWithArg field = MockFactory.fieldWithArgBuilder(bus)
+        CachedFieldWithArg field = IBusMockFactory.fieldWithArgBuilder(bus)
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
@@ -79,7 +80,7 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
                 { Exception val, Integer arg ->
                     errorVal = val; errorArg = arg
                 } as ResponseEventWithArg<Exception, Integer>
-        CachedFieldWithArg field = MockFactory.fieldWithArgBuilder(bus)
+        CachedFieldWithArg field = IBusMockFactory.fieldWithArgBuilder(bus)
                 .withValueProvider(MockFactory.getFailingStringGetterWithArg())
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
@@ -94,7 +95,7 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
 
     def "builder should allow skipping error event"() {
         given:
-        CachedFieldWithArg field = MockFactory.fieldWithArgBuilder(bus)
+        CachedFieldWithArg field = IBusMockFactory.fieldWithArgBuilder(bus)
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withSuccessEvent(successEvent)
                 .build()
@@ -109,7 +110,7 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
         given:
         def sessionProv = { return "custom" } as Provider<String>
         IBus customBus = Mock()
-        CachedFieldWithArg field = MockFactory.fieldWithArgBuilder(bus)
+        CachedFieldWithArg field = IBusMockFactory.fieldWithArgBuilder(bus)
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)

@@ -15,7 +15,7 @@ dependencies {
     compile "com.google.code.findbugs:jsr305:$jsr305_ver"
     compile 'com.byoutline.cachedfield:cachedfield:1.5.3'
     provided 'com.squareup.retrofit2:retrofit:2.0.2'
-    testCompile 'com.google.guava:guava:18.0'
+    testCompile project(':testhelpers')
 }
 
 apply from: '../maven-push.gradle'

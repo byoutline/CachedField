@@ -1,5 +1,6 @@
 package com.byoutline.ibuscachedfield
 
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.cachedfield.cachedendpoint.CachedEndpointWithArg
 import com.byoutline.cachedfield.cachedendpoint.CallResult
 import com.byoutline.cachedfield.cachedendpoint.EndpointState
@@ -30,7 +31,7 @@ class CachedEndpointWithArgSpec extends Specification {
     @Unroll
     def "should post value: #val , times: #sC for arg: #arg"() {
         given:
-        CachedEndpointWithArg field = MockFactory.endpointWithArgBuilder(bus)
+        CachedEndpointWithArg field = IBusMockFactory.endpointWithArgBuilder(bus)
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withResultEvent(resultEvent)
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
@@ -53,7 +54,7 @@ class CachedEndpointWithArgSpec extends Specification {
 
     def "postValue should post error with argument"() {
         given:
-        CachedEndpointWithArg field = MockFactory.endpointWithArgBuilder(bus)
+        CachedEndpointWithArg field = IBusMockFactory.endpointWithArgBuilder(bus)
                 .withValueProvider(MockFactory.getFailingStringGetterWithArg())
                 .withResultEvent(resultEvent)
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())

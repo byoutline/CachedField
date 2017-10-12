@@ -5,11 +5,10 @@ import com.byoutline.cachedfield.ProviderWithArg;
 import com.byoutline.ibuscachedfield.builders.CachedFieldWithArgConstructorWrapper;
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-
 import javax.annotation.Nullable;
 import javax.inject.Provider;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Fluent interface builder of {@link CachedFieldWithArg}.

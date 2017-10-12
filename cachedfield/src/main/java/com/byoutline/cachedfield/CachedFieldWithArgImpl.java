@@ -6,11 +6,10 @@ import com.byoutline.cachedfield.internal.CachedValue;
 import com.byoutline.cachedfield.internal.ValueLoader;
 import com.byoutline.cachedfield.internal.cachedendpoint.FieldStateListenerWrapper;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 import static com.byoutline.cachedfield.internal.DefaultExecutors.createDefaultStateListenerExecutor;
 import static com.byoutline.cachedfield.internal.DefaultExecutors.createDefaultValueGetterExecutor;

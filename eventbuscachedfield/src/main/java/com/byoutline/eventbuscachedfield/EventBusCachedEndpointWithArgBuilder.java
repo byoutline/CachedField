@@ -7,13 +7,11 @@ import com.byoutline.eventbuscachedfield.internal.EventIBus;
 import com.byoutline.ibuscachedfield.IBusCachedEndpointWithArgBuilder;
 import com.byoutline.ibuscachedfield.builders.CachedEndpointWithArgConstructorWrapper;
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
+import de.greenrobot.event.EventBus;
 
 import javax.inject.Provider;
-
-import de.greenrobot.event.EventBus;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Fluent interface for building instances of {@link EventBusCachedEndpointWithArg}.

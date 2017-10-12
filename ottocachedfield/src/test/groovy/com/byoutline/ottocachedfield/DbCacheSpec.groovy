@@ -1,5 +1,6 @@
 package com.byoutline.ottocachedfield
 
+import com.byoutline.cachedfield.MockFactory
 import com.byoutline.cachedfield.dbcache.DbCacheArg
 import com.byoutline.cachedfield.dbcache.DbWriter
 import com.byoutline.cachedfield.dbcache.DbWriterWithArg
