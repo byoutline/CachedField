@@ -42,6 +42,12 @@ static ProviderWithArg<String, Integer> getStringGetter(Map<Integer, String> arg
     ] as ProviderWithArg<String, Integer>
 }
 
+static ProviderWithArg<String, Integer> getDelayedStringGetter(Map<Integer, String> argToValueMap, long sleepTime) {
+    return [get     : { Integer arg -> Thread.sleep(sleepTime) ; return argToValueMap.get(arg) },
+            toString: { "string getter with arg: " + argToValueMap }
+    ] as ProviderWithArg<String, Integer>
+}
+
 static Provider<String> getFailingStringGetter(Exception ex) {
     return [get     : { throw ex },
             toString: { "fail provider with: " + ex }] as Provider<String>
@@ -50,6 +56,10 @@ static Provider<String> getFailingStringGetter(Exception ex) {
 static ProviderWithArg<String, Integer> getFailingStringGetterWithArg() {
     return [get     : { Integer arg -> throw new RuntimeException("E" + arg) },
             toString: { "fail provider with arg" }] as ProviderWithArg<String, Integer>
+}
+
+static SuccessListener<String> getSuccessListener() {
+    return { value -> } as SuccessListener<String>
 }
 
 static SuccessListenerWithArg<String, Integer> getSuccessListenerWithArg() {
@@ -119,13 +129,21 @@ static CachedField getLoadedCachedField(String value) {
     return getLoadedCachedField(value, new StubFieldStateListener())
 }
 
+static CachedField getLoadedCachedField(Provider<String> valueGetter) {
+    getLoadedCachedField(valueGetter, new StubFieldStateListener(), getSameSessionIdProvider())
+}
+
 static CachedField getLoadedCachedField(String value, FieldStateListener fieldStateListener) {
     return getLoadedCachedField(value, fieldStateListener, getSameSessionIdProvider())
 }
 
 static CachedField getLoadedCachedField(String value, FieldStateListener fieldStateListener, Provider<String> sessionIdProvider) {
+    return getLoadedCachedField(getStringGetter(value), fieldStateListener, sessionIdProvider)
+}
+
+static CachedField getLoadedCachedField(Provider<String> valueGetter, FieldStateListener fieldStateListener, Provider<String> sessionIdProvider) {
     CachedField field = new CachedFieldImpl(sessionIdProvider,
-            getStringGetter(value), getSuccessListener(), new StubErrorListener())
+            valueGetter, getSuccessListener(), new StubErrorListener())
     field.postValue()
     waitUntilFieldLoads(field)
     field.addStateListener(fieldStateListener)

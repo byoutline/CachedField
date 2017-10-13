@@ -1,9 +1,5 @@
 package com.byoutline.cachedfield
 
-import com.byoutline.cachedfield.CachedFieldWithArg
-import com.byoutline.cachedfield.FieldState
-import com.byoutline.cachedfield.FieldStateListener
-
 static <ARG_TYPE> void postAndWaitUntilFieldStopsLoading(CachedFieldWithArg<?, ARG_TYPE> field, ARG_TYPE arg) {
     boolean duringValueLoad = true
     def listener = { FieldState newState ->

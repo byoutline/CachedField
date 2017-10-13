@@ -21,7 +21,7 @@ class CachedEndpointWithArgSpec extends Specification {
 
     def "should null out argument when drop is called"() {
         given:
-        CachedEndpointWithArg field = MockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
         field.call(1)
 
         when:
@@ -39,7 +39,7 @@ class CachedEndpointWithArgSpec extends Specification {
         given:
         EndpointState state = EndpointState.BEFORE_CALL
         def stateListener = { newState -> state = newState.getState() } as EndpointStateListener<String, Integer>
-        CachedEndpointWithArg field = MockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
         field.addEndpointListener(stateListener)
         when:
         field.removeEndpointListener(stateListener)
@@ -50,7 +50,7 @@ class CachedEndpointWithArgSpec extends Specification {
 
     def "call should return immediately"() {
         given:
-        CachedEndpointWithArg field = MockFactory.getCachedEndpoint(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getCachedEndpoint(argToValueMap)
 
         when:
         boolean tookToLong = false
@@ -69,7 +69,7 @@ class CachedEndpointWithArgSpec extends Specification {
     def "should inform endpoint state listener about current state"() {
         given:
         def stateList = new StubCachedEndpointWithArg()
-        CachedEndpointWithArg field = MockFactory.getCachedEndpointBlocking(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getCachedEndpointBlocking(argToValueMap)
 
         when:
         field.addEndpointListener(stateList)
@@ -84,7 +84,7 @@ class CachedEndpointWithArgSpec extends Specification {
     def "should inform endpoint state listener about changes on successful call"() {
         given:
         def stateList = new StubCachedEndpointWithArg()
-        CachedEndpointWithArg field = MockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
         field.addEndpointListener(stateList)
         stateList.clear()
 
@@ -103,9 +103,9 @@ class CachedEndpointWithArgSpec extends Specification {
         def stateList = new StubCachedEndpointWithArg()
         def ex = new IllegalArgumentException("test")
         CachedEndpointWithArg field = new CachedEndpointWithArgImpl(
-                MockFactory.getSameSessionIdProvider(),
+                CFMockFactory.getSameSessionIdProvider(),
                 { key -> throw ex } as ProviderWithArg<String, Integer>,
-                MockFactory.getStubCallEndListener(),
+                CFMockFactory.getStubCallEndListener(),
                 MoreExecutors.newDirectExecutorService(),
                 DefaultExecutors.createDefaultStateListenerExecutor())
         field.addEndpointListener(stateList)
@@ -123,7 +123,7 @@ class CachedEndpointWithArgSpec extends Specification {
 
     def "should inform endpoint state listener about changes on drop"() {
         given:
-        CachedEndpointWithArg field = MockFactory.getCachedEndpointBlocking(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getCachedEndpointBlocking(argToValueMap)
         def stateList = new StubCachedEndpointWithArg()
         field.call(1)
         field.addEndpointListener(stateList)
@@ -145,8 +145,8 @@ class CachedEndpointWithArgSpec extends Specification {
         def sessionProvider = { return currentSession } as Provider<String>
         CachedEndpointWithArg field = new CachedEndpointWithArgImpl(
                 sessionProvider,
-                MockFactory.getStringIntGetter(argToValueMap),
-                MockFactory.getStubCallEndListener(),
+                CFMockFactory.getStringIntGetter(argToValueMap),
+                CFMockFactory.getStubCallEndListener(),
                 MoreExecutors.newDirectExecutorService(),
                 DefaultExecutors.createDefaultStateListenerExecutor()
         )
@@ -168,7 +168,7 @@ class CachedEndpointWithArgSpec extends Specification {
 
     def "should not allow adding null state listeners"() {
         given:
-        def field = MockFactory.getCachedEndpointBlocking(argToValueMap)
+        def field = CFMockFactory.getCachedEndpointBlocking(argToValueMap)
         when:
         field.addEndpointListener(null)
         then:
@@ -177,7 +177,7 @@ class CachedEndpointWithArgSpec extends Specification {
 
     def "should not allow removing null state listeners"() {
         given:
-        def field = MockFactory.getCachedEndpointBlocking(argToValueMap)
+        def field = CFMockFactory.getCachedEndpointBlocking(argToValueMap)
         when:
         field.removeEndpointListener(null)
         then:

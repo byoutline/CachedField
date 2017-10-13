@@ -21,9 +21,9 @@ class DbCachedValueProviderSpec extends Specification {
     def "should pass value from api to db"() {
         given:
         String result = null
-        def apiProvider = MockFactory.getStringGetter(value)
+        def apiProvider = CFMockFactory.getStringGetter(value)
         def dbSaver = { result = it } as DbWriter<String>
-        def dbProvider = MockFactory.getStringGetter(differentValue)
+        def dbProvider = CFMockFactory.getStringGetter(differentValue)
         def provider = new DbCachedValueProvider(apiProvider, dbSaver, dbProvider)
 
         when:
@@ -35,9 +35,9 @@ class DbCachedValueProviderSpec extends Specification {
 
     def "should return value from db even if api return something different"() {
         given:
-        def apiProvider = MockFactory.getStringGetter(value)
+        def apiProvider = CFMockFactory.getStringGetter(value)
         def dbSaver = {} as DbWriter<String>
-        def dbProvider = MockFactory.getStringGetter(differentValue)
+        def dbProvider = CFMockFactory.getStringGetter(differentValue)
         def provider = new DbCachedValueProvider(apiProvider, dbSaver, dbProvider)
 
         when:
@@ -53,7 +53,7 @@ class DbCachedValueProviderSpec extends Specification {
         boolean dbSaverCalled = false
         def apiProvider = { apiProvCalled = true; return value } as Provider<String>
         def dbSaver = { dbSaverCalled = true } as DbWriter<String>
-        def dbProvider = MockFactory.getStringGetter(differentValue)
+        def dbProvider = CFMockFactory.getStringGetter(differentValue)
         def provider = new DbCachedValueProvider(apiProvider, dbSaver, dbProvider)
 
         when:
@@ -66,9 +66,9 @@ class DbCachedValueProviderSpec extends Specification {
 
     def "should pass runtime exception"() {
         given:
-        def apiProvider = MockFactory.getStringGetter(value)
+        def apiProvider = CFMockFactory.getStringGetter(value)
         def dbSaver = { throw new RuntimeException() } as DbWriter<String>
-        def dbProvider = MockFactory.getStringGetter(differentValue)
+        def dbProvider = CFMockFactory.getStringGetter(differentValue)
         def provider = new DbCachedValueProvider(apiProvider, dbSaver, dbProvider)
 
         when:
@@ -80,7 +80,7 @@ class DbCachedValueProviderSpec extends Specification {
 
     def "should allow different type for db and api"() {
         given:
-        def apiProvider = MockFactory.getStringGetter(value)
+        def apiProvider = CFMockFactory.getStringGetter(value)
         def dbSaver = {} as DbWriter<String>
         Provider<Integer> dbProvider = { return 1 } as Provider<Integer>
         def provider = new DbCachedValueProvider(apiProvider, dbSaver, dbProvider)

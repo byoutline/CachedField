@@ -14,8 +14,8 @@ class CachedFieldWithArgSpec extends Specification {
 
     def "should null out argument when drop is called"() {
         given:
-        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap)
-        MockFactory.loadValue(field, 1)
+        CachedFieldWithArg field = CFMockFactory.getCachedFieldWithArg(argToValueMap)
+        CFMockFactory.loadValue(field, 1)
 
         when:
         field.drop()
@@ -30,9 +30,9 @@ class CachedFieldWithArgSpec extends Specification {
         given:
         String result = 'fail'
         def successListener = { value, arg -> result = value } as SuccessListenerWithArg<String, Integer>
-        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, successListener)
+        CachedFieldWithArg field = CFMockFactory.getCachedFieldWithArg(argToValueMap, successListener)
         when:
-        MockFactory.loadValue(field, arg)
+        CFMockFactory.loadValue(field, arg)
         then:
         result == val
         where:
@@ -48,9 +48,9 @@ class CachedFieldWithArgSpec extends Specification {
         given:
         int result = -1
         def successListener = { value, arg -> result = arg } as SuccessListenerWithArg<String, Integer>
-        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, successListener)
+        CachedFieldWithArg field = CFMockFactory.getCachedFieldWithArg(argToValueMap, successListener)
         when:
-        MockFactory.loadValue(field, arg)
+        CFMockFactory.loadValue(field, arg)
         then:
         result == arg
         where:
@@ -61,11 +61,11 @@ class CachedFieldWithArgSpec extends Specification {
         given:
         FieldState state = FieldState.NOT_LOADED
         def stateListener = { newState -> state = newState } as FieldStateListener
-        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap)
+        CachedFieldWithArg field = CFMockFactory.getCachedFieldWithArg(argToValueMap)
         field.addStateListener(stateListener)
         when:
         field.removeStateListener(stateListener)
-        MockFactory.loadValue(field, 1)
+        CFMockFactory.loadValue(field, 1)
         then:
         state == FieldState.NOT_LOADED
     }
@@ -76,14 +76,14 @@ class CachedFieldWithArgSpec extends Specification {
         def successListener = { value, arg -> results.add(value) } as SuccessListenerWithArg<String, Integer>
 
         CachedFieldWithArg field = new CachedFieldWithArgImpl(
-                MockFactory.getSameSessionIdProvider(),
-                MockFactory.getDelayedStringIntGetter(argToValueMap, 1),
+                CFMockFactory.getSameSessionIdProvider(),
+                CFMockFactory.getDelayedStringIntGetter(argToValueMap, 1),
                 successListener,
-                MockFactory.getErrorListenerWithArg()
+                CFMockFactory.getErrorListenerWithArg()
         )
         when:
         field.postValue(1)
-        MockFactory.loadValue(field, 2)
+        CFMockFactory.loadValue(field, 2)
         then:
         results == ['b']
     }
@@ -92,10 +92,10 @@ class CachedFieldWithArgSpec extends Specification {
         given:
         def resultArg = 'fail'
         def errorListener = { ex, arg -> resultArg = arg } as ErrorListenerWithArg<Integer>
-        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, errorListener)
+        CachedFieldWithArg field = CFMockFactory.getCachedFieldWithArg(argToValueMap, errorListener)
         when:
         field.postValue(1)
-        MockFactory.loadValue(field, 2)
+        CFMockFactory.loadValue(field, 2)
         then:
         resultArg == 1
     }
@@ -112,10 +112,10 @@ class CachedFieldWithArgSpec extends Specification {
                 fieldState = field.getState()
             }
         }
-        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, successListener)
+        CachedFieldWithArg field = CFMockFactory.getCachedFieldWithArg(argToValueMap, successListener)
         successListener.field = field
         when:
-        MockFactory.loadValue(field, 1)
+        CFMockFactory.loadValue(field, 1)
         then:
         fieldState == FieldState.LOADED
     }

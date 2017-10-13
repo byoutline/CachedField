@@ -23,7 +23,7 @@ class CachedFieldWithArgExecutorsSpec extends Specification {
         ExecutorService executor = [
                 submit: { called = true; return new FutureTask((Runnable) it, null) }
         ] as ExecutorService
-        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, executor)
+        CachedFieldWithArg field = CFMockFactory.getCachedFieldWithArg(argToValueMap, executor)
 
         when:
         field.postValue(1)
@@ -38,10 +38,10 @@ class CachedFieldWithArgExecutorsSpec extends Specification {
         Executor stateListenersExecutor = { called = true; it.run() } as Executor
         ExecutorService loadExecutorService = MoreExecutors.newDirectExecutorService()
         CachedFieldWithArg field = new CachedFieldWithArgImpl(
-                MockFactory.getSameSessionIdProvider(),
-                MockFactory.getStringIntGetter(argToValueMap),
-                MockFactory.getSuccessListenerWithArg(),
-                MockFactory.getErrorListenerWithArg(),
+                CFMockFactory.getSameSessionIdProvider(),
+                CFMockFactory.getStringIntGetter(argToValueMap),
+                CFMockFactory.getSuccessListenerWithArg(),
+                CFMockFactory.getErrorListenerWithArg(),
                 loadExecutorService,
                 stateListenersExecutor
         )
@@ -66,11 +66,11 @@ class CachedFieldWithArgExecutorsSpec extends Specification {
         } as ProviderWithArg<String, Integer>
 
         CachedFieldWithArg field = new CachedFieldWithArgImpl(
-                MockFactory.getSameSessionIdProvider(),
+                CFMockFactory.getSameSessionIdProvider(),
                 valueGetter,
-                MockFactory.getSuccessListenerWithArg(),
-                MockFactory.getErrorListenerWithArg(),
-                MockFactory.getAsyncFirstTaskSyncOtherExecutorService(),
+                CFMockFactory.getSuccessListenerWithArg(),
+                CFMockFactory.getErrorListenerWithArg(),
+                CFMockFactory.getAsyncFirstTaskSyncOtherExecutorService(),
                 DefaultExecutors.createDefaultStateListenerExecutor()
         )
 

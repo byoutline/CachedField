@@ -1,6 +1,6 @@
 package com.byoutline.cachedfield.utils
 
-import com.byoutline.cachedfield.MockFactory
+import com.byoutline.cachedfield.CFMockFactory
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -16,7 +16,7 @@ class CachedFieldsListenerSpec extends Specification {
     def "no args should notify about field starting to load"() {
         given:
         def listenerStates = []
-        def field = MockFactory.getCachedFieldBlockingVal()
+        def field = CFMockFactory.getCachedFieldBlockingVal()
         def instance = CachedFieldsListener.from(field)
         instance.setListener { listenerStates.add(it) }
 
@@ -30,7 +30,7 @@ class CachedFieldsListenerSpec extends Specification {
     def "with args should notify about field starting to load"() {
         given:
         def listenerStates = []
-        def field = MockFactory.getCachedFieldWithArgBlockingVal()
+        def field = CFMockFactory.getCachedFieldWithArgBlockingVal()
         def instance = CachedFieldsListener.from(field)
         instance.setListener { listenerStates.add(it) }
 
@@ -44,7 +44,7 @@ class CachedFieldsListenerSpec extends Specification {
     def "endpoint should notify about field starting to load"() {
         given:
         def listenerStates = []
-        def field = MockFactory.getCachedEndpointBlockingVal()
+        def field = CFMockFactory.getCachedEndpointBlockingVal()
         def instance = CachedFieldsListener.from(field)
         instance.setListener { listenerStates.add(it) }
 
@@ -58,9 +58,9 @@ class CachedFieldsListenerSpec extends Specification {
     def "getRegisterCount should contain counts of fields"() {
         given:
         def instance = CachedFieldsListener.from(
-                [MockFactory.getCachedFieldBlockingVal(), MockFactory.getCachedFieldBlockingVal(), MockFactory.getCachedFieldBlockingVal()],
-                [MockFactory.getCachedFieldWithArgBlockingVal(), MockFactory.getCachedFieldWithArgBlockingVal()],
-                [MockFactory.getCachedEndpointBlockingVal()]
+                [CFMockFactory.getCachedFieldBlockingVal(), CFMockFactory.getCachedFieldBlockingVal(), CFMockFactory.getCachedFieldBlockingVal()],
+                [CFMockFactory.getCachedFieldWithArgBlockingVal(), CFMockFactory.getCachedFieldWithArgBlockingVal()],
+                [CFMockFactory.getCachedEndpointBlockingVal()]
         )
 
         when:
@@ -75,7 +75,7 @@ class CachedFieldsListenerSpec extends Specification {
     def "unregisterFromFields should stop tracking fields"() {
         given:
         def listenerStates = []
-        def field = MockFactory.getCachedFieldBlockingVal()
+        def field = CFMockFactory.getCachedFieldBlockingVal()
         def instance = CachedFieldsListener.from(field)
         instance.setListener { listenerStates.add(it) }
 
