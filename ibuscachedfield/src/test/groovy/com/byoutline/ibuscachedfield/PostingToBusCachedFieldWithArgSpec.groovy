@@ -3,6 +3,7 @@ package com.byoutline.ibuscachedfield
 import com.byoutline.cachedfield.CachedFieldWithArg
 import com.byoutline.cachedfield.FieldState
 import com.byoutline.cachedfield.FieldStateListener
+import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
 import com.byoutline.eventcallback.IBus
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg
@@ -25,24 +26,6 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
     ResponseEventWithArg<Exception, Integer> errorEvent
     IBus bus
 
-    static <ARG_TYPE> void postAndWaitUntilFieldStopsLoading(CachedFieldWithArg<?, ARG_TYPE> field, ARG_TYPE arg) {
-        boolean duringValueLoad = true
-        def listener = { FieldState newState ->
-            if (newState == FieldState.NOT_LOADED || newState == FieldState.LOADED) {
-                duringValueLoad = false
-            }
-        } as FieldStateListener
-
-        field.addStateListener(listener)
-        field.postValue(arg)
-        while (duringValueLoad) {
-            sleep 1
-        }
-        field.removeStateListener(listener)
-        // allow thread switch from state listener executor to success listener
-        sleep 8
-    }
-
     def setup() {
         bus = Mock()
         successEvent = Mock()
@@ -58,7 +41,7 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
                 .withResponseErrorEvent(errorEvent)
                 .build()
         when:
-        postAndWaitUntilFieldStopsLoading(field, arg)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field, arg)
 
         then:
 
@@ -86,7 +69,7 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
                 .withResponseErrorEvent(errorEvent)
                 .build()
         when:
-        postAndWaitUntilFieldStopsLoading(field, 2)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field, 2)
 
         then:
         errorVal.message == "E2"
@@ -100,7 +83,7 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
                 .withSuccessEvent(successEvent)
                 .build()
         when:
-        postAndWaitUntilFieldStopsLoading(field, 3)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field, 3)
 
         then:
         0 * errorEvent.setResponse(_, _)
@@ -119,7 +102,7 @@ class PostingToBusCachedFieldWithArgSpec extends Specification {
                 .build()
 
         when:
-        postAndWaitUntilFieldStopsLoading(field, 1)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field, 1)
 
         then:
         1 * customBus.post(_)

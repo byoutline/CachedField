@@ -1,5 +1,6 @@
 package com.byoutline.ottocachedfield
 
+import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
 import com.byoutline.cachedfield.dbcache.DbCacheArg
 import com.byoutline.cachedfield.dbcache.DbWriter
@@ -52,7 +53,7 @@ class DbCacheSpec extends Specification {
                 .build()
 
         when:
-        PostingToBusCachedFieldWithArgSpec.postAndWaitUntilFieldStopsLoading(field, FetchType.API)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field, FetchType.API)
 
         then:
         value == successEvent.getResponse()
@@ -77,7 +78,7 @@ class DbCacheSpec extends Specification {
                 .build()
 
         when:
-        PostingToBusCachedFieldWithArgSpec.postAndWaitUntilFieldStopsLoading(field, DbCacheArg.create(1, FetchType.API))
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field, DbCacheArg.create(1, FetchType.API))
 
         then:
         'a' == successEventWithArg.getResponse()
@@ -96,7 +97,7 @@ class DbCacheSpec extends Specification {
                 .build()
 
         when:
-        PostingToBusCachedFieldWithArgSpec.postAndWaitUntilFieldStopsLoading(field, FetchType.DB)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field, FetchType.DB)
 
         then:
         differentValue == successEvent.getResponse()
@@ -115,7 +116,7 @@ class DbCacheSpec extends Specification {
                 .build()
 
         when:
-        PostingToBusCachedFieldWithArgSpec.postAndWaitUntilFieldStopsLoading(field, FetchType.API)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field, FetchType.API)
 
         then:
         event.getResponse() == 1
