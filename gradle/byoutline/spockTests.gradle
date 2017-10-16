@@ -11,7 +11,7 @@ final class SpockTests implements Plugin<Project>{
     private static void addDependencies(Project project) {
         project.afterEvaluate {
             def pd = project.dependencies
-            pd.add('testCompile', 'org.codehaus.groovy:groovy-all:2.4.1')
+            pd.add('testCompile', 'org.codehaus.groovy:groovy-all:2.4.12')
             pd.add('testCompile', 'junit:junit:4.12')
             pd.add('testCompile', 'org.spockframework:spock-core:1.0-groovy-2.4')
             // allows mocking of classes (in addition to interfaces)
@@ -25,5 +25,13 @@ final class SpockTests implements Plugin<Project>{
         project.configure(project){
             apply plugin: 'groovy'
         }
+    }
+}
+
+// With our config HTML results are not saved on TRAVIS.
+// Display them to standard output instead.
+subprojects {
+    test {
+        testLogging.showStandardStreams = System.getenv("TRAVIS") ?: false
     }
 }

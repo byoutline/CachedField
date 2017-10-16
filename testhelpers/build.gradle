@@ -1,13 +1,12 @@
 apply plugin: 'groovy'
 
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
     compile project(':cachedfield')
-    compile 'org.codehaus.groovy:groovy-all:2.4.1'
+    compile 'org.codehaus.groovy:groovy-all:2.4.12'
     compile 'com.google.guava:guava:18.0'
 }
 

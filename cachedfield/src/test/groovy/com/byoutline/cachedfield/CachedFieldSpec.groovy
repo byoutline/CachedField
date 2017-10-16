@@ -19,7 +19,7 @@ class CachedFieldSpec extends Specification {
 
     def "postValue should return immediately"() {
         given: 'instance that takes very long to load'
-        CachedField field = MockFactory.getDelayedCachedField(value, 1000, stubSuccessListener)
+        CachedField field = CFMockFactory.getDelayedCachedField(value, 1000, stubSuccessListener)
 
         when: 'postValue is called'
         boolean tookToLong = false
@@ -38,9 +38,9 @@ class CachedFieldSpec extends Specification {
 
     def "should post success event immediately if it was loaded"() {
         given:
-        CachedField field = MockFactory.getDelayedCachedField(value, 20, stubSuccessListener)
+        CachedField field = CFMockFactory.getDelayedCachedField(value, 20, stubSuccessListener)
         field.postValue()
-        MockFactory.waitUntilFieldLoads(field)
+        CFMockFactory.waitUntilFieldLoads(field)
 
         when:
         boolean tookToLong = false
@@ -60,11 +60,11 @@ class CachedFieldSpec extends Specification {
         given:
         boolean valuePosted = false
         def successList = { valuePosted = true } as SuccessListener<String>
-        CachedField field = MockFactory.getDelayedCachedField(value, successList)
+        CachedField field = CFMockFactory.getDelayedCachedField(value, successList)
 
         when:
         field.postValue()
-        MockFactory.waitUntilFieldLoads(field)
+        CFMockFactory.waitUntilFieldLoads(field)
 
         then:
         assert valuePosted
@@ -72,7 +72,7 @@ class CachedFieldSpec extends Specification {
 
     def "should null out value when drop is called"() {
         given:
-        CachedField field = MockFactory.getLoadedCachedField(value)
+        CachedField field = CFMockFactory.getLoadedCachedField(value)
 
         when:
         field.drop()
@@ -87,11 +87,11 @@ class CachedFieldSpec extends Specification {
         given:
         def postedStates = []
         def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
-        CachedField field = MockFactory.getDelayedCachedField(value, stateList)
+        CachedField field = CFMockFactory.getDelayedCachedField(value, stateList)
 
         when:
         field.postValue()
-        MockFactory.waitUntilFieldLoads(field)
+        CFMockFactory.waitUntilFieldLoads(field)
 
         then:
         postedStates == [FieldState.CURRENTLY_LOADING, FieldState.LOADED]
@@ -101,7 +101,7 @@ class CachedFieldSpec extends Specification {
         given:
         def postedStates = []
         def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
-        CachedField field = MockFactory.getLoadedCachedField(value, stateList)
+        CachedField field = CFMockFactory.getLoadedCachedField(value, stateList)
 
         when:
         field.drop()
@@ -115,12 +115,12 @@ class CachedFieldSpec extends Specification {
         given:
         def postedStates = []
         def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
-        CachedField field = MockFactory.getLoadedCachedField(value, stateList)
+        CachedField field = CFMockFactory.getLoadedCachedField(value, stateList)
 
         when:
         field.refresh()
         sleep 1 // Wait for field to switch from LOADED to CURRENTLY_LOADING.
-        MockFactory.waitUntilFieldLoads(field) // Wait until it finishes loading.
+        CFMockFactory.waitUntilFieldLoads(field) // Wait until it finishes loading.
 
         then:
         postedStates == [FieldState.CURRENTLY_LOADING, FieldState.LOADED]
@@ -132,7 +132,7 @@ class CachedFieldSpec extends Specification {
         def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
         def currentSession = "one"
         def sessionProvider = { return currentSession } as Provider<String>
-        CachedField field = MockFactory.getLoadedCachedField(value, stateList, sessionProvider)
+        CachedField field = CFMockFactory.getLoadedCachedField(value, stateList, sessionProvider)
 
         when:
         // Asking for state will force CachedField to check its current state
@@ -152,9 +152,9 @@ class CachedFieldSpec extends Specification {
         def valueProv = { throw exceptionThrown } as Provider<String>
         def errorList = { resultEx = it } as ErrorListener
         CachedField field = new CachedFieldImpl(
-                MockFactory.getSameSessionIdProvider(),
+                CFMockFactory.getSameSessionIdProvider(),
                 valueProv,
-                MockFactory.getSuccessListener(),
+                CFMockFactory.getSuccessListener(),
                 errorList,
                 MoreExecutors.newDirectExecutorService(),
                 DefaultExecutors.createDefaultStateListenerExecutor()
@@ -171,14 +171,14 @@ class CachedFieldSpec extends Specification {
         given:
         Exception resultEx = null
         def errorListener = { resultEx = it } as ErrorListener
-        CachedField field = MockFactory.getCachedField(value, errorListener)
+        CachedField field = CFMockFactory.getCachedField(value, errorListener)
         def stateListeners = [new SelfRemovingFieldStateListener(field),
                               new SelfRemovingFieldStateListener(field),
                               new SelfRemovingFieldStateListener(field)]
         stateListeners.each { field.addStateListener(it) }
         when:
         field.postValue()
-        MockFactory.waitUntilFieldLoads(field)
+        CFMockFactory.waitUntilFieldLoads(field)
         then:
         resultEx == null
         stateListeners.findAll { it.called }.size() == 3
@@ -189,15 +189,15 @@ class CachedFieldSpec extends Specification {
         int callCount = 0
         def successListener = { callCount++ } as SuccessListener<String>
         CachedField field = new CachedFieldImpl(
-                MockFactory.getSameSessionIdProvider(),
-                MockFactory.getDelayedStringGetter(value),
+                CFMockFactory.getSameSessionIdProvider(),
+                CFMockFactory.getDelayedStringGetter(value),
                 successListener
         )
         when:
         field.postValue()
-        MockFactory.waitUntilFieldReachesState(field, FieldState.CURRENTLY_LOADING)
+        CFMockFactory.waitUntilFieldReachesState(field, FieldState.CURRENTLY_LOADING)
         field.postValue()
-        MockFactory.waitUntilFieldLoads(field)
+        CFMockFactory.waitUntilFieldLoads(field)
         then:
         callCount == 1
     }

@@ -3,6 +3,7 @@ package com.byoutline.ibuscachedfield
 import com.byoutline.cachedfield.CachedField
 import com.byoutline.cachedfield.FieldState
 import com.byoutline.cachedfield.FieldStateListener
+import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
 import com.byoutline.eventcallback.IBus
 import com.byoutline.eventcallback.ResponseEvent
@@ -24,24 +25,6 @@ class IBusCachedFieldSpec extends Specification {
     ResponseEvent<String> successEvent
     ResponseEvent<Exception> errorEvent
     IBus bus
-
-    static void postAndWaitUntilFieldStopsLoading(CachedField field) {
-        boolean duringValueLoad = true
-        def listener = { FieldState newState ->
-            if (newState == FieldState.NOT_LOADED || newState == FieldState.LOADED) {
-                duringValueLoad = false
-            }
-        } as FieldStateListener
-
-        field.addStateListener(listener)
-        field.postValue()
-        while (duringValueLoad) {
-            sleep 1
-        }
-        field.removeStateListener(listener)
-        // allow thread switch from state listener executor to success listener
-        sleep 8
-    }
 
     def setup() {
         bus = Mock()
@@ -78,7 +61,7 @@ class IBusCachedFieldSpec extends Specification {
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
                 .build()
-        postAndWaitUntilFieldStopsLoading(field)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:
         sC * successEvent.setResponse(value)
@@ -100,7 +83,7 @@ class IBusCachedFieldSpec extends Specification {
                 .build()
 
         when:
-        postAndWaitUntilFieldStopsLoading(field)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:
         1 * bus.post(expEvent)
@@ -119,7 +102,7 @@ class IBusCachedFieldSpec extends Specification {
                 .build()
 
         when:
-        postAndWaitUntilFieldStopsLoading(field)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:
         1 * customBus.post(_)

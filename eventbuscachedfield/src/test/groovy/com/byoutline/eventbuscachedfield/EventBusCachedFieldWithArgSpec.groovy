@@ -3,6 +3,7 @@ package com.byoutline.eventbuscachedfield
 import com.byoutline.cachedfield.CachedFieldWithArg
 import com.byoutline.cachedfield.FieldState
 import com.byoutline.cachedfield.FieldStateListener
+import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg
 import de.greenrobot.event.EventBus
@@ -23,24 +24,6 @@ class EventBusCachedFieldWithArgSpec extends Specification {
     ResponseEventWithArg<Exception, Integer> errorEvent
     EventBus bus
 
-    static <ARG_TYPE> void postAndWaitUntilFieldStopsLoading(CachedFieldWithArg<?, ARG_TYPE> field, ARG_TYPE arg) {
-        boolean duringValueLoad = true
-        def listener = { FieldState newState ->
-            if (newState == FieldState.NOT_LOADED || newState == FieldState.LOADED) {
-                duringValueLoad = false
-            }
-        } as FieldStateListener
-
-        field.addStateListener(listener)
-        field.postValue(arg)
-        while (duringValueLoad) {
-            sleep 1
-        }
-        field.removeStateListener(listener)
-        // allow thread switch from state listener executor to success listener
-        sleep 8
-    }
-
     def setup() {
         bus = Mock()
         successEvent = Mock()
@@ -58,7 +41,7 @@ class EventBusCachedFieldWithArgSpec extends Specification {
                 .withResponseErrorEvent(errorEvent)
                 .build()
         when:
-        postAndWaitUntilFieldStopsLoading(field, arg)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field, arg)
 
         then:
 
@@ -86,7 +69,7 @@ class EventBusCachedFieldWithArgSpec extends Specification {
                 .withResponseErrorEvent(errorEvent)
                 .build()
         when:
-        postAndWaitUntilFieldStopsLoading(field, 2)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field, 2)
 
         then:
         errorVal.message == "E2"
@@ -106,7 +89,7 @@ class EventBusCachedFieldWithArgSpec extends Specification {
                 .build()
 
         when:
-        postAndWaitUntilFieldStopsLoading(field, 1)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field, 1)
 
         then:
         1 * customBus.post(_)

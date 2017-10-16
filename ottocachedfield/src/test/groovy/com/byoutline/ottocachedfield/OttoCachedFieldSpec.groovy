@@ -3,6 +3,7 @@ package com.byoutline.ottocachedfield
 import com.byoutline.cachedfield.CachedField
 import com.byoutline.cachedfield.FieldState
 import com.byoutline.cachedfield.FieldStateListener
+import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
 import com.byoutline.eventcallback.ResponseEvent
 import com.squareup.otto.Bus
@@ -24,32 +25,6 @@ class OttoCachedFieldSpec extends Specification {
     ResponseEvent<String> successEvent
     ResponseEvent<Exception> errorEvent
     Bus bus
-
-    static void postAndWaitUntilFieldStopsLoading(CachedField field) {
-        boolean duringValueLoad = true
-        boolean loadingStarted = false
-        def listener = { FieldState newState ->
-            switch(newState) {
-                case FieldState.NOT_LOADED:
-                    if (loadingStarted) duringValueLoad = false
-                    break
-                case FieldState.CURRENTLY_LOADING:
-                    loadingStarted = true
-                    break
-                case FieldState.LOADED:
-                    duringValueLoad = false
-                    break
-            }
-        } as FieldStateListener
-
-        field.addStateListener(listener)
-        field.postValue()
-        while (duringValueLoad) {
-            sleep 1
-        }
-        field.removeStateListener(listener)
-        sleep 8
-    }
 
     def setup() {
         bus = Mock()
@@ -89,7 +64,7 @@ class OttoCachedFieldSpec extends Specification {
                 .withResponseErrorEvent(errorEvent)
                 .build()
         when:
-        postAndWaitUntilFieldStopsLoading(field)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:
         sC * successEvent.setResponse(value)
@@ -111,7 +86,7 @@ class OttoCachedFieldSpec extends Specification {
                 .build()
 
         when:
-        postAndWaitUntilFieldStopsLoading(field)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:
         1 * bus.post(expEvent)
@@ -122,7 +97,7 @@ class OttoCachedFieldSpec extends Specification {
         def field = new OttoCachedField(MockFactory.getStringGetter(value), successEvent)
 
         when:
-        postAndWaitUntilFieldStopsLoading(field)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:
         1 * bus.post(_)
@@ -133,7 +108,7 @@ class OttoCachedFieldSpec extends Specification {
         def field = new OttoCachedField(MockFactory.getStringGetter(value), successEvent, errorEvent)
 
         when:
-        postAndWaitUntilFieldStopsLoading(field)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:
         1 * bus.post(_)
@@ -144,7 +119,7 @@ class OttoCachedFieldSpec extends Specification {
         def field = new OttoCachedField(MockFactory.getStringGetter(value), successEvent, new Object())
 
         when:
-        postAndWaitUntilFieldStopsLoading(field)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:
         1 * bus.post(_)
@@ -163,7 +138,7 @@ class OttoCachedFieldSpec extends Specification {
                 .build()
 
         when:
-        postAndWaitUntilFieldStopsLoading(field)
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:
         1 * customBus.post(_)
