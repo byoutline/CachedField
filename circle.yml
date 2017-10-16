@@ -1,0 +1,38 @@
+general:
+  artifacts:
+    - "build/reports"
+    - "cachedfield/build/reports"
+    - "eventbuscachedfield/build/reports"
+    - "ibuscachedfield/build/reports"
+    - "idlingresource/build/reports"
+    - "observablecachedfield/build/reports"
+    - "ottocachedfield/build/reports"
+    - "ottoobservablecachedfield/build/reports"
+    - "rxjava/build/reports"
+    - "testhelpers/build/reports"
+
+
+machine:
+  java:
+    version: oraclejdk8
+  environment:
+    GRADLE_OPTS: "-Xmx2g"
+    _JAVA_OPTIONS: "-Xms256m -Xmx1536m"
+    CIRCLE_JDK_VERSION: oraclejdk8
+    JAVA7_HOME: "/usr/lib/jvm/java-7-openjdk-amd64"
+    JAVA8_HOME: "/usr/lib/jvm/jdk1.8.0"
+    TERM: "dumb"
+  post:
+    # Turn off unneeded services to free memory.
+    - for service in "apache2" "beanstalkd" "cassandra" "couchdb" "docker" "elasticsearch" "memcached" "mysql" "neo4j-service" "postgresql" "rabbitmq-server" "redis-server" "riak" ; do sudo service $service stop; done
+
+
+dependencies:
+  override:
+    - ./gradlew dependencies
+
+
+test:
+  override:
+    - ./gradlew check
+
