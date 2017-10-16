@@ -19,10 +19,3 @@ plugins {
     id 'com.github.kt3k.coveralls' version '2.8.1'
 }
 apply from: 'gradle/byoutline/codeCoverage.gradle'
-
-// HTML results are not saved on TRAVIS, display them to standard output
-subprojects {
-    test {
-        testLogging.showStandardStreams = System.getenv("TRAVIS") ?: false
-    }
-}

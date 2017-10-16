@@ -16,9 +16,9 @@ dependencies {
     compile 'com.byoutline.ibuscachedfield:ibuscachedfield:1.1.0'
     compile 'com.byoutline.ottoeventcallback:ottoeventcallback-api:1.0.1'
 
-    provided 'com.google.android:android:4.1.1.4'
-    testCompile 'com.google.android:android:4.1.1.4'
-    testCompile project(':testhelpers')
+    compileOnly 'com.google.android:android:4.1.1.4'
+    testImplementation 'com.google.android:android:4.1.1.4'
+    testImplementation project(':testhelpers')
 }
 
 apply from: '../maven-push.gradle'

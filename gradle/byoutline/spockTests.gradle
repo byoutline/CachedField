@@ -27,3 +27,11 @@ final class SpockTests implements Plugin<Project>{
         }
     }
 }
+
+// With our config HTML results are not saved on TRAVIS.
+// Display them to standard output instead.
+subprojects {
+    test {
+        testLogging.showStandardStreams = System.getenv("TRAVIS") ?: false
+    }
+}
