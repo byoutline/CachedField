@@ -1,0 +1,28 @@
+apply plugin: 'java'
+apply plugin: 'propdeps'
+
+apply from: '../gradle/byoutline/javaLib6.gradle'
+
+repositories {
+//    mavenCentral()
+    maven { url "https://jcenter.bintray.com/" }
+    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+dependencies {
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+//    implementation 'com.byoutline.observablecachedfield:observablecachedfield:1.1.1'
+//    implementation 'com.byoutline.ottocachedfield:observablecachedfield:1.1.0'
+    implementation project(":observablecachedfield")
+    implementation project(":ottoobservablecachedfield")
+//    implementation  'com.byoutline.cachedfield:cachedfield:1.5.3'
+    implementation project(":cachedfield")
+    compileOnly files('../databindingLibs/binding-library-1.1.jar')
+    testImplementation files('../databindingLibs/binding-library-1.1.jar')
+    testImplementation 'com.android.databinding:baseLibrary:1.1'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:3.9.0'
+    testImplementation project(':testhelpers')
+}
+
+
+apply from: '../maven-push.gradle'

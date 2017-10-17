@@ -1,0 +1,4 @@
+@ParametersAreNonnullByDefault
+package com.byoutline.cachedfield.retrofit2;
+
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -4,6 +4,7 @@ import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Timeout
 
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
@@ -53,6 +54,7 @@ class CachedFieldWithArgExecutorsSpec extends Specification {
         called
     }
 
+    @Timeout(1)
     def "should interrupt valueGetter thread"() {
         given:
         boolean valueLoadingInterrupted = false
@@ -79,11 +81,11 @@ class CachedFieldWithArgExecutorsSpec extends Specification {
         field.postValue(10000)
         // Give some (minimal) time to propagate Thread.interrupt, since we
         // are running this post synchronously.
-        field.postValue(8)
+        field.postValue(1)
+        CFMockFactory.waitUntilFieldWithArgLoads(field)
 
         then:
         valueLoadingInterrupted
         field.getState() == FieldState.LOADED
-//        thrown(InterruptedException)
     }
 }
