@@ -18,6 +18,14 @@ static <ARG_TYPE> void postAndWaitUntilFieldStopsLoading(CachedFieldWithArg<?, A
 }
 
 static void postAndWaitUntilFieldStopsLoading(CachedField field) {
+    doAndWaitForCachedFieldAction(field, true)
+}
+
+static void refreshAndWaitUntilFieldStopsLoading(CachedField field) {
+    doAndWaitForCachedFieldAction(field, false)
+}
+
+private static void doAndWaitForCachedFieldAction(CachedField field, Boolean post) {
     boolean duringValueLoad = true
     def listener = { FieldState newState ->
         if (newState == FieldState.NOT_LOADED || newState == FieldState.LOADED) {
@@ -26,7 +34,11 @@ static void postAndWaitUntilFieldStopsLoading(CachedField field) {
     } as FieldStateListener
 
     field.addStateListener(listener)
-    field.postValue()
+    if (post) {
+        field.postValue()
+    } else {
+        field.refresh()
+    }
     while (duringValueLoad) {
         sleep 1
     }
