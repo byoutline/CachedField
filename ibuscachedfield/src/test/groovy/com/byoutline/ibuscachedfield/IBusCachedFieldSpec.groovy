@@ -20,8 +20,6 @@ import javax.inject.Provider
  */
 class IBusCachedFieldSpec extends StateListenerSuiteSpec {
     @Shared
-    String value = "value"
-    @Shared
     Exception exception = new RuntimeException("Cached Field test exception")
     ResponseEvent<String> successEvent
     ResponseEvent<Exception> errorEvent
@@ -111,20 +109,12 @@ class IBusCachedFieldSpec extends StateListenerSuiteSpec {
     }
 
     @Override
-    def getField() {
-        def sessionProv = { return "custom" } as Provider<String>
+    def getField(Provider<String> valueProvider) {
         CachedField field = IBusMockFactory.fieldWithoutArgBuilder(bus)
-                .withValueProvider(MockFactory.getStringGetter("val"))
+                .withValueProvider(valueProvider)
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .withCustomSessionIdProvider(sessionProv)
                 .build()
         return field
-    }
-
-
-    @Override
-    def waitUntilFieldFinishAction(Object field) {
-        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
     }
 }

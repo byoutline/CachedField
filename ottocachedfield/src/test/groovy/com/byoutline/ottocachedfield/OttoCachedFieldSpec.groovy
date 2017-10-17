@@ -17,8 +17,6 @@ import javax.inject.Provider
  */
 class OttoCachedFieldSpec extends StateListenerSuiteSpec {
     @Shared
-    String value = "value"
-    @Shared
     Exception exception = new RuntimeException("Cached Field test exception")
     ResponseEvent<String> successEvent
     ResponseEvent<Exception> errorEvent
@@ -144,10 +142,10 @@ class OttoCachedFieldSpec extends StateListenerSuiteSpec {
     }
 
     @Override
-    def getField() {
+    def getField(Provider<String> valueProvider) {
         def sessionProv = { return "custom" } as Provider<String>
         CachedField field = OttoCachedField.builder()
-                .withValueProvider(MockFactory.getStringGetter("val"))
+                .withValueProvider(valueProvider)
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
                 .withCustomSessionIdProvider(sessionProv)
@@ -155,8 +153,4 @@ class OttoCachedFieldSpec extends StateListenerSuiteSpec {
         return field
     }
 
-    @Override
-    def waitUntilFieldFinishAction(Object field) {
-        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
-    }
 }

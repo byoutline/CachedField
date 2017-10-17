@@ -7,20 +7,18 @@ import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.byoutline.cachedfield.testsuite.StateListenerSuiteSpec
 import com.google.common.util.concurrent.MoreExecutors
 
+import javax.inject.Provider
+
 class ObservableCachedFieldSpec extends StateListenerSuiteSpec {
     @Override
-    def getField() {
+    def getField(Provider<String> valueProvider) {
         ObservableCachedField<String> field = new ObservableCachedField<String>(MockFactory.getSameSessionIdProvider(),
-                MockFactory.getStringGetter("value"),
+                valueProvider,
                 {} as SuccessListener<String>,
                 {} as ErrorListener,
                 MoreExecutors.newDirectExecutorService(),
                 DefaultExecutors.createDefaultStateListenerExecutor()
         )
         return field
-    }
-
-    @Override
-    def waitUntilFieldFinishAction(Object field) {
     }
 }

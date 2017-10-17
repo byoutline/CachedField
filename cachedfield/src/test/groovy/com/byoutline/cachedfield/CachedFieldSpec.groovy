@@ -117,6 +117,7 @@ class CachedFieldSpec extends Specification {
         def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
         CachedField field = CFMockFactory.getLoadedCachedField(value, stateList)
 
+
         when:
         field.refresh()
         sleep 1 // Wait for field to switch from LOADED to CURRENTLY_LOADING.
