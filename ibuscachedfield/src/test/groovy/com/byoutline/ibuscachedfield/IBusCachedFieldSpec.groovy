@@ -1,15 +1,12 @@
 package com.byoutline.ibuscachedfield
 
 import com.byoutline.cachedfield.CachedField
-import com.byoutline.cachedfield.FieldState
-import com.byoutline.cachedfield.FieldStateListener
 import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
-import com.byoutline.cachedfield.testsuite.StateListenerSuiteSpec
+import com.byoutline.cachedfield.testsuite.CachedFieldCommonSuiteSpec
 import com.byoutline.eventcallback.IBus
 import com.byoutline.eventcallback.ResponseEvent
 import spock.lang.Shared
-import spock.lang.Specification
 import spock.lang.Unroll
 
 import javax.inject.Provider
@@ -18,7 +15,7 @@ import javax.inject.Provider
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class IBusCachedFieldSpec extends StateListenerSuiteSpec {
+class IBusCachedFieldSpec extends CachedFieldCommonSuiteSpec {
     @Shared
     Exception exception = new RuntimeException("Cached Field test exception")
     ResponseEvent<String> successEvent
@@ -29,27 +26,6 @@ class IBusCachedFieldSpec extends StateListenerSuiteSpec {
         bus = Mock()
         successEvent = Mock()
         errorEvent = Mock()
-    }
-
-    def "postValue should return immediately"() {
-        given:
-        CachedField field = IBusMockFactory.fieldWithoutArgBuilder(bus)
-                .withValueProvider(MockFactory.getDelayedStringGetter(value, 1000))
-                .withSuccessEvent(successEvent)
-                .build()
-
-        when:
-        boolean tookToLong = false
-        Thread.start {
-            sleep 15
-            tookToLong = true
-        }
-        field.postValue()
-
-        then:
-        if (tookToLong) {
-            throw new AssertionError("Test took to long to execute")
-        }
     }
 
     @Unroll

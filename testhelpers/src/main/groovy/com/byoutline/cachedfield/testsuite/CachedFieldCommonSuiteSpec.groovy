@@ -13,7 +13,7 @@ import javax.inject.Provider
 import static com.byoutline.cachedfield.MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading
 import static com.byoutline.cachedfield.MockCachedFieldLoader.refreshAndWaitUntilFieldStopsLoading
 
-abstract class StateListenerSuiteSpec extends Specification {
+abstract class CachedFieldCommonSuiteSpec extends Specification {
     @Shared
     def value = "value"
 
@@ -61,5 +61,24 @@ abstract class StateListenerSuiteSpec extends Specification {
 
         then:
         postedStates == [FieldState.CURRENTLY_LOADING, FieldState.LOADED]
+    }
+
+    @Timeout(1)
+    def "postValue should return immediately"() {
+        given:
+        def field = getField(MockFactory.getDelayedStringGetter(value, 2000))
+
+        when:
+        boolean tookToLong = false
+        Thread.start {
+            sleep 15
+            tookToLong = true
+        }
+        field.postValue()
+
+        then:
+        if (tookToLong) {
+            throw new AssertionError("Test took to long to execute")
+        }
     }
 }
