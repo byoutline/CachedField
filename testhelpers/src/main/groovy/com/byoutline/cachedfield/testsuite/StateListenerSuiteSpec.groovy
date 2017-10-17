@@ -6,7 +6,7 @@ import spock.lang.Specification
 abstract class StateListenerSuiteSpec extends Specification {
     abstract def getField()
 
-    abstract def waitUntilFieldLoads(field)
+    abstract def waitUntilFieldFinishAction(field)
 
     def "should allow self removing state listeners"() {
         given:
@@ -17,7 +17,7 @@ abstract class StateListenerSuiteSpec extends Specification {
         stateListeners.each { field.addStateListener(it) }
         when:
         field.postValue()
-        waitUntilFieldLoads(field)
+        waitUntilFieldFinishAction(field)
         then:
         stateListeners.findAll { it.called }.size() == 3
     }
