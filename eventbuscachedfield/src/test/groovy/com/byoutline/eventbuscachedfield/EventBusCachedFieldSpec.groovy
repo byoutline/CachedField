@@ -16,8 +16,6 @@ import javax.inject.Provider
  */
 class EventBusCachedFieldSpec extends StateListenerSuiteSpec {
     @Shared
-    String value = "value"
-    @Shared
     Exception exception = new RuntimeException("Cached Field test exception")
     ResponseEvent<String> successEvent
     ResponseEvent<Exception> errorEvent
@@ -110,17 +108,11 @@ class EventBusCachedFieldSpec extends StateListenerSuiteSpec {
     }
 
     @Override
-    def getField() {
+    def getField(Provider<String> valueProvider) {
         EventBusCachedField field = EventBusCachedField.builder()
-                .withValueProvider(MockFactory.getDelayedStringGetter(value, 1000,))
+                .withValueProvider(valueProvider)
                 .withSuccessEvent(successEvent)
                 .build()
         return field
-    }
-
-
-    @Override
-    def waitUntilFieldFinishAction(Object field) {
-        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
     }
 }
