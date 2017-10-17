@@ -15,6 +15,7 @@ dependencies {
     compile 'com.byoutline.observablecachedfield:observablecachedfield:1.1.2-SNAPSHOT'
     compile 'com.byoutline.ibuscachedfield:ibuscachedfield:1.1.1-SNAPSHOT'
     compile 'com.byoutline.ottocachedfield:ottocachedfield:1.6.3'
+    compile project(':cachedfield')
     compileOnly 'com.android.databinding:baseLibrary:1.1'
     compileOnly files('../databindingLibs/binding-library-1.1.jar')
     testImplementation files('../databindingLibs/binding-library-1.1.jar')

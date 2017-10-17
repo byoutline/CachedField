@@ -15,6 +15,7 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.byoutline.ibuscachedfield:ibuscachedfield:1.1.0'
     compile 'com.byoutline.ottoeventcallback:ottoeventcallback-api:1.0.1'
+    compile project(':cachedfield')
 
     compileOnly 'com.google.android:android:4.1.1.4'
     testImplementation 'com.google.android:android:4.1.1.4'
