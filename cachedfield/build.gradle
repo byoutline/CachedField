@@ -19,6 +19,7 @@ dependencies {
     // adds the @Generated annotation for auto value
     compileOnly 'javax.annotation:jsr250-api:1.0'
     testImplementation 'com.google.guava:guava:18.0'
+    testImplementation project(':testhelpers')
 }
 
 apply from: '../maven-push.gradle'

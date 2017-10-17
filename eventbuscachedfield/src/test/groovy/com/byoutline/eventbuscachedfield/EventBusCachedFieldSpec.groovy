@@ -1,14 +1,11 @@
 package com.byoutline.eventbuscachedfield
 
-import com.byoutline.cachedfield.CachedField
-import com.byoutline.cachedfield.FieldState
-import com.byoutline.cachedfield.FieldStateListener
 import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
+import com.byoutline.cachedfield.testsuite.StateListenerSuiteSpec
 import com.byoutline.eventcallback.ResponseEvent
 import de.greenrobot.event.EventBus
 import spock.lang.Shared
-import spock.lang.Specification
 import spock.lang.Unroll
 
 import javax.inject.Provider
@@ -17,7 +14,7 @@ import javax.inject.Provider
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class EventBusCachedFieldSpec extends Specification {
+class EventBusCachedFieldSpec extends StateListenerSuiteSpec {
     @Shared
     String value = "value"
     @Shared
@@ -25,7 +22,6 @@ class EventBusCachedFieldSpec extends Specification {
     ResponseEvent<String> successEvent
     ResponseEvent<Exception> errorEvent
     EventBus bus
-
 
 
     def setup() {
@@ -111,5 +107,19 @@ class EventBusCachedFieldSpec extends Specification {
         then:
         1 * customBus.post(_)
         0 * bus.post(_)
+    }
+
+    @Override
+    def getField() {
+        EventBusCachedField field = EventBusCachedField.builder()
+                .withValueProvider(MockFactory.getDelayedStringGetter(value, 1000,))
+                .withSuccessEvent(successEvent)
+                .build()
+        return field
+    }
+
+    @Override
+    def waitUntilFieldLoads(Object field) {
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
     }
 }
