@@ -16,8 +16,8 @@ dependencies {
     compile 'com.byoutline.ibuscachedfield:ibuscachedfield:1.1.1-SNAPSHOT'
     compile 'com.byoutline.ottocachedfield:ottocachedfield:1.6.3'
     compileOnly 'com.android.databinding:baseLibrary:1.1'
-    compileOnly files('libs/binding-library-1.1.jar')
-    testImplementation files('libs/binding-library-1.1.jar')
+    compileOnly files('../databindingLibs/binding-library-1.1.jar')
+    testImplementation files('../databindingLibs/binding-library-1.1.jar')
     testImplementation 'com.android.databinding:baseLibrary:1.1'
     testImplementation project(':testhelpers')
 }

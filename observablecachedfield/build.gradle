@@ -14,9 +14,9 @@ dependencies {
     compile 'javax.inject:javax.inject:1'
     compileOnly 'com.squareup.okhttp3:okhttp:3.0.1'
     compileOnly 'com.android.databinding:baseLibrary:1.1'
-    compileOnly files('libs/binding-library-1.1.jar')
+    compileOnly files('../databindingLibs/binding-library-1.1.jar')
     testImplementation 'com.android.databinding:baseLibrary:1.1'
-    testImplementation files('libs/binding-library-1.1.jar')
+    testImplementation files('../databindingLibs/binding-library-1.1.jar')
     testImplementation project(':testhelpers')
 }
 
