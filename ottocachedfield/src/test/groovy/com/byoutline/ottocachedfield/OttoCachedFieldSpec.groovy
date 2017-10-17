@@ -3,7 +3,7 @@ package com.byoutline.ottocachedfield
 import com.byoutline.cachedfield.CachedField
 import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
-import com.byoutline.cachedfield.testsuite.StateListenerSuiteSpec
+import com.byoutline.cachedfield.testsuite.CachedFieldCommonSuiteSpec
 import com.byoutline.eventcallback.ResponseEvent
 import com.squareup.otto.Bus
 import spock.lang.Shared
@@ -15,7 +15,7 @@ import javax.inject.Provider
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class OttoCachedFieldSpec extends StateListenerSuiteSpec {
+class OttoCachedFieldSpec extends CachedFieldCommonSuiteSpec {
     @Shared
     Exception exception = new RuntimeException("Cached Field test exception")
     ResponseEvent<String> successEvent
@@ -30,26 +30,6 @@ class OttoCachedFieldSpec extends StateListenerSuiteSpec {
         OttoCachedField.init(MockFactory.getSameSessionIdProvider(), bus)
     }
 
-    def "postValue should return immediately"() {
-        given:
-        OttoCachedField field = OttoCachedField.builder()
-                .withValueProvider(MockFactory.getDelayedStringGetter(value, 1000))
-                .withSuccessEvent(successEvent)
-                .build()
-
-        when:
-        boolean tookToLong = false
-        Thread.start {
-            sleep 45
-            tookToLong = true
-        }
-        field.postValue()
-
-        then:
-        if (tookToLong) {
-            throw new AssertionError("Test took to long to execute")
-        }
-    }
 
     @Unroll
     def "should post success times: #sC, error times: #eC for valueProvider: #valProv"() {

@@ -2,7 +2,7 @@ package com.byoutline.eventbuscachedfield
 
 import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
-import com.byoutline.cachedfield.testsuite.StateListenerSuiteSpec
+import com.byoutline.cachedfield.testsuite.CachedFieldCommonSuiteSpec
 import com.byoutline.eventcallback.ResponseEvent
 import de.greenrobot.event.EventBus
 import spock.lang.Shared
@@ -14,7 +14,7 @@ import javax.inject.Provider
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class EventBusCachedFieldSpec extends StateListenerSuiteSpec {
+class EventBusCachedFieldSpec extends CachedFieldCommonSuiteSpec {
     @Shared
     Exception exception = new RuntimeException("Cached Field test exception")
     ResponseEvent<String> successEvent
@@ -28,27 +28,6 @@ class EventBusCachedFieldSpec extends StateListenerSuiteSpec {
         errorEvent = Mock()
 
         EventBusCachedField.init(MockFactory.getSameSessionIdProvider(), bus)
-    }
-
-    def "postValue should return immediately"() {
-        given:
-        EventBusCachedField field = EventBusCachedField.builder()
-                .withValueProvider(MockFactory.getDelayedStringGetter(value, 1000))
-                .withSuccessEvent(successEvent)
-                .build()
-
-        when:
-        boolean tookToLong = false
-        Thread.start {
-            sleep 40
-            tookToLong = true
-        }
-        field.postValue()
-
-        then:
-        if (tookToLong) {
-            throw new AssertionError("Test took to long to execute")
-        }
     }
 
     @Unroll
