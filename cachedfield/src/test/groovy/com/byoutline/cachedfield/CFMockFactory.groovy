@@ -226,7 +226,7 @@ static void waitUntilFieldWithArgLoads(CachedFieldWithArg field) {
         sleep 1
         sleepCount++
     }
-    sleep 2 // wait for success listener to get informed
+    sleep 8 // wait for success listener to get informed
 }
 
 static void loadValue(CachedFieldWithArg<String, Integer> field, Integer arg) {

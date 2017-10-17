@@ -9,6 +9,7 @@ import spock.lang.Timeout
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.FutureTask
+import java.util.concurrent.TimeUnit
 
 /**
  *
@@ -54,7 +55,7 @@ class CachedFieldWithArgExecutorsSpec extends Specification {
         called
     }
 
-    @Timeout(1)
+    @Timeout(value = 500, unit = TimeUnit.MILLISECONDS)
     def "should interrupt valueGetter thread"() {
         given:
         boolean valueLoadingInterrupted = false
@@ -79,13 +80,15 @@ class CachedFieldWithArgExecutorsSpec extends Specification {
         when:
         // Execute long running task asynchronously to be interrupted.
         field.postValue(10000)
+        field.postValue(1)
         // Give some (minimal) time to propagate Thread.interrupt, since we
         // are running this post synchronously.
-        field.postValue(1)
-        CFMockFactory.waitUntilFieldWithArgLoads(field)
+        while (!valueLoadingInterrupted) {
+            sleep 1
+        }
 
         then:
         valueLoadingInterrupted
-        field.getState() == FieldState.LOADED
+        // Or Fail by timeout
     }
 }
