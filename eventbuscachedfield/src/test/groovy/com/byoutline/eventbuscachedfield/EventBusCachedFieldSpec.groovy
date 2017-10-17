@@ -118,8 +118,9 @@ class EventBusCachedFieldSpec extends StateListenerSuiteSpec {
         return field
     }
 
+
     @Override
-    def waitUntilFieldLoads(Object field) {
+    def waitUntilFieldFinishAction(Object field) {
         MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
     }
 }

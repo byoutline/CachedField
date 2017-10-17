@@ -5,6 +5,7 @@ import com.byoutline.cachedfield.FieldState
 import com.byoutline.cachedfield.FieldStateListener
 import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
+import com.byoutline.cachedfield.testsuite.StateListenerSuiteSpec
 import com.byoutline.eventcallback.IBus
 import com.byoutline.eventcallback.ResponseEvent
 import spock.lang.Shared
@@ -17,7 +18,7 @@ import javax.inject.Provider
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class IBusCachedFieldSpec extends Specification {
+class IBusCachedFieldSpec extends StateListenerSuiteSpec {
     @Shared
     String value = "value"
     @Shared
@@ -107,5 +108,23 @@ class IBusCachedFieldSpec extends Specification {
         then:
         1 * customBus.post(_)
         0 * bus.post(_)
+    }
+
+    @Override
+    def getField() {
+        def sessionProv = { return "custom" } as Provider<String>
+        CachedField field = IBusMockFactory.fieldWithoutArgBuilder(bus)
+                .withValueProvider(MockFactory.getStringGetter("val"))
+                .withSuccessEvent(successEvent)
+                .withResponseErrorEvent(errorEvent)
+                .withCustomSessionIdProvider(sessionProv)
+                .build()
+        return field
+    }
+
+
+    @Override
+    def waitUntilFieldFinishAction(Object field) {
+        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
     }
 }
