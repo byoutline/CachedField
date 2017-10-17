@@ -47,4 +47,19 @@ abstract class StateListenerSuiteSpec extends Specification {
         then:
         postedStates == [FieldState.CURRENTLY_LOADING, FieldState.LOADED]
     }
+
+    @Timeout(1)
+    def "should inform field state listener about changes on postValue"() {
+        given:
+        def postedStates = []
+        def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
+        def field = getField(MockFactory.getStringGetter(value))
+        field.addStateListener(stateList)
+
+        when:
+        postAndWaitUntilFieldStopsLoading(field)
+
+        then:
+        postedStates == [FieldState.CURRENTLY_LOADING, FieldState.LOADED]
+    }
 }
