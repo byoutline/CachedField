@@ -10,6 +10,8 @@ import spock.lang.Shared
 import spock.lang.Unroll
 
 import javax.inject.Provider
+import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
 
 /**
  *
@@ -122,15 +124,14 @@ class OttoCachedFieldSpec extends CachedFieldCommonSuiteSpec {
     }
 
     @Override
-    def getField(Provider<String> valueProvider) {
-        def sessionProv = { return "custom" } as Provider<String>
-        CachedField field = OttoCachedField.builder()
+    def getField(Provider<String> valueProvider, ExecutorService valueGetterExecutor, Executor stateListenerExecutor) {
+        return OttoCachedField.builder()
                 .withValueProvider(valueProvider)
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
-                .withCustomSessionIdProvider(sessionProv)
+                .withCustomValueGetterExecutor(valueGetterExecutor)
+                .withCustomStateListenerExecutor(stateListenerExecutor)
                 .build()
-        return field
     }
 
 }
