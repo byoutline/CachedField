@@ -1,6 +1,23 @@
 buildscript {
     project.ext {
+        // If true latest version of the code will be used for compilation. (Default for development)
+        // If false only release versions from maven central will be used. (Default for releases)
+        def head = true
         jsr305_ver = '3.0.1'
+        deps = head ? [
+                cachedfield          : project(':cachedfield'),
+                ibuscachedfield      : project(':ibuscachedfield'),
+                ibuscachedfieldsnap  : project(':ibuscachedfield'),
+                ottocachedfield      : project(':ottocachedfield'),
+                observablecachedfield: project(':observablecachedfield')
+        ] : [
+                cachedfield          : 'com.byoutline.cachedfield:cachedfield:1.5.3',
+                ibuscachedfield      : 'com.byoutline.ibuscachedfield:ibuscachedfield:1.1.0',
+                ibuscachedfieldsnap  : 'com.byoutline.ibuscachedfield:ibuscachedfield:1.1.1-SNAPSHOT',
+                ottocachedfield      : 'com.byoutline.ottocachedfield:ottocachedfield:1.6.3',
+                observablecachedfield: 'com.byoutline.observablecachedfield:observablecachedfield:1.1.2-SNAPSHOT'
+        ]
+
     }
 
     repositories {
@@ -12,6 +29,8 @@ buildscript {
     dependencies {
         classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
     }
+
+
 }
 
 plugins {

@@ -28,8 +28,7 @@ repositories {
 dependencies {
     compile 'io.reactivex:rxjava:1.3.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-//    compile 'com.byoutline.cachedfield:cachedfield:1.5.3'
-    compile project(path: ':cachedfield')
+    compile deps.cachedfield
     testCompile project(':testhelpers')
 }
 

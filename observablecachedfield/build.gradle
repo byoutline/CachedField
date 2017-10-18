@@ -1,20 +1,22 @@
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'propdeps'
 
 apply from: '../gradle/byoutline/javaLib6.gradle'
 
 repositories {
 //    mavenCentral()
+    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url "https://jcenter.bintray.com/" }
 }
 
 dependencies {
-    compile "com.google.code.findbugs:jsr305:$jsr305_ver"
-    compile 'com.byoutline.ibuscachedfield:ibuscachedfield:1.1.0'
-    compile 'javax.inject:javax.inject:1'
+    api "com.google.code.findbugs:jsr305:$jsr305_ver"
+    api 'javax.inject:javax.inject:1'
+    api deps.ibuscachedfieldsnap
     compileOnly 'com.squareup.okhttp3:okhttp:3.0.1'
     compileOnly 'com.android.databinding:baseLibrary:1.1'
     compileOnly files('libs/binding-library-1.1.jar')
+
     testImplementation 'com.android.databinding:baseLibrary:1.1'
     testImplementation files('libs/binding-library-1.1.jar')
     testImplementation project(':testhelpers')
