@@ -36,11 +36,7 @@ class OttoCachedFieldSpec extends CachedFieldCommonSuiteSpec {
     @Unroll
     def "should post success times: #sC, error times: #eC for valueProvider: #valProv"() {
         given:
-        CachedField field = OttoCachedField.builder()
-                .withValueProvider(valProv)
-                .withSuccessEvent(successEvent)
-                .withResponseErrorEvent(errorEvent)
-                .build()
+        CachedField field = getFieldWithDefaultExecutors(valProv)
         when:
         MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
