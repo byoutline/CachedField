@@ -1,12 +1,18 @@
 package com.byoutline.observablecachedfield;
 
 import android.databinding.ObservableField;
-import com.byoutline.cachedfield.*;
+
+import com.byoutline.cachedfield.CachedField;
+import com.byoutline.cachedfield.ErrorListener;
+import com.byoutline.cachedfield.FieldState;
+import com.byoutline.cachedfield.FieldStateListener;
+import com.byoutline.cachedfield.SuccessListener;
 import com.byoutline.cachedfield.internal.VoidArgumentFactory;
 
-import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+
+import javax.inject.Provider;
 
 /**
  * No arg version of {@link ObservableCachedFieldWithArg}
@@ -66,5 +72,10 @@ public class ObservableCachedField<RETURN_TYPE> implements CachedField<RETURN_TY
     @Override
     public boolean removeStateListener(FieldStateListener listener) {
         return delegate.removeStateListener(listener);
+    }
+
+    @Override
+    public ObservableCachedFieldWithArg<RETURN_TYPE, Void> toCachedFieldWithArg() {
+        return delegate;
     }
 }
