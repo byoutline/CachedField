@@ -114,4 +114,23 @@ abstract class CachedFieldCommonSuiteSpec extends Specification {
         stateAndValue.value == CallResult.create(null, null)
         stateAndValue.arg == null
     }
+
+    def "should remove state listener"() {
+        given:
+        def listenerCalls = 0
+        def stateList = { listenerCalls++ } as FieldStateListener
+        CachedField field = getField(MockFactory.getStringGetter(value),
+                MoreExecutors.newDirectExecutorService(),
+                MoreExecutors.directExecutor())
+        field.addStateListener(stateList)
+        field.postValue()
+
+        when:
+        field.removeStateListener(stateList)
+        field.postValue()
+        field.drop()
+
+        then:
+        listenerCalls == 2//only first postValue call state listener two times
+    }
 }
