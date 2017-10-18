@@ -5,7 +5,7 @@ import com.byoutline.cachedfield.rx.CachedFieldResultAndArg
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
-internal class CachedEndpointFuture<RETURN_TYPE, ARG_TYPE>(private val field: CachedEndpointWithArg<RETURN_TYPE, ARG_TYPE>,
+internal class CachedEndpointFuture<RETURN_TYPE: Any, ARG_TYPE>(private val field: CachedEndpointWithArg<RETURN_TYPE, ARG_TYPE>,
                                                            private val arg: ARG_TYPE?)
     : Future<CachedFieldResultAndArg<RETURN_TYPE, ARG_TYPE?>> {
     private var result: CallResult<RETURN_TYPE>? = null
@@ -23,12 +23,14 @@ internal class CachedEndpointFuture<RETURN_TYPE, ARG_TYPE>(private val field: Ca
     }
 
     private fun setResultIfArgMatches(currentStateAndValue: StateAndValue<RETURN_TYPE, ARG_TYPE?>) {
-        if(currentStateAndValue.arg == arg) setResult(currentStateAndValue.value)
+        if (currentStateAndValue.arg == arg) setResult(currentStateAndValue.value)
     }
 
     private fun setResult(result: CallResult<RETURN_TYPE>) {
         synchronized(lock) {
-            if (this.result != null) return
+            // We want to return result only once. If this.result is set
+            // that means that we have already returned the result
+            if (isDone) return
             this.result = result
             field.removeEndpointListener(endpointListener)
             lock.notifyAll()
@@ -39,28 +41,35 @@ internal class CachedEndpointFuture<RETURN_TYPE, ARG_TYPE>(private val field: Ca
 
     override fun isDone(): Boolean = result != null
 
-    override fun get(p0: Long, p1: TimeUnit?): CachedFieldResultAndArg<RETURN_TYPE, ARG_TYPE> {
+    override fun get(timeout: Long, unit: TimeUnit?): CachedFieldResultAndArg<RETURN_TYPE, ARG_TYPE> {
         synchronized(lock) {
             // Return early if we are already loaded
             val currentStateAndValue = field.stateAndValue
             if (currentStateAndValue.state == EndpointState.CALL_SUCCESS && arg == arg) {
-                return CachedFieldResultAndArg(currentStateAndValue.value.successResult!!, arg)
+                return convertResult(CallResult.create(currentStateAndValue.value.successResult, null))
             }
+            result?.let { return convertResult(it) }
             // If we are not loaded, load (potentially async) value and wait for it.
             field.addEndpointListener(endpointListener)
-            val millis = p1?.toMillis(p0) ?: 0
+            val millis = unit?.toMillis(timeout) ?: 0
             field.call(arg)
             lock.wait(millis)
         }
-        result!!.let {
-            it.failureResult?.let { throw it }
-            return CachedFieldResultAndArg(it.successResult!!, arg)
-        }
+        return convertResult(result!!)
+    }
+
+    private fun convertResult(callResult: CallResult<RETURN_TYPE>): CachedFieldResultAndArg<RETURN_TYPE, ARG_TYPE> {
+        callResult.failureResult?.let { throw it }
+        val successResult = checkNotNull(callResult.successResult, {"CachedField Rx: Provider returned null value. This is not supported."})
+        return CachedFieldResultAndArg(successResult, arg)
     }
 
     override fun get() = get(0, TimeUnit.MILLISECONDS)
 
     override fun cancel(p0: Boolean): Boolean {
+        // XXX: Maybe we should cancel with arg?
+        field.drop()
+        cancelled = true
         setResult(CallResult.create(null, InterruptedException()))
         return true
     }

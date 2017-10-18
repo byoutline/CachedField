@@ -2,7 +2,6 @@ package com.byoutline.cachedfield.rx
 
 import com.byoutline.cachedfield.*
 import rx.Single
-import rx.Subscription
 import rx.schedulers.Schedulers
 import spock.lang.Shared
 import spock.lang.Specification
@@ -66,22 +65,24 @@ class ToRxSpec extends Specification {
         result == value
     }
 
-    @Timeout(value = 1)
+    @Timeout(value = 2)
     def "should not wait for the value if we unsubscribe"() {
         given:
         long sleepTime = 10E6
         CachedField<String> field = MockFactory.getDelayedCachedField(value, sleepTime, stubSuccessListener)
         when:
         Single<String> single = Rx_extension_functionsKt.postToRx(field)
-        def result = subscribeAndBlockUntilUnsubscribe(single, field, { Subscription subscription ->
-            subscription.unsubscribe()
-        })
+        def result = single.subscribeOn(Schedulers.computation())
+                .observeOn(Schedulers.computation())
+                .test()
+        result.unsubscribe()
+        sleep 8
         then:
-        !result.onSuccessCalled
-        !result.onErrorCalled
+        result.onNextEvents.isEmpty()
+        result.assertUnsubscribed()
     }
 
-    @Timeout(value = 1)
+    @Timeout(value = 4)
     def "should deliver error if cached field cancels loading due to new arg"() {
         given:
         long sleepTime = 10E6
@@ -92,41 +93,44 @@ class ToRxSpec extends Specification {
                 MockFactory.getSuccessListenerWithArg(),
                 MockFactory.getErrorListenerWithArg()
         )
+
         when:
         Single<String> single = Rx_extension_functionsKt.postToRx(field, 1)
-        def result = subscribeAndBlockUntilUnsubscribe(single, field, { field.postValue(2) })
+        def result = single.subscribeOn(Schedulers.computation())
+                .observeOn(Schedulers.computation())
+                .test()
+        sleep 32
+        field.postValue(2)
+        result.awaitTerminalEvent()
         then:
-        !result.onSuccessCalled
-        result.onErrorCalled
+        result.onNextEvents.isEmpty()
+        result.assertError(InterruptedException.class)
+        result.assertUnsubscribed()
     }
 
-    static SingleResult subscribeAndBlockUntilUnsubscribe(Single<String> single, CachedField field, Closure actionAfterSubscribe) {
-        subscribeAndBlockUntilUnsubscribe(single, field.toCachedFieldWithArg(), actionAfterSubscribe)
-    }
+    @Timeout(value = 1)
+    def "should call onError if null is returned from the provider"() {
+        given:
+        ProviderWithArg<String, Integer> provider = { null }
+        CachedFieldWithArg<String, Integer> field = new CachedFieldWithArgImpl(
+                MockFactory.getSameSessionIdProvider(),
+                provider,
+                MockFactory.getSuccessListenerWithArg(),
+                MockFactory.getErrorListenerWithArg()
+        )
+        def testScheduler = Schedulers.test()
 
-    static SingleResult subscribeAndBlockUntilUnsubscribe(Single<String> single, CachedFieldWithArg field, Closure actionAfterSubscribe) {
-        def subscribed = true
-        def result = new SingleResult()
-        def subscription = single
-                .subscribeOn(Schedulers.io()).observeOn(Schedulers.io())
-                .doOnUnsubscribe { subscribed = false }
-                .doAfterTerminate { subscribed = false }
-                .subscribe({ result.onSuccessCalled = true },
-                { result.onErrorCalled = true })
-        while (field.getState() != FieldState.CURRENTLY_LOADING) {
-            sleep 1
-        }
-        actionAfterSubscribe(subscription)
-        while (subscribed) {
-            sleep 1
-        }
-        return result
+        when:
+        Single<String> single = Rx_extension_functionsKt.postToRx(field, 1)
+        def result = single.subscribeOn(testScheduler)
+                .observeOn(testScheduler)
+                .test()
+        testScheduler.triggerActions()
+        then:
+        result.onNextEvents.isEmpty()
+        !result.onErrorEvents.isEmpty()
     }
 }
 
-class SingleResult {
-    def onSuccessCalled = false
-    def onErrorCalled = false
-}
 
 class MockException extends RuntimeException {}

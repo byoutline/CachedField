@@ -10,7 +10,7 @@ static <ARG_TYPE> void postAndWaitUntilFieldStopsLoading(CachedFieldWithArg<?, A
 
     field.addStateListener(listener)
     field.postValue(arg)
-    while (duringValueLoad) {
+    while (duringValueLoad && !Thread.interrupted()) {
         sleep 1
     }
     field.removeStateListener(listener)
@@ -39,7 +39,7 @@ private static void doAndWaitForCachedFieldAction(CachedField field, Boolean pos
     } else {
         field.refresh()
     }
-    while (duringValueLoad) {
+    while (duringValueLoad && !Thread.interrupted()) {
         sleep 1
     }
     field.removeStateListener(listener)
