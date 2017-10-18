@@ -33,11 +33,7 @@ class IBusCachedFieldSpec extends CachedFieldCommonSuiteSpec {
     @Unroll
     def "should post success times: #sC, error times: #eC for valueProvider: #valProv"() {
         when:
-        CachedField field = IBusMockFactory.fieldWithoutArgBuilder(bus)
-                .withValueProvider(valProv)
-                .withSuccessEvent(successEvent)
-                .withResponseErrorEvent(errorEvent)
-                .build()
+        CachedField field = getFieldWithDefaultExecutors(valProv)
         MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:

@@ -35,11 +35,7 @@ class EventBusCachedFieldSpec extends CachedFieldCommonSuiteSpec {
     @Unroll
     def "should post success times: #sC, error times: #eC for valueProvider: #valProv"() {
         when:
-        EventBusCachedField field = EventBusCachedField.builder()
-                .withValueProvider(valProv)
-                .withSuccessEvent(successEvent)
-                .withResponseErrorEvent(errorEvent)
-                .build()
+        EventBusCachedField field = getFieldWithDefaultExecutors(valProv)
         MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:
