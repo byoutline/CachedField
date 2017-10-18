@@ -9,6 +9,8 @@ import spock.lang.Shared
 import spock.lang.Unroll
 
 import javax.inject.Provider
+import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
 
 /**
  *
@@ -87,11 +89,13 @@ class EventBusCachedFieldSpec extends CachedFieldCommonSuiteSpec {
     }
 
     @Override
-    def getField(Provider<String> valueProvider) {
-        EventBusCachedField field = EventBusCachedField.builder()
+    def getField(Provider<String> valueProvider, ExecutorService valueGetterExecutor, Executor stateListenerExecutor) {
+        return EventBusCachedField.builder()
                 .withValueProvider(valueProvider)
                 .withSuccessEvent(successEvent)
+                .withResponseErrorEvent(errorEvent)
+                .withCustomStateListenerExecutor(stateListenerExecutor)
+                .withCustomValueGetterExecutor(valueGetterExecutor)
                 .build()
-        return field
     }
 }
