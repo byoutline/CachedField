@@ -1,20 +1,18 @@
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'propdeps'
 
 apply from: '../gradle/byoutline/javaLib6.gradle'
 
 repositories {
     mavenCentral()
-    // For snapshots of event callback and spock testing
-//    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
-    compile 'javax.inject:javax.inject:1'
-    compile "com.google.code.findbugs:jsr305:$jsr305_ver"
-    compile 'de.greenrobot:eventbus:2.4.0'
-    compile 'com.byoutline.ibuscachedfield:ibuscachedfield:1.1.0'
-    compile 'com.byoutline.ottoeventcallback:ottoeventcallback-api:1.0.1'
+    api 'javax.inject:javax.inject:1'
+    api "com.google.code.findbugs:jsr305:$jsr305_ver"
+    api 'de.greenrobot:eventbus:2.4.0'
+    api 'com.byoutline.ottoeventcallback:ottoeventcallback-api:1.0.1'
+    api deps.ibuscachedfield
 
     compileOnly 'com.google.android:android:4.1.1.4'
     testImplementation 'com.google.android:android:4.1.1.4'

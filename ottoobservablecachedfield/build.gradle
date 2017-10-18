@@ -1,20 +1,19 @@
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'propdeps'
 
 apply from: '../gradle/byoutline/javaLib7.gradle'
 
 repositories {
-//    mavenCentral()
     maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url "https://jcenter.bintray.com/" }
 }
 
 dependencies {
-    compile 'javax.inject:javax.inject:1'
-    compile "com.google.code.findbugs:jsr305:$jsr305_ver"
-    compile 'com.byoutline.observablecachedfield:observablecachedfield:1.1.2-SNAPSHOT'
-    compile 'com.byoutline.ibuscachedfield:ibuscachedfield:1.1.1-SNAPSHOT'
-    compile 'com.byoutline.ottocachedfield:ottocachedfield:1.6.3'
+    api 'javax.inject:javax.inject:1'
+    api "com.google.code.findbugs:jsr305:$jsr305_ver"
+    api deps.observablecachedfield
+    api deps.ibuscachedfieldsnap
+    api deps.ottocachedfield
     compileOnly 'com.android.databinding:baseLibrary:1.1'
     compileOnly files('../databindingLibs/binding-library-1.1.jar')
     testImplementation files('../databindingLibs/binding-library-1.1.jar')
@@ -23,7 +22,3 @@ dependencies {
 }
 
 apply from: '../maven-push.gradle'
-//configurations.all {
-//    // check for updates every build
-//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-//}
