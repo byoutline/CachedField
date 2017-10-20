@@ -15,6 +15,7 @@ import spock.lang.Timeout
 import javax.inject.Provider
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.TimeUnit
 
 import static com.byoutline.cachedfield.MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading
 import static com.byoutline.cachedfield.MockCachedFieldLoader.refreshAndWaitUntilFieldStopsLoading
@@ -75,23 +76,16 @@ abstract class CachedFieldCommonSuiteSpec extends Specification {
         postedStates == [FieldState.CURRENTLY_LOADING, FieldState.LOADED]
     }
 
-    @Timeout(1)
+    @Timeout(value=500, unit = TimeUnit.MILLISECONDS)
     def "postValue should return immediately"() {
         given:
-        def field = getFieldWithDefaultExecutors(MockFactory.getDelayedStringGetter(value, 2000))
+        def field = getFieldWithDefaultExecutors(MockFactory.getDelayedStringGetter(value, 4000))
 
         when:
-        boolean tookToLong = false
-        Thread.start {
-            sleep 15
-            tookToLong = true
-        }
         field.postValue()
 
-        then:
-        if (tookToLong) {
-            throw new AssertionError("Test took to long to execute")
-        }
+        then: 'postValue returns without waiting for value getter and method does not time out'
+        noExceptionThrown()
     }
 
     def "should inform field state listener about changes on drop"() {

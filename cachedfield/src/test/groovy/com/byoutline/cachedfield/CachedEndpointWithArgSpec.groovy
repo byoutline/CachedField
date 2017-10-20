@@ -8,8 +8,10 @@ import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Timeout
 
 import javax.inject.Provider
+import java.util.concurrent.TimeUnit
 
 /**
  *
@@ -48,22 +50,16 @@ class CachedEndpointWithArgSpec extends Specification {
         state == EndpointState.BEFORE_CALL
     }
 
+    @Timeout(value = 400, unit = TimeUnit.MILLISECONDS)
     def "call should return immediately"() {
         given:
-        CachedEndpointWithArg field = CFMockFactory.getCachedEndpoint(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getDelayedCachedEndpoint(argToValueMap, 4000)
 
         when:
-        boolean tookToLong = false
-        Thread.start {
-            sleep 15
-            tookToLong = true
-        }
         field.call(1)
 
-        then:
-        if (tookToLong) {
-            throw new AssertionError("Test took to long to execute")
-        }
+        then: 'postValue returns without waiting for value getter and method does not time out'
+        noExceptionThrown()
     }
 
     def "should inform endpoint state listener about current state"() {

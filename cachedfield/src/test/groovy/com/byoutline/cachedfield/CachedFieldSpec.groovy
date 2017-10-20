@@ -4,8 +4,10 @@ import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Timeout
 
 import javax.inject.Provider
+import java.util.concurrent.TimeUnit
 
 /**
  *
@@ -17,22 +19,16 @@ class CachedFieldSpec extends Specification {
     SuccessListener<String> stubSuccessListener = {} as SuccessListener<String>
 
 
+    @Timeout(value=400, unit = TimeUnit.MILLISECONDS)
     def "postValue should return immediately"() {
         given: 'instance that takes very long to load'
-        CachedField field = CFMockFactory.getDelayedCachedField(value, 1000, stubSuccessListener)
+        CachedField field = CFMockFactory.getDelayedCachedField(value, 4000, stubSuccessListener)
 
         when: 'postValue is called'
-        boolean tookToLong = false
-        Thread.start {
-            sleep 30
-            tookToLong = true
-        }
         field.postValue()
 
-        then: 'postValue does not block'
-        if (tookToLong) {
-            throw new AssertionError("Test took to long to execute")
-        }
+        then: 'postValue returns without waiting for value getter and method does not time out'
+        noExceptionThrown()
     }
 
 
