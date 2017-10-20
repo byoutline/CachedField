@@ -33,12 +33,14 @@ cobertura {
     rootProject.subprojects.each {
         coverageSourceDirs += it.sourceSets.main.java.srcDirs
     }
-    coverageMergeDatafiles = ['observablecachedfield',
-                              'ottocachedfield',
-                              'cachedfield',
-                              'ibuscachedfield',
-                              'ottoobservablecachedfield',
-                              'eventbuscachedfield']
+    coverageMergeDatafiles = [
+            'cachedfield',
+            'eventbuscachedfield',
+            'ibuscachedfield',
+            'idlingresource',
+            'observablecachedfield',
+            'ottocachedfield',
+            'ottoobservablecachedfield']
             .collect { new File("$it/build/cobertura/cobertura.ser") }
     coverageIgnoreTrivial = true
     coverageExcludes = ['.*AutoValue_.*']

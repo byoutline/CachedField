@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'propdeps'
 
-apply from: '../gradle/byoutline/forceJava6.gradle'
+apply from: '../gradle/byoutline/javaLib6.gradle'
 
 repositories {
     mavenCentral()
@@ -10,9 +10,13 @@ repositories {
 
 dependencies {
     compileOnly files('libs/espresso-idling-resource-2.2-release-no-dep.jar')
+
     compileOnly 'com.google.android:android:4.1.1.4'
 
     implementation deps.cachedfield
+
+    testImplementation files('libs/espresso-idling-resource-2.2-release-no-dep.jar')
+    testImplementation project(':testhelpers')
 }
 
 
