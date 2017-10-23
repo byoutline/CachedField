@@ -113,6 +113,11 @@ public class CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> implements CachedFiel
     }
 
     @Override
+    public StateAndValue<RETURN_TYPE, ARG_TYPE> getStateAndValue() {
+        return value.getStateAndValue();
+    }
+
+    @Override
     public void drop() {
         value.drop();
     }

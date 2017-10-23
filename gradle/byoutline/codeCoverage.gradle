@@ -3,7 +3,6 @@ repositories {
 }
 
 subprojects {
-    apply plugin: 'java'
     apply plugin: 'net.saliman.cobertura'
 
     dependencies {
@@ -14,7 +13,7 @@ subprojects {
     }
     cobertura {
         coverageIgnoreTrivial = true
-        coverageFormats = [ 'xml', 'html' ]
+        coverageFormats = ['xml', 'html']
         coverageExcludes = ['.*AutoValue_.*']
     }
 }
@@ -22,19 +21,26 @@ subprojects {
 cobertura {
     coverageFormats = ['xml', 'html']
 
-    rootProject.subprojects.each {
-        coverageDirs << file("${it.sourceSets.main.output.classesDir}")
+    rootProject.subprojects.collectMany {
+        it.sourceSets.main.output.classesDirs.collect { "$it" }
+    }.each { path ->
+        if (path.contains('rxjava/build/classes/java')) {
+            path = path.replace('rxjava/build/classes/java', 'rxjava/build/classes/kotlin')
+        }
+        coverageDirs << file(path)
     }
     coverageSourceDirs = []
     rootProject.subprojects.each {
         coverageSourceDirs += it.sourceSets.main.java.srcDirs
     }
-    coverageMergeDatafiles = ['observablecachedfield',
-                              'ottocachedfield',
-                              'cachedfield',
-                              'ibuscachedfield',
-                              'ottoobservablecachedfield',
-                              'eventbuscachedfield']
+    coverageMergeDatafiles = [
+            'cachedfield',
+            'eventbuscachedfield',
+            'ibuscachedfield',
+            'idlingresource',
+            'observablecachedfield',
+            'ottocachedfield',
+            'ottoobservablecachedfield']
             .collect { new File("$it/build/cobertura/cobertura.ser") }
     coverageIgnoreTrivial = true
     coverageExcludes = ['.*AutoValue_.*']

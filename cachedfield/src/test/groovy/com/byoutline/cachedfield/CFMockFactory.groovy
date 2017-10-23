@@ -6,6 +6,7 @@ import com.byoutline.cachedfield.cachedendpoint.StateAndValue
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.byoutline.cachedfield.internal.StubErrorListener
 import com.byoutline.cachedfield.internal.StubFieldStateListener
+import com.byoutline.cachedfield.utils.SameSessionIdProvider
 import com.google.common.util.concurrent.MoreExecutors
 
 import javax.inject.Provider
@@ -14,7 +15,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.FutureTask
 
 static Provider<String> getSameSessionIdProvider() {
-    return { return "sessionId" } as Provider<String>
+    return new SameSessionIdProvider()
 }
 
 static Provider<String> getMultiSessionIdProvider() {
@@ -134,10 +135,10 @@ static CachedEndpointWithArgImpl<String, Integer> getCachedEndpointBlockingVal()
     return getCachedEndpointBlockingValueProv([arg: 'val'] as Map<Integer, String>)
 }
 
-static CachedEndpointWithArgImpl<String, Integer> getCachedEndpoint(Map<Integer, String> argToValueMap) {
+static CachedEndpointWithArgImpl<String, Integer> getDelayedCachedEndpoint(Map<Integer, String> argToValueMap, Long sleepTime) {
     return new CachedEndpointWithArgImpl(
             getSameSessionIdProvider(),
-            getStringIntGetter(argToValueMap),
+            getDelayedStringIntGetter(argToValueMap, sleepTime),
             getStubCallEndListener(),
             DefaultExecutors.createDefaultValueGetterExecutor(),
             DefaultExecutors.createDefaultStateListenerExecutor()
@@ -206,14 +207,14 @@ static CachedFieldWithArg getCachedFieldWithArg(Map<Integer, String> argToValueM
 
 static void waitUntilFieldLoads(CachedField field) {
     waitUntilFieldReachesState(field, FieldState.LOADED)
-    sleep 2 // wait for success listener to get informed
+    Thread.sleep(2) // wait for success listener to get informed
 }
 
 static void waitUntilFieldReachesState(CachedField field, FieldState state) {
     def sleepCount = 0
     def maxSleepCount = 5000
     while (field.getState() != state && sleepCount < maxSleepCount) {
-        sleep 1
+        Thread.sleep(1)
         sleepCount++
     }
 }
@@ -222,10 +223,10 @@ static void waitUntilFieldWithArgLoads(CachedFieldWithArg field) {
     def sleepCount = 0
     def maxSleepCount = 5000
     while (field.getState() != FieldState.LOADED && sleepCount < maxSleepCount) {
-        sleep 1
+        Thread.sleep(1)
         sleepCount++
     }
-    sleep 2 // wait for success listener to get informed
+    Thread.sleep(8) // wait for success listener to get informed
 }
 
 static void loadValue(CachedFieldWithArg<String, Integer> field, Integer arg) {

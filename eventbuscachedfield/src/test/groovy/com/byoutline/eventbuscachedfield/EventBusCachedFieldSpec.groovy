@@ -1,31 +1,28 @@
 package com.byoutline.eventbuscachedfield
 
-import com.byoutline.cachedfield.CachedField
-import com.byoutline.cachedfield.FieldState
-import com.byoutline.cachedfield.FieldStateListener
 import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
+import com.byoutline.cachedfield.testsuite.CachedFieldCommonSuiteSpec
 import com.byoutline.eventcallback.ResponseEvent
+import com.google.common.util.concurrent.MoreExecutors
 import de.greenrobot.event.EventBus
 import spock.lang.Shared
-import spock.lang.Specification
 import spock.lang.Unroll
 
 import javax.inject.Provider
+import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
 
 /**
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class EventBusCachedFieldSpec extends Specification {
-    @Shared
-    String value = "value"
+class EventBusCachedFieldSpec extends CachedFieldCommonSuiteSpec {
     @Shared
     Exception exception = new RuntimeException("Cached Field test exception")
     ResponseEvent<String> successEvent
     ResponseEvent<Exception> errorEvent
     EventBus bus
-
 
 
     def setup() {
@@ -36,35 +33,10 @@ class EventBusCachedFieldSpec extends Specification {
         EventBusCachedField.init(MockFactory.getSameSessionIdProvider(), bus)
     }
 
-    def "postValue should return immediately"() {
-        given:
-        EventBusCachedField field = EventBusCachedField.builder()
-                .withValueProvider(MockFactory.getDelayedStringGetter(value, 1000))
-                .withSuccessEvent(successEvent)
-                .build()
-
-        when:
-        boolean tookToLong = false
-        Thread.start {
-            sleep 40
-            tookToLong = true
-        }
-        field.postValue()
-
-        then:
-        if (tookToLong) {
-            throw new AssertionError("Test took to long to execute")
-        }
-    }
-
     @Unroll
     def "should post success times: #sC, error times: #eC for valueProvider: #valProv"() {
         when:
-        EventBusCachedField field = EventBusCachedField.builder()
-                .withValueProvider(valProv)
-                .withSuccessEvent(successEvent)
-                .withResponseErrorEvent(errorEvent)
-                .build()
+        EventBusCachedField field = getFieldWithDefaultExecutors(valProv)
         MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:
@@ -84,10 +56,11 @@ class EventBusCachedFieldSpec extends Specification {
                 .withValueProvider(MockFactory.getFailingStringGetter(exception))
                 .withSuccessEvent(successEvent)
                 .withGenericErrorEvent(expEvent)
+                .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
                 .build()
 
         when:
-        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
+        field.postValue()
 
         then:
         1 * bus.post(expEvent)
@@ -111,5 +84,16 @@ class EventBusCachedFieldSpec extends Specification {
         then:
         1 * customBus.post(_)
         0 * bus.post(_)
+    }
+
+    @Override
+    def getField(Provider<String> valueProvider, ExecutorService valueGetterExecutor, Executor stateListenerExecutor) {
+        return EventBusCachedField.builder()
+                .withValueProvider(valueProvider)
+                .withSuccessEvent(successEvent)
+                .withResponseErrorEvent(errorEvent)
+                .withCustomStateListenerExecutor(stateListenerExecutor)
+                .withCustomValueGetterExecutor(valueGetterExecutor)
+                .build()
     }
 }

@@ -67,4 +67,9 @@ public class ObservableCachedField<RETURN_TYPE> implements CachedField<RETURN_TY
     public boolean removeStateListener(FieldStateListener listener) {
         return delegate.removeStateListener(listener);
     }
+
+    @Override
+    public ObservableCachedFieldWithArg<RETURN_TYPE, Void> toCachedFieldWithArg() {
+        return delegate;
+    }
 }

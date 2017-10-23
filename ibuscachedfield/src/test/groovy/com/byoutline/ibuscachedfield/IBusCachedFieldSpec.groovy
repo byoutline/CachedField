@@ -1,25 +1,24 @@
 package com.byoutline.ibuscachedfield
 
 import com.byoutline.cachedfield.CachedField
-import com.byoutline.cachedfield.FieldState
-import com.byoutline.cachedfield.FieldStateListener
 import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
+import com.byoutline.cachedfield.testsuite.CachedFieldCommonSuiteSpec
 import com.byoutline.eventcallback.IBus
 import com.byoutline.eventcallback.ResponseEvent
+import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
-import spock.lang.Specification
 import spock.lang.Unroll
 
 import javax.inject.Provider
+import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
 
 /**
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class IBusCachedFieldSpec extends Specification {
-    @Shared
-    String value = "value"
+class IBusCachedFieldSpec extends CachedFieldCommonSuiteSpec {
     @Shared
     Exception exception = new RuntimeException("Cached Field test exception")
     ResponseEvent<String> successEvent
@@ -32,35 +31,10 @@ class IBusCachedFieldSpec extends Specification {
         errorEvent = Mock()
     }
 
-    def "postValue should return immediately"() {
-        given:
-        CachedField field = IBusMockFactory.fieldWithoutArgBuilder(bus)
-                .withValueProvider(MockFactory.getDelayedStringGetter(value, 1000))
-                .withSuccessEvent(successEvent)
-                .build()
-
-        when:
-        boolean tookToLong = false
-        Thread.start {
-            sleep 15
-            tookToLong = true
-        }
-        field.postValue()
-
-        then:
-        if (tookToLong) {
-            throw new AssertionError("Test took to long to execute")
-        }
-    }
-
     @Unroll
     def "should post success times: #sC, error times: #eC for valueProvider: #valProv"() {
         when:
-        CachedField field = IBusMockFactory.fieldWithoutArgBuilder(bus)
-                .withValueProvider(valProv)
-                .withSuccessEvent(successEvent)
-                .withResponseErrorEvent(errorEvent)
-                .build()
+        CachedField field = getFieldWithDefaultExecutors(valProv)
         MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
 
         then:
@@ -80,10 +54,11 @@ class IBusCachedFieldSpec extends Specification {
                 .withValueProvider(MockFactory.getFailingStringGetter(exception))
                 .withSuccessEvent(successEvent)
                 .withGenericErrorEvent(expEvent)
+                .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
                 .build()
 
         when:
-        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
+        field.postValue()
 
         then:
         1 * bus.post(expEvent)
@@ -107,5 +82,16 @@ class IBusCachedFieldSpec extends Specification {
         then:
         1 * customBus.post(_)
         0 * bus.post(_)
+    }
+
+    @Override
+    def getField(Provider<String> valueProvider, ExecutorService valueGetterExecutor, Executor stateListenerExecutor) {
+        return IBusMockFactory.fieldWithoutArgBuilder(bus)
+                .withValueProvider(valueProvider)
+                .withSuccessEvent(successEvent)
+                .withResponseErrorEvent(errorEvent)
+                .withCustomValueGetterExecutor(valueGetterExecutor)
+                .withCustomStateListenerExecutor(stateListenerExecutor)
+                .build()
     }
 }
