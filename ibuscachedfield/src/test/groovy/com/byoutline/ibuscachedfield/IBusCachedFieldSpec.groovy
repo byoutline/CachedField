@@ -6,6 +6,7 @@ import com.byoutline.cachedfield.MockFactory
 import com.byoutline.cachedfield.testsuite.CachedFieldCommonSuiteSpec
 import com.byoutline.eventcallback.IBus
 import com.byoutline.eventcallback.ResponseEvent
+import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
 import spock.lang.Unroll
 
@@ -53,10 +54,11 @@ class IBusCachedFieldSpec extends CachedFieldCommonSuiteSpec {
                 .withValueProvider(MockFactory.getFailingStringGetter(exception))
                 .withSuccessEvent(successEvent)
                 .withGenericErrorEvent(expEvent)
+                .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
                 .build()
 
         when:
-        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field)
+        field.postValue()
 
         then:
         1 * bus.post(expEvent)

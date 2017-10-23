@@ -1,11 +1,9 @@
 package com.byoutline.eventbuscachedfield
 
-import com.byoutline.cachedfield.CachedFieldWithArg
-import com.byoutline.cachedfield.FieldState
-import com.byoutline.cachedfield.FieldStateListener
 import com.byoutline.cachedfield.MockCachedFieldLoader
 import com.byoutline.cachedfield.MockFactory
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg
+import com.google.common.util.concurrent.MoreExecutors
 import de.greenrobot.event.EventBus
 import spock.lang.Shared
 import spock.lang.Specification
@@ -39,9 +37,10 @@ class EventBusCachedFieldWithArgSpec extends Specification {
                 .withValueProvider(MockFactory.getStringGetter(argToValueMap))
                 .withSuccessEvent(successEvent)
                 .withResponseErrorEvent(errorEvent)
+                .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
                 .build()
         when:
-        MockCachedFieldLoader.postAndWaitUntilFieldStopsLoading(field, arg)
+        field.postValue(arg)
 
         then:
 
