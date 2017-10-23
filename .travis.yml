@@ -11,4 +11,4 @@ env:
   - JAVA6_HOME=/usr/lib/jvm/java-6-openjdk-amd64 TERM=dumb JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64 TERM=dumb
 
 script:
-  - ./gradlew build cobertura coveralls
+  - ./gradlew build cobertura coveralls --info

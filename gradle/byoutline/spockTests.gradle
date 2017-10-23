@@ -1,6 +1,6 @@
 apply plugin: SpockTests
 
-final class SpockTests implements Plugin<Project>{
+final class SpockTests implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
@@ -22,16 +22,8 @@ final class SpockTests implements Plugin<Project>{
     }
 
     private void applyPlugins(Project project) {
-        project.configure(project){
+        project.configure(project) {
             apply plugin: 'groovy'
         }
-    }
-}
-
-// With our config HTML results are not saved on TRAVIS.
-// Display them to standard output instead.
-subprojects {
-    test {
-        testLogging.showStandardStreams = System.getenv("TRAVIS") ?: false
     }
 }

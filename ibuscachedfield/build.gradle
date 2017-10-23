@@ -1,4 +1,4 @@
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'propdeps'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -7,13 +7,11 @@ apply from: '../gradle/byoutline/javaLib6.gradle'
 
 repositories {
     mavenCentral()
-    // For snapshots of event callback and spock testing
-//    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
-    compile "com.google.code.findbugs:jsr305:$jsr305_ver"
-    compile 'com.byoutline.cachedfield:cachedfield:1.5.3'
+    api "com.google.code.findbugs:jsr305:$jsr305_ver"
+    api deps.cachedfield
     compileOnly 'com.squareup.retrofit2:retrofit:2.0.2'
     testImplementation project(':testhelpers')
 }
