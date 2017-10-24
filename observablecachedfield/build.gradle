@@ -4,15 +4,15 @@ apply plugin: 'propdeps'
 apply from: '../gradle/byoutline/javaLib6.gradle'
 
 repositories {
-//    mavenCentral()
-    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+    mavenCentral()
+//    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url "https://jcenter.bintray.com/" }
 }
 
 dependencies {
     api "com.google.code.findbugs:jsr305:$jsr305_ver"
     api 'javax.inject:javax.inject:1'
-    api deps.ibuscachedfieldsnap
+    api deps.ibuscachedfield
     compileOnly 'com.squareup.okhttp3:okhttp:3.0.1'
     compileOnly 'com.android.databinding:baseLibrary:1.1'
     compileOnly files('../databindingLibs/binding-library-1.1.jar')

@@ -2,6 +2,7 @@ apply plugin: 'groovy'
 
 repositories {
     mavenCentral()
+    // maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
