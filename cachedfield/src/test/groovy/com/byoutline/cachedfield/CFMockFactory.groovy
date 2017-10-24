@@ -24,7 +24,7 @@ static Provider<String> getMultiSessionIdProvider() {
 }
 
 static Provider<String> getDelayedStringGetter(String value) {
-    return getDelayedStringGetter(value, 5)
+    return getDelayedStringGetter(value, 10)
 }
 
 static Provider<String> getDelayedStringGetter(String value, long sleepTime) {
