@@ -1,7 +1,7 @@
 apply plugin: 'java-library'
 apply plugin: 'propdeps'
 
-apply from: '../gradle/byoutline/javaLib6.gradle'
+apply from: '../gradle/byoutline/javaLib7.gradle'
 
 repositories {
     mavenCentral()
@@ -12,13 +12,14 @@ repositories {
 dependencies {
     api "com.google.code.findbugs:jsr305:$jsr305_ver"
     api 'javax.inject:javax.inject:1'
-    api deps.ibuscachedfield
-    compileOnly 'com.squareup.okhttp3:okhttp:3.0.1'
+    api deps.cachedfield
+    compileOnly 'com.squareup.retrofit2:retrofit:2.3.0'
     compileOnly 'com.android.databinding:baseLibrary:1.1'
     compileOnly files('../databindingLibs/binding-library-1.1.jar')
 
     testImplementation 'com.android.databinding:baseLibrary:1.1'
     testImplementation files('../databindingLibs/binding-library-1.1.jar')
+    testImplementation 'com.squareup.retrofit2:retrofit-mock:2.3.0'
     testImplementation project(':testhelpers')
 }
 
