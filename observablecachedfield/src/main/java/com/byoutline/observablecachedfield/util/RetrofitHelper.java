@@ -1,14 +1,16 @@
 package com.byoutline.observablecachedfield.util;
 
 import com.byoutline.cachedfield.ProviderWithArg;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Response;
+
+import java.io.IOException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Provider;
-import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Response;
 
 
 /**

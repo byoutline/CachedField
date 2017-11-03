@@ -4,6 +4,7 @@ buildscript {
         // If false only release versions from maven central will be used. (Default for releases)
         def head = false
         jsr305_ver = '3.0.1'
+        kotlin_version = '1.1.51'
         deps = head ? [
                 cachedfield          : project(':cachedfield'),
                 ibuscachedfield      : project(':ibuscachedfield'),
