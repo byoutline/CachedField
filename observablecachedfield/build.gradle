@@ -6,12 +6,11 @@ apply from: '../gradle/byoutline/forceJava7.gradle'
 
 
 buildscript {
-    ext.kotlin_version = '1.1.51'
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_ver"
     }
 }
 
@@ -41,7 +40,7 @@ dependencies {
     provided 'com.android.databinding:baseLibrary:1.1'
     provided files('../databindingLibs/binding-library-1.1.jar')
     provided 'com.google.android:android:4.1.1.4'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_ver"
 
     testCompile 'com.android.databinding:baseLibrary:1.1'
     testCompile files('../databindingLibs/binding-library-1.1.jar')

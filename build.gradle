@@ -4,7 +4,7 @@ buildscript {
         // If false only release versions from maven central will be used. (Default for releases)
         def head = false
         jsr305_ver = '3.0.1'
-        kotlin_version = '1.1.51'
+        kotlin_ver = '1.2.0'
         deps = head ? [
                 cachedfield          : project(':cachedfield'),
                 ibuscachedfield      : project(':ibuscachedfield'),
@@ -28,8 +28,6 @@ buildscript {
     dependencies {
         classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
     }
-
-
 }
 
 plugins {
