@@ -12,10 +12,10 @@ buildscript {
                 ottocachedfield      : project(':ottocachedfield'),
                 observablecachedfield: project(':observablecachedfield')
         ] : [
-                cachedfield          : 'com.byoutline.cachedfield:cachedfield:1.7.0-RC1',
-                ibuscachedfield      : 'com.byoutline.ibuscachedfield:ibuscachedfield:1.7.0-RC1',
+                cachedfield          : 'com.byoutline.cachedfield:cachedfield:1.7.0',
+                ibuscachedfield      : 'com.byoutline.ibuscachedfield:ibuscachedfield:1.7.0',
                 ottocachedfield      : 'com.byoutline.ottocachedfield:ottocachedfield:1.7.0-RC1',
-                observablecachedfield: 'com.byoutline.observablecachedfield:observablecachedfield:1.7.0-RC1'
+                observablecachedfield: 'com.byoutline.observablecachedfield:observablecachedfield:1.7.0'
         ]
     }
 
