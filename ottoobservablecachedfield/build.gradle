@@ -1,0 +1,24 @@
+apply plugin: 'java-library'
+apply plugin: 'propdeps'
+
+apply from: '../gradle/byoutline/javaLib7.gradle'
+
+repositories {
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com/" }
+}
+
+dependencies {
+    api 'javax.inject:javax.inject:1'
+    api "com.google.code.findbugs:jsr305:$jsr305_ver"
+    api deps.observablecachedfield
+    api deps.ibuscachedfield
+    api deps.ottocachedfield
+    compileOnly 'com.android.databinding:baseLibrary:1.1'
+    compileOnly files('../databindingLibs/binding-library-1.1.jar')
+    testImplementation files('../databindingLibs/binding-library-1.1.jar')
+    testImplementation 'com.android.databinding:baseLibrary:1.1'
+    testImplementation project(':testhelpers')
+}
+
+apply from: '../maven-push.gradle'

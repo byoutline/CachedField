@@ -7,20 +7,23 @@ import com.byoutline.cachedfield.cachedendpoint.EndpointStateListener
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
+import spock.lang.Specification
+import spock.lang.Timeout
 
 import javax.inject.Provider
+import java.util.concurrent.TimeUnit
 
 /**
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class CachedEndpointWithArgSpec extends spock.lang.Specification {
+class CachedEndpointWithArgSpec extends Specification {
     @Shared
     Map<Integer, String> argToValueMap = [1: 'a', 2: 'b']
 
     def "should null out argument when drop is called"() {
         given:
-        CachedEndpointWithArg field = MockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
         field.call(1)
 
         when:
@@ -38,7 +41,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         given:
         EndpointState state = EndpointState.BEFORE_CALL
         def stateListener = { newState -> state = newState.getState() } as EndpointStateListener<String, Integer>
-        CachedEndpointWithArg field = MockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
         field.addEndpointListener(stateListener)
         when:
         field.removeEndpointListener(stateListener)
@@ -47,28 +50,22 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         state == EndpointState.BEFORE_CALL
     }
 
+    @Timeout(value = 400, unit = TimeUnit.MILLISECONDS)
     def "call should return immediately"() {
         given:
-        CachedEndpointWithArg field = MockFactory.getCachedEndpoint(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getDelayedCachedEndpoint(argToValueMap, 4000)
 
         when:
-        boolean tookToLong = false
-        Thread.start {
-            sleep 15
-            tookToLong = true;
-        }
         field.call(1)
 
-        then:
-        if (tookToLong) {
-            throw new AssertionError("Test took to long to execute")
-        }
+        then: 'postValue returns without waiting for value getter and method does not time out'
+        noExceptionThrown()
     }
 
     def "should inform endpoint state listener about current state"() {
         given:
         def stateList = new StubCachedEndpointWithArg()
-        CachedEndpointWithArg field = MockFactory.getCachedEndpointBlocking(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getCachedEndpointBlocking(argToValueMap)
 
         when:
         field.addEndpointListener(stateList)
@@ -83,7 +80,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
     def "should inform endpoint state listener about changes on successful call"() {
         given:
         def stateList = new StubCachedEndpointWithArg()
-        CachedEndpointWithArg field = MockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getCachedEndpointBlockingValueProv(argToValueMap)
         field.addEndpointListener(stateList)
         stateList.clear()
 
@@ -102,9 +99,9 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         def stateList = new StubCachedEndpointWithArg()
         def ex = new IllegalArgumentException("test")
         CachedEndpointWithArg field = new CachedEndpointWithArgImpl(
-                MockFactory.getSameSessionIdProvider(),
+                CFMockFactory.getSameSessionIdProvider(),
                 { key -> throw ex } as ProviderWithArg<String, Integer>,
-                MockFactory.getStubCallEndListener(),
+                CFMockFactory.getStubCallEndListener(),
                 MoreExecutors.newDirectExecutorService(),
                 DefaultExecutors.createDefaultStateListenerExecutor())
         field.addEndpointListener(stateList)
@@ -122,7 +119,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
 
     def "should inform endpoint state listener about changes on drop"() {
         given:
-        CachedEndpointWithArg field = MockFactory.getCachedEndpointBlocking(argToValueMap)
+        CachedEndpointWithArg field = CFMockFactory.getCachedEndpointBlocking(argToValueMap)
         def stateList = new StubCachedEndpointWithArg()
         field.call(1)
         field.addEndpointListener(stateList)
@@ -144,8 +141,8 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
         def sessionProvider = { return currentSession } as Provider<String>
         CachedEndpointWithArg field = new CachedEndpointWithArgImpl(
                 sessionProvider,
-                MockFactory.getStringIntGetter(argToValueMap),
-                MockFactory.getStubCallEndListener(),
+                CFMockFactory.getStringIntGetter(argToValueMap),
+                CFMockFactory.getStubCallEndListener(),
                 MoreExecutors.newDirectExecutorService(),
                 DefaultExecutors.createDefaultStateListenerExecutor()
         )
@@ -167,7 +164,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
 
     def "should not allow adding null state listeners"() {
         given:
-        def field = MockFactory.getCachedEndpointBlocking(argToValueMap)
+        def field = CFMockFactory.getCachedEndpointBlocking(argToValueMap)
         when:
         field.addEndpointListener(null)
         then:
@@ -176,7 +173,7 @@ class CachedEndpointWithArgSpec extends spock.lang.Specification {
 
     def "should not allow removing null state listeners"() {
         given:
-        def field = MockFactory.getCachedEndpointBlocking(argToValueMap)
+        def field = CFMockFactory.getCachedEndpointBlocking(argToValueMap)
         when:
         field.removeEndpointListener(null)
         then:

@@ -3,49 +3,46 @@ package com.byoutline.cachedfield
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
+import spock.lang.Specification
+import spock.lang.Timeout
 
 import javax.inject.Provider
+import java.util.concurrent.TimeUnit
 
 /**
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class CachedFieldSpec extends spock.lang.Specification {
+class CachedFieldSpec extends Specification {
     @Shared
     String value = "value"
     SuccessListener<String> stubSuccessListener = {} as SuccessListener<String>
 
 
+    @Timeout(value=400, unit = TimeUnit.MILLISECONDS)
     def "postValue should return immediately"() {
-        given:
-        CachedField field = MockFactory.getDelayedCachedField(value, 1000, stubSuccessListener)
+        given: 'instance that takes very long to load'
+        CachedField field = CFMockFactory.getDelayedCachedField(value, 4000, stubSuccessListener)
 
-        when:
-        boolean tookToLong = false
-        Thread.start {
-            sleep 15
-            tookToLong = true;
-        }
+        when: 'postValue is called'
         field.postValue()
 
-        then:
-        if (tookToLong) {
-            throw new AssertionError("Test took to long to execute")
-        }
+        then: 'postValue returns without waiting for value getter and method does not time out'
+        noExceptionThrown()
     }
 
 
     def "should post success event immediately if it was loaded"() {
         given:
-        CachedField field = MockFactory.getDelayedCachedField(value, 20, stubSuccessListener)
+        CachedField field = CFMockFactory.getDelayedCachedField(value, 20, stubSuccessListener)
         field.postValue()
-        MockFactory.waitUntilFieldLoads(field)
+        CFMockFactory.waitUntilFieldLoads(field)
 
         when:
         boolean tookToLong = false
         Thread.start {
             sleep 15
-            tookToLong = true;
+            tookToLong = true
         }
         field.postValue()
 
@@ -59,11 +56,11 @@ class CachedFieldSpec extends spock.lang.Specification {
         given:
         boolean valuePosted = false
         def successList = { valuePosted = true } as SuccessListener<String>
-        CachedField field = MockFactory.getDelayedCachedField(value, successList)
+        CachedField field = CFMockFactory.getDelayedCachedField(value, successList)
 
         when:
         field.postValue()
-        MockFactory.waitUntilFieldLoads(field)
+        CFMockFactory.waitUntilFieldLoads(field)
 
         then:
         assert valuePosted
@@ -71,7 +68,7 @@ class CachedFieldSpec extends spock.lang.Specification {
 
     def "should null out value when drop is called"() {
         given:
-        CachedField field = MockFactory.getLoadedCachedField(value)
+        CachedField field = CFMockFactory.getLoadedCachedField(value)
 
         when:
         field.drop()
@@ -86,11 +83,11 @@ class CachedFieldSpec extends spock.lang.Specification {
         given:
         def postedStates = []
         def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
-        CachedField field = MockFactory.getDelayedCachedField(value, stateList)
+        CachedField field = CFMockFactory.getDelayedCachedField(value, stateList)
 
         when:
         field.postValue()
-        MockFactory.waitUntilFieldLoads(field)
+        CFMockFactory.waitUntilFieldLoads(field)
 
         then:
         postedStates == [FieldState.CURRENTLY_LOADING, FieldState.LOADED]
@@ -100,7 +97,7 @@ class CachedFieldSpec extends spock.lang.Specification {
         given:
         def postedStates = []
         def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
-        CachedField field = MockFactory.getLoadedCachedField(value, stateList)
+        CachedField field = CFMockFactory.getLoadedCachedField(value, stateList)
 
         when:
         field.drop()
@@ -114,12 +111,13 @@ class CachedFieldSpec extends spock.lang.Specification {
         given:
         def postedStates = []
         def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
-        CachedField field = MockFactory.getLoadedCachedField(value, stateList)
+        CachedField field = CFMockFactory.getLoadedCachedField(value, stateList)
+
 
         when:
         field.refresh()
         sleep 1 // Wait for field to switch from LOADED to CURRENTLY_LOADING.
-        MockFactory.waitUntilFieldLoads(field) // Wait until it finishes loading.
+        CFMockFactory.waitUntilFieldLoads(field) // Wait until it finishes loading.
 
         then:
         postedStates == [FieldState.CURRENTLY_LOADING, FieldState.LOADED]
@@ -131,7 +129,7 @@ class CachedFieldSpec extends spock.lang.Specification {
         def stateList = { FieldState newState -> postedStates.add(newState) } as FieldStateListener
         def currentSession = "one"
         def sessionProvider = { return currentSession } as Provider<String>
-        CachedField field = MockFactory.getLoadedCachedField(value, stateList, sessionProvider)
+        CachedField field = CFMockFactory.getLoadedCachedField(value, stateList, sessionProvider)
 
         when:
         // Asking for state will force CachedField to check its current state
@@ -147,13 +145,13 @@ class CachedFieldSpec extends spock.lang.Specification {
     def "should inform error listener if value getter throws exception"() {
         given:
         def exceptionThrown = new RuntimeException()
-        Exception resultEx = null;
+        Exception resultEx = null
         def valueProv = { throw exceptionThrown } as Provider<String>
         def errorList = { resultEx = it } as ErrorListener
         CachedField field = new CachedFieldImpl(
-                MockFactory.getSameSessionIdProvider(),
+                CFMockFactory.getSameSessionIdProvider(),
                 valueProv,
-                MockFactory.getSuccessListener(),
+                CFMockFactory.getSuccessListener(),
                 errorList,
                 MoreExecutors.newDirectExecutorService(),
                 DefaultExecutors.createDefaultStateListenerExecutor()
@@ -170,14 +168,14 @@ class CachedFieldSpec extends spock.lang.Specification {
         given:
         Exception resultEx = null
         def errorListener = { resultEx = it } as ErrorListener
-        CachedField field = MockFactory.getCachedField(value, errorListener)
+        CachedField field = CFMockFactory.getCachedField(value, errorListener)
         def stateListeners = [new SelfRemovingFieldStateListener(field),
                               new SelfRemovingFieldStateListener(field),
                               new SelfRemovingFieldStateListener(field)]
         stateListeners.each { field.addStateListener(it) }
         when:
         field.postValue()
-        MockFactory.waitUntilFieldLoads(field)
+        CFMockFactory.waitUntilFieldLoads(field)
         then:
         resultEx == null
         stateListeners.findAll { it.called }.size() == 3
@@ -186,17 +184,17 @@ class CachedFieldSpec extends spock.lang.Specification {
     def "should call success once if asked about value during load"() {
         given:
         int callCount = 0
-        def successListener = {callCount++} as SuccessListener<String>
+        def successListener = { callCount++ } as SuccessListener<String>
         CachedField field = new CachedFieldImpl(
-                MockFactory.getSameSessionIdProvider(),
-                MockFactory.getDelayedStringGetter(value),
+                CFMockFactory.getSameSessionIdProvider(),
+                CFMockFactory.getDelayedStringGetter(value),
                 successListener
         )
         when:
         field.postValue()
-        MockFactory.waitUntilFieldReachesState(field, FieldState.CURRENTLY_LOADING)
+        CFMockFactory.waitUntilFieldReachesState(field, FieldState.CURRENTLY_LOADING)
         field.postValue()
-        MockFactory.waitUntilFieldLoads(field)
+        CFMockFactory.waitUntilFieldLoads(field)
         then:
         callCount == 1
     }

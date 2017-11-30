@@ -1,18 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'propdeps'
 
-apply from: '../gradle/byoutline/forceJava6.gradle'
-
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'http://repo.spring.io/plugins-release' }
-    }
-
-    dependencies {
-        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
-    }
-}
+apply from: '../gradle/byoutline/javaLib6.gradle'
 
 repositories {
     mavenCentral()
@@ -20,10 +9,14 @@ repositories {
 }
 
 dependencies {
-    provided files('libs/espresso-idling-resource-2.2-release-no-dep.jar')
-    provided 'com.google.android:android:4.1.1.4'
+    compileOnly files('libs/espresso-idling-resource-2.2-release-no-dep.jar')
 
-    compile 'com.byoutline.cachedfield:cachedfield:1.5.2'
+    compileOnly 'com.google.android:android:4.1.1.4'
+
+    implementation deps.cachedfield
+
+    testImplementation files('libs/espresso-idling-resource-2.2-release-no-dep.jar')
+    testImplementation project(':testhelpers')
 }
 
 

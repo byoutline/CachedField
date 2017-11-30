@@ -36,7 +36,7 @@ public class ValueLoader<RETURN_TYPE, ARG_TYPE> {
     /**
      * Loads value in separate thread.
      */
-    public void loadValue(final ARG_TYPE arg) {
+    public synchronized void loadValue(final ARG_TYPE arg) {
         if (fetchFuture != null) {
             // Cancel thread if it was not yet starter.
             fetchFuture.cancel(false);

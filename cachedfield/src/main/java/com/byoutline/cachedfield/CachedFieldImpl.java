@@ -98,4 +98,9 @@ public class CachedFieldImpl<RETURN_TYPE> implements CachedField<RETURN_TYPE> {
     public boolean removeStateListener(@Nonnull FieldStateListener listener) throws IllegalArgumentException {
         return delegate.removeStateListener(listener);
     }
+
+    @Override
+    public CachedFieldWithArg<RETURN_TYPE, Void> toCachedFieldWithArg() {
+        return delegate;
+    }
 }

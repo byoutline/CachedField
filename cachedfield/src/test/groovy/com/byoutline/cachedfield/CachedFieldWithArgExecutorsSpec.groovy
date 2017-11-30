@@ -3,16 +3,19 @@ package com.byoutline.cachedfield
 import com.byoutline.cachedfield.internal.DefaultExecutors
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
+import spock.lang.Specification
+import spock.lang.Timeout
 
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.FutureTask
+import java.util.concurrent.TimeUnit
 
 /**
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
-class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
+class CachedFieldWithArgExecutorsSpec extends Specification {
     @Shared
     Map<Integer, String> argToValueMap = [1: 'a', 2: 'b']
 
@@ -20,9 +23,9 @@ class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
         given:
         boolean called = false
         ExecutorService executor = [
-                submit: { called = true; return new FutureTask((Runnable) it, null); }
+                submit: { called = true; return new FutureTask((Runnable) it, null) }
         ] as ExecutorService
-        CachedFieldWithArg field = MockFactory.getCachedFieldWithArg(argToValueMap, executor)
+        CachedFieldWithArg field = CFMockFactory.getCachedFieldWithArg(argToValueMap, executor)
 
         when:
         field.postValue(1)
@@ -37,10 +40,10 @@ class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
         Executor stateListenersExecutor = { called = true; it.run() } as Executor
         ExecutorService loadExecutorService = MoreExecutors.newDirectExecutorService()
         CachedFieldWithArg field = new CachedFieldWithArgImpl(
-                MockFactory.getSameSessionIdProvider(),
-                MockFactory.getStringIntGetter(argToValueMap),
-                MockFactory.getSuccessListenerWithArg(),
-                MockFactory.getErrorListenerWithArg(),
+                CFMockFactory.getSameSessionIdProvider(),
+                CFMockFactory.getStringIntGetter(argToValueMap),
+                CFMockFactory.getSuccessListenerWithArg(),
+                CFMockFactory.getErrorListenerWithArg(),
                 loadExecutorService,
                 stateListenersExecutor
         )
@@ -52,6 +55,7 @@ class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
         called
     }
 
+    @Timeout(value = 500, unit = TimeUnit.MILLISECONDS)
     def "should interrupt valueGetter thread"() {
         given:
         boolean valueLoadingInterrupted = false
@@ -65,24 +69,26 @@ class CachedFieldWithArgExecutorsSpec extends spock.lang.Specification {
         } as ProviderWithArg<String, Integer>
 
         CachedFieldWithArg field = new CachedFieldWithArgImpl(
-                MockFactory.getSameSessionIdProvider(),
+                CFMockFactory.getSameSessionIdProvider(),
                 valueGetter,
-                MockFactory.getSuccessListenerWithArg(),
-                MockFactory.getErrorListenerWithArg(),
-                MockFactory.getAsyncFirstTaskSyncOtherExecutorService(),
+                CFMockFactory.getSuccessListenerWithArg(),
+                CFMockFactory.getErrorListenerWithArg(),
+                CFMockFactory.getAsyncFirstTaskSyncOtherExecutorService(),
                 DefaultExecutors.createDefaultStateListenerExecutor()
         )
 
         when:
         // Execute long running task asynchronously to be interrupted.
         field.postValue(10000)
+        field.postValue(1)
         // Give some (minimal) time to propagate Thread.interrupt, since we
         // are running this post synchronously.
-        field.postValue(2)
+        while (!valueLoadingInterrupted) {
+            sleep 1
+        }
 
         then:
         valueLoadingInterrupted
-        field.getState() == FieldState.LOADED
-//        thrown(InterruptedException)
+        // Or Fail by timeout
     }
 }

@@ -1,5 +1,7 @@
 package com.byoutline.cachedfield;
 
+import com.byoutline.cachedfield.cachedendpoint.StateAndValue;
+
 /**
  * Field of which getting value takes time (because it is downloaded from remote
  * source, or needs heavy calculations), so it is wrapped for caching.
@@ -26,6 +28,8 @@ public interface CachedFieldWithArg<RETURN_TYPE, ARG_TYPE> {
      * @param arg Argument needed to calculate value.
      */
     void refresh(ARG_TYPE arg);
+
+    StateAndValue<RETURN_TYPE, ARG_TYPE> getStateAndValue();
 
     /**
      * Forget cached value, so memory can be reclaimed.

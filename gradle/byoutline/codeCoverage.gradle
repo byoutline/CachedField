@@ -1,11 +1,49 @@
-apply plugin: "jacoco"
-apply plugin: 'com.github.kt3k.coveralls'
+repositories {
+    mavenCentral()
+}
 
-jacocoTestReport {
-    reports {
-        xml.enabled true // coveralls plugin depends on xml format report
-        html.enabled = true
-        csv.enabled false
-        html.destination "${buildDir}/jacocoHtml"
+subprojects {
+    apply plugin: 'net.saliman.cobertura'
+
+    dependencies {
+        // Cobertura declares a dependency on the slf4j API, so we need to supply
+        // a runtime implementation to avoid NoClassDefFoundErrors
+        testRuntimeOnly "org.slf4j:slf4j-log4j12:1.7.5"
+        testRuntimeOnly "log4j:log4j:1.2.17"
+    }
+    cobertura {
+        coverageIgnoreTrivial = true
+        coverageFormats = ['xml', 'html']
+        coverageExcludes = ['.*AutoValue_.*']
     }
 }
+
+cobertura {
+    coverageFormats = ['xml', 'html']
+
+    rootProject.subprojects.collectMany {
+        it.sourceSets.main.output.classesDirs.collect { "$it" }
+    }.each { path ->
+        if (path.contains('observablecachedfield/build/classes/java')) {
+            path = path.replace('observablecachedfield/build/classes/java', 'observablecachedfield/build/classes/kotlin')
+        }
+        coverageDirs << file(path)
+    }
+    coverageSourceDirs = []
+    rootProject.subprojects.each {
+        coverageSourceDirs += it.sourceSets.main.java.srcDirs
+    }
+    coverageMergeDatafiles = [
+            'cachedfield',
+            'eventbuscachedfield',
+            'ibuscachedfield',
+            'idlingresource',
+            'observablecachedfield',
+            'ottocachedfield',
+            'ottoobservablecachedfield']
+            .collect { new File("$it/build/cobertura/cobertura.ser") }
+    coverageIgnoreTrivial = true
+    coverageExcludes = ['.*AutoValue_.*']
+}
+
+test.dependsOn(subprojects.test)

@@ -1,0 +1,37 @@
+buildscript {
+    project.ext {
+        // If true latest version of the code will be used for compilation. (Default for development)
+        // If false only release versions from maven central will be used. (Default for releases)
+        def head = false
+        jsr305_ver = '3.0.1'
+        kotlin_ver = '1.2.0'
+        deps = head ? [
+                cachedfield          : project(':cachedfield'),
+                ibuscachedfield      : project(':ibuscachedfield'),
+                ibuscachedfieldsnap  : project(':ibuscachedfield'),
+                ottocachedfield      : project(':ottocachedfield'),
+                observablecachedfield: project(':observablecachedfield')
+        ] : [
+                cachedfield          : 'com.byoutline.cachedfield:cachedfield:1.7.0',
+                ibuscachedfield      : 'com.byoutline.ibuscachedfield:ibuscachedfield:1.7.0',
+                ottocachedfield      : 'com.byoutline.ottocachedfield:ottocachedfield:1.7.0-RC1',
+                observablecachedfield: 'com.byoutline.observablecachedfield:observablecachedfield:1.7.0'
+        ]
+    }
+
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url 'http://repo.spring.io/plugins-release' }
+    }
+
+    dependencies {
+        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
+    }
+}
+
+plugins {
+    id 'net.saliman.cobertura' version '2.5.0'
+    id 'com.github.kt3k.coveralls' version '2.8.2'
+}
+apply from: 'gradle/byoutline/codeCoverage.gradle'

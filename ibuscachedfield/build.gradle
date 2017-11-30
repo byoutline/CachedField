@@ -1,0 +1,20 @@
+apply plugin: 'java-library'
+apply plugin: 'propdeps'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+apply from: '../gradle/byoutline/javaLib6.gradle'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api "com.google.code.findbugs:jsr305:$jsr305_ver"
+    api deps.cachedfield
+    compileOnly 'com.squareup.retrofit2:retrofit:2.3.0'
+    testImplementation project(':testhelpers')
+    testImplementation 'com.squareup.retrofit2:retrofit-mock:2.3.0'
+}
+
+apply from: '../maven-push.gradle'

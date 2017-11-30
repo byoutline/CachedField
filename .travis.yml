@@ -1,14 +1,22 @@
 language: java
 
-jdk:
-  - openjdk6
+sudo: required
+
+addons:
+  apt:
+    packages:
+      - openjdk-6-jdk
+      - openjdk-7-jdk
+
+# Required by Kotlin
+jdk: openjdk8
 
 notifications:
   email:
     - sebastian.kacprzak@byoutline.com
 
 env:
-  - JAVA6_HOME=/usr/lib/jvm/java-6-openjdk-amd64 TERM=dumb
+  - JAVA6_HOME=/usr/lib/jvm/java-6-openjdk-amd64 TERM=dumb JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64 TERM=dumb
 
-after_success:
-  - ./gradlew jacocoTestReport coveralls
+script:
+  - ./gradlew build cobertura coveralls --info
