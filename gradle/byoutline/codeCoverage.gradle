@@ -24,8 +24,8 @@ cobertura {
     rootProject.subprojects.collectMany {
         it.sourceSets.main.output.classesDirs.collect { "$it" }
     }.each { path ->
-        if (path.contains('rxjava/build/classes/java')) {
-            path = path.replace('rxjava/build/classes/java', 'rxjava/build/classes/kotlin')
+        if (path.contains('observablecachedfield/build/classes/java')) {
+            path = path.replace('observablecachedfield/build/classes/java', 'observablecachedfield/build/classes/kotlin')
         }
         coverageDirs << file(path)
     }

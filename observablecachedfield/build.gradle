@@ -1,25 +1,60 @@
-apply plugin: 'java-library'
+apply plugin: 'kotlin'
+apply from: '../gradle/byoutline/spockTests.gradle'
 apply plugin: 'propdeps'
 
-apply from: '../gradle/byoutline/javaLib6.gradle'
+apply from: '../gradle/byoutline/forceJava7.gradle'
+
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_ver"
+    }
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.6"
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.6"
+    }
+}
 
 repositories {
-//    mavenCentral()
-    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+    mavenCentral()
+//    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url "https://jcenter.bintray.com/" }
 }
 
 dependencies {
-    api "com.google.code.findbugs:jsr305:$jsr305_ver"
-    api 'javax.inject:javax.inject:1'
-    api deps.ibuscachedfieldsnap
-    compileOnly 'com.squareup.okhttp3:okhttp:3.0.1'
-    compileOnly 'com.android.databinding:baseLibrary:1.1'
-    compileOnly files('../databindingLibs/binding-library-1.1.jar')
+    compile "com.google.code.findbugs:jsr305:$jsr305_ver"
+    compile 'javax.inject:javax.inject:1'
+    compile deps.cachedfield
+    provided 'com.squareup.retrofit2:retrofit:2.3.0'
+    provided 'com.android.databinding:baseLibrary:1.1'
+    provided files('../databindingLibs/binding-library-1.1.jar')
+    provided 'com.google.android:android:4.1.1.4'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_ver"
 
-    testImplementation 'com.android.databinding:baseLibrary:1.1'
-    testImplementation files('../databindingLibs/binding-library-1.1.jar')
-    testImplementation project(':testhelpers')
+    testCompile 'com.android.databinding:baseLibrary:1.1'
+    testCompile files('../databindingLibs/binding-library-1.1.jar')
+    testCompile 'com.squareup.retrofit2:retrofit-mock:2.3.0'
+    testCompile project(':testhelpers')
+}
+
+cobertura {
+    coverageIgnoreTrivial = true
+    coverageFormats = ['xml', 'html']
+    coverageDirs = coverageDirs.collect {
+        def path = "$it"
+        return path.replace("classes/java", "classes/kotlin")
+    }
 }
 
 apply from: '../maven-push.gradle'

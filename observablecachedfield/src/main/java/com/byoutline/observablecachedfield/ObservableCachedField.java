@@ -21,7 +21,7 @@ public class ObservableCachedField<RETURN_TYPE> implements CachedField<RETURN_TY
                                  SuccessListener<RETURN_TYPE> additionalSuccessListener,
                                  ErrorListener additionalErrorListener,
                                  ExecutorService valueGetterExecutor, Executor stateListenerExecutor) {
-        delegate = new ObservableCachedFieldWithArg<RETURN_TYPE, Void>(
+        delegate = new ObservableCachedFieldWithArg<>(
                 sessionIdProvider,
                 VoidArgumentFactory.addVoidArg(valueGetter),
                 VoidArgumentFactory.addVoidArg(additionalSuccessListener),

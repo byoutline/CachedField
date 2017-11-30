@@ -2,14 +2,12 @@ package com.byoutline.observablecachedfield
 
 import android.databinding.Observable
 import android.databinding.ObservableField
+import com.byoutline.cachedfield.CachedFieldWithArg
 import com.byoutline.cachedfield.ErrorListener
 import com.byoutline.cachedfield.MockFactory
 import com.byoutline.cachedfield.SuccessListener
 import com.byoutline.cachedfield.internal.DefaultExecutors
-import com.byoutline.eventcallback.IBus
-import com.byoutline.ibuscachedfield.events.ResponseEventWithArg
-import com.byoutline.ibuscachedfield.events.ResponseEventWithArgImpl
-import com.byoutline.ibuscachedfield.internal.NullArgumentException
+import com.byoutline.observablecachedfield.internal.NullArgumentException
 import com.google.common.util.concurrent.MoreExecutors
 import spock.lang.Shared
 import spock.lang.Specification
@@ -26,8 +24,7 @@ class ObservableCachedFieldWithArgSpec extends Specification {
     def "should notify about new value: #val for arg: #arg"() {
         given:
         ObservableCachedFieldWithArg field = builder()
-                .withValueProvider(MockFactory.getStringGetter(argToValueMap))
-                .withoutEvents()
+                .withValueProviderWithArg(MockFactory.getStringGetter(argToValueMap))
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
                 .build()
         def callback = new MockObservableCallback()
@@ -47,60 +44,38 @@ class ObservableCachedFieldWithArgSpec extends Specification {
         'b' | 2
     }
 
-
-    def "should post success value on ibus"() {
-        given:
-        ResponseEventWithArg<String, Integer> successEvent = Mock()
-        def field = builder()
-                .withValueProvider(MockFactory.getStringGetter(argToValueMap))
-                .withSuccessEvent(successEvent)
-                .withResponseErrorEvent(new ResponseEventWithArgImpl<Exception, Integer>())
-                .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
-                .build()
-        when:
-        field.postValue(1)
-        then:
-        1 * successEvent.setResponse('a', 1)
-    }
-
-    def "should post error value on ibus"() {
-        given:
-        ResponseEventWithArg<Exception, Integer> errorEvent = Mock()
-        def field = builder()
-                .withValueProvider(MockFactory.getFailingStringGetterWithArg())
-                .withSuccessEvent(new ResponseEventWithArgImpl<String, Integer>())
-                .withResponseErrorEvent(errorEvent)
-                .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
-                .build()
-        when:
-        field.postValue(8)
-        then:
-        1 * errorEvent.setResponse(_, 8)
-    }
-
+    @Unroll
     def "should set error value in observable"() {
         given:
-        ObservableCachedFieldWithArg field = builder()
-                .withValueProvider(MockFactory.getFailingStringGetterWithArg())
-                .withoutEvents()
+        def field = builder
                 .withCustomValueGetterExecutor(MoreExecutors.newDirectExecutorService())
                 .build()
         def callback = new MockObservableCallback()
         ObservableField<String> errObs = field.getObservableError()
         errObs.addOnPropertyChangedCallback(callback)
         when:
-        field.postValue(8)
+        post(field, 8)
         then:
         callback.called
         errObs.get() instanceof RuntimeException
         errObs.get().message == "E8"
+        where:
+        builder << [builder().withValueProviderWithArg(MockFactory.getFailingStringGetterWithArg()),
+                    builder().withValueProvider(MockFactory.getFailingStringGetter(new RuntimeException("E8")))]
+    }
+
+    static void post(field, arg) {
+        if(field instanceof ObservableCachedField) {
+            field.postValue()
+        } else {
+            ((CachedFieldWithArg) field).postValue(arg)
+        }
     }
 
     def "builder should not allow null value getter"() {
         when:
         builder()
                 .withValueProvider(null)
-                .withoutEvents()
                 .build()
         then:
         thrown NullArgumentException
@@ -109,8 +84,7 @@ class ObservableCachedFieldWithArgSpec extends Specification {
     def "builder should not allow null state listener executor"() {
         when:
         builder()
-                .withValueProvider(MockFactory.getStringGetter(argToValueMap))
-                .withoutEvents()
+                .withValueProvider(MockFactory.getStringGetter("value"))
                 .withCustomStateListenerExecutor(null)
                 .build()
         then:
@@ -149,11 +123,8 @@ class ObservableCachedFieldWithArgSpec extends Specification {
         val << ['a', 'b']
     }
 
-    private ObservableCachedFieldWithArgBuilder<String, Integer, IBus> builder() {
-        IBus bus = Mock()
-        def busConverter = { b -> b } as ObservableCachedFieldWithArgBuilder.BusConverter<IBus>
-        return new ObservableCachedFieldWithArgBuilder<String, Integer, IBus>(MockFactory.getSameSessionIdProvider(), bus, busConverter,
-                DefaultExecutors.createDefaultValueGetterExecutor(), DefaultExecutors.createDefaultStateListenerExecutor())
+    private static ObservableCachedFieldBuilder builder() {
+        return new ObservableCachedFieldBuilder()
     }
 }
 

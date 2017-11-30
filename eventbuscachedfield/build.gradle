@@ -5,6 +5,7 @@ apply from: '../gradle/byoutline/javaLib6.gradle'
 
 repositories {
     mavenCentral()
+    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {

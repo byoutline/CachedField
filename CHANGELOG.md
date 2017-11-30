@@ -1,4 +1,21 @@
 #### CachedField ####
+* 1.7.0 Cached Field subrprojects moved to this repo and their release numbers were synchronized.
+  * `SameSessionIdProvider` - Default implementation for `session id provider` that always return same session - Useful 
+  for projects that do not use `session id` at all.
+  * `CachedField` now can be converted to arg version via `toCachedFieldWithArg` method. This is intended
+  for libraries to make it easier to handle different types of `CachedField` at once.
+  * `CachedFieldWithArg` now can return complete state and value via `getStateAndValue` (which provides more thread safety)
+  * `OttoObservableCachedField`, `IBusCachedField`, `EventBusCachedField` are now deprecated. 
+     * `1.7.0-RC1` versions were released and have the changes from CachedField `1.7.0`, but there will probably no further feature development for them 
+  * `ObservableCachedField` 
+       * no longer depends on bus. 
+       * `ObservableCachedFieldBuilder` added
+       * `RetrofitHelper` copied from iBus
+       * Now requires Java 7 
+       * Kotlin dependency added
+       * `registerChangeCallback` extension function added - now when bus is gone this is a helper
+        function to do custom action when observables do change.
+  
 * 1.5.3 Revert change from 1.3.4 (now field state is again set before informing success listeners - 1.3.4 allowed for rare race conditions)
 * 1.5.2 CachedFieldsListeners added to utils - allows listening to multiple CachedFields and CachedEndpoints at once
 * 1.5.1 Lower method count of dependencies.
